@@ -2,7 +2,7 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Dashboard from "./screens/Dashboard";
-import ProfileInfos from "./screens/ProfileInfos";
+
 
 
 export default function App() {

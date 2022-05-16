@@ -71,7 +71,7 @@ function HomeScreen(props) {
         buttonStyle={styles.button}
         title="Se connecter"
         onPress={() =>
-          props.navigation.navigate("BottomNavigator", { screen: "Dashboard" })
+          props.navigation.navigate("MapScreen", { screen: "MapScreen" })
         }
       ></Button>
       <Button

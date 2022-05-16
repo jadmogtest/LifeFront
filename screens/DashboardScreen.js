@@ -2,6 +2,7 @@ import { Calendar, LocaleConfig } from 'react-native-calendars';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button, Overlay } from 'react-native-elements';
+// import MapScreen from "./screens/MapScreen";
 
 
 LocaleConfig.locales['fr'] = {
@@ -88,6 +89,8 @@ export default function DashBoard() {
             <Button
                 buttonStyle={styles.bigButton}
                 title="Mes lieux de santé"
+                onPress={() =>
+                    props.navigation.navigate("BottomNavigator", { screen: "Dashboard" })}
             />
             <Calendar
                 locale="fr"

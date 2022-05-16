@@ -79,7 +79,7 @@ function HomeScreen(props) {
         buttonStyle={styles.button}
         title="Pas encore de compte ?"
         onPress={() =>
-          props.navigation.navigate("BottomNavigator", { screen: "Dashboard" })
+          props.navigation.navigate("SignUpInfosScreen", { screen: "SignUpInfosScreen" })
         }
       ></Button>
     </View>

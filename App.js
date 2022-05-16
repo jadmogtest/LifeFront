@@ -22,6 +22,8 @@ import HomeScreen from "./screens/LogScreen";
 import ProfilScreen from "./screens/ProfilScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import MapScreen from "./screens/MapScreen";
+import SignUpInfosScreen from "./screens/SignUpInfosScreen";
+
 
 
 
@@ -69,6 +71,7 @@ export default function App() {
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
         <Stack.Screen name="MapScreen" component={MapScreen} />
+        <Stack.Screen name="SignUpInfosScreen" component={SignUpInfosScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

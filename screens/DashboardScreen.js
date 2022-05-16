@@ -28,7 +28,7 @@ LocaleConfig.locales['fr'] = {
 };
 LocaleConfig.defaultLocale = 'fr';
 
-export default function DashBoard() {
+export default function DashBoard(props) {
 
     const [visible, setVisible] = useState(false)
     const [overlayContent, setOverlayContent] = useState([{}])
@@ -90,7 +90,7 @@ export default function DashBoard() {
                 buttonStyle={styles.bigButton}
                 title="Mes lieux de santé"
                 onPress={() =>
-                    props.navigation.navigate("BottomNavigator", { screen: "Dashboard" })}
+                    props.navigation.navigate("MapScreen", { screen: "MapScreen" })}
             />
             <Calendar
                 locale="fr"

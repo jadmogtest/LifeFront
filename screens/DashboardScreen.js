@@ -63,7 +63,7 @@ export default function DashBoard() {
     }
 
     return (
-        <View >
+        <View style={styles.container}>
             <Overlay
                 overlayStyle={{ flex: 0.5, width: 300, borderRadius: 50 }}
                 width="5000"
@@ -112,19 +112,29 @@ export default function DashBoard() {
 
 
                 }}
-                style={{ marginTop: 30 }}
+                style={styles.calendar}
                 markedDates={markedDates}
             />
         </View>
     )
 }
 const styles = StyleSheet.create({
-
+    container: {
+        flex: 1,
+        backgroundColor: "#EBFAD5",
+        alignItems: "center",
+        justifyContent: "center",
+    },
     bigButton: {
         // backgroundColor: "#5BAA62",
         backgroundColor: "green",
         marginBottom: 10,
         borderRadius: 50,
-        height: 50
+        height: 50,
+        width: 300
+    },
+    calendar: {
+        width: 300,
+        marginTop: 30
     }
 })

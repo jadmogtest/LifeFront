@@ -39,7 +39,7 @@ import { Provider } from "react-redux";
 /* J'importe le Store */
 import { createStore, combineReducers } from "redux";
 /* Je crée le store */
-const store = createStore(combineReducers({mail})); //J'appelle les reducers
+const store = createStore(combineReducers({ mail })); //J'appelle les reducers
 
 // FONCTION TABBAR
 function BottomNavigator() {
@@ -81,8 +81,8 @@ export default function App() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="LogScreen" component={LogScreen} />
           <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
-           <Stack.Screen name="MapScreen" component={MapScreen} />
-        <Stack.Screen name="SignUpInfosScreen" component={SignUpInfosScreen} />
+          <Stack.Screen name="MapScreen" component={MapScreen} />
+          <Stack.Screen name="SignUpInfosScreen" component={SignUpInfosScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

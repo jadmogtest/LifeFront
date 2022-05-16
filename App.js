@@ -52,7 +52,7 @@ function BottomNavigator() {
     >
       <Tab.Screen name="Dashboard" component={DashboardScreen} />
       <Tab.Screen name="Profil" component={ProfilScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
+      {/* <Tab.Screen name="Settings" component={SettingsScreen} /> */}
     </Tab.Navigator>
   );
 }

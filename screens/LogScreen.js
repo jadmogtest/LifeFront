@@ -7,8 +7,8 @@ import { Ionicons } from "@expo/vector-icons";
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FONCTION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 function HomeScreen(props) {
   //Input
-  const [mail, setMail] = useState(false);
-  const [password, setPassword] = useState(false);
+  const [mail, setMail] = useState('');
+  const [password, setPassword] = useState('');
 
   //CheckBox
   const [isSelected, setSelection] = useState(false);

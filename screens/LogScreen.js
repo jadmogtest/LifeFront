@@ -33,7 +33,7 @@ function HomeScreen(props) {
         <TextInput
           style={styles.input}
           placeholder="Your email"
-          autoComplete={true}
+          // autoComplete={true}
           underlineColorAndroid="transparent"
           value={mail}
           onChangeText={(value) => setMail(value)}

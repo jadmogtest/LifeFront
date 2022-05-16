@@ -26,10 +26,20 @@ import SignUpInfosScreen from "./screens/SignUpInfosScreen";
 
 
 
-
 // NAVIGATION
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+// <<<<<<<<<<<<<<<<<<<< J'INITIALISE LE STORE >>>>>>>>>>>>>>>>>>>>>>
+/* J'importe les reducers */
+import mail from "./reducers/mail";
+
+/* J'importe le Provider */
+import { Provider } from "react-redux";
+/* J'importe le Store */
+import { createStore, combineReducers } from "redux";
+/* Je crée le store */
+const store = createStore(combineReducers({mail})); //J'appelle les reducers
 
 // FONCTION TABBAR
 function BottomNavigator() {

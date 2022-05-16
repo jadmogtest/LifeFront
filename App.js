@@ -18,7 +18,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 // IMPORT DES DIFFERENTS COMPOSANTS SCREEN
 import DashboardScreen from "./screens/DashboardScreen";
-import HomeScreen from "./screens/LogScreen";
+import LogScreen from "./screens/LogScreen";
 import ProfilScreen from "./screens/ProfilScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import MapScreen from "./screens/MapScreen";
@@ -76,14 +76,16 @@ function BottomNavigator() {
 // FONCTION NAVIGATION
 export default function App() {
   return (
-    <NavigationContainer style={styles.container}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
-        <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
-        <Stack.Screen name="MapScreen" component={MapScreen} />
+    <Provider store={store}>
+      <NavigationContainer style={styles.container}>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="LogScreen" component={LogScreen} />
+          <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
+           <Stack.Screen name="MapScreen" component={MapScreen} />
         <Stack.Screen name="SignUpInfosScreen" component={SignUpInfosScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 

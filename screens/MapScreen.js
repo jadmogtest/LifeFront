@@ -1,5 +1,5 @@
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
-import * as React from 'react';
+import React, { useState } from "react";
 import MapView from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import DropDownPicker from "react-native-dropdown-picker";

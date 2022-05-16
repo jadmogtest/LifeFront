@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FONCTION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
-function HomeScreen(props) {
+function LogScreen(props) {
   //Input
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
@@ -84,7 +84,7 @@ function HomeScreen(props) {
         </Text>
         <View style={styles.inputContainer}>
           <TextInput
-            label="Mail"
+            // label="Mail"
             style={styles.input}
             placeholder="Your email"
             // autoComplete={true}
@@ -96,7 +96,7 @@ function HomeScreen(props) {
         </View>
         <View style={styles.inputContainer}>
           <TextInput
-            label="Password"
+            // label="Password"
             style={styles.input}
             placeholder="Your password"
             autoCorrect={false}
@@ -288,4 +288,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(HomeScreen);
+export default connect(null, mapDispatchToProps)(LogScreen);

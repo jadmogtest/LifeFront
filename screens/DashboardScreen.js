@@ -119,12 +119,10 @@ export default function DashBoard() {
     )
 }
 const styles = StyleSheet.create({
-
-    bigButton: {
-        // backgroundColor: "#5BAA62",
-        backgroundColor: "green",
-        marginBottom: 10,
-        borderRadius: 50,
-        height: 50
-    }
-})
+  bigButton: {
+    backgroundColor: "#5BAA62",
+    marginBottom: 10,
+    borderRadius: 50,
+    height: 50,
+  },
+});

@@ -20,6 +20,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DashboardScreen from "./screens/DashboardScreen";
 import HomeScreen from "./screens/LogScreen";
 import ProfilScreen from "./screens/ProfilScreen";
+import SettingsScreen from "./screens/SettingsScreen";
+
 
 // NAVIGATION
 const Stack = createStackNavigator();
@@ -52,7 +54,7 @@ function BottomNavigator() {
     >
       <Tab.Screen name="Dashboard" component={DashboardScreen} />
       <Tab.Screen name="Profil" component={ProfilScreen} />
-      {/* <Tab.Screen name="Settings" component={SettingsScreen} /> */}
+      <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }

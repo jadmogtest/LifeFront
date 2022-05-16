@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     },
     calendar: {
         width: 300,
-        marginTop: 30
+        marginTop: 30,
+
     }
 })

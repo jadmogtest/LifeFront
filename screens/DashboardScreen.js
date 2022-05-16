@@ -85,12 +85,13 @@ export default function DashBoard(props) {
             <Button
                 buttonStyle={styles.bigButton}
                 title="Rechercher un professionnel de santé"
+                onPress={() =>
+                    props.navigation.navigate("MapScreen", { screen: "MapScreen" })}
             />
             <Button
                 buttonStyle={styles.bigButton}
                 title="Mes lieux de santé"
-                onPress={() =>
-                    props.navigation.navigate("MapScreen", { screen: "MapScreen" })}
+
             />
             <Calendar
                 locale="fr"

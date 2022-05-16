@@ -1,6 +1,6 @@
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, Platform } from "react-native";
 import { Button, CheckBox } from "react-native-elements";
 import { TextInput } from "react-native-paper"; // npm install react-native-paper
 
@@ -87,7 +87,7 @@ function HomeScreen(props) {
             label="Mail"
             style={styles.input}
             placeholder="Your email"
-            autoComplete={true}
+            // autoComplete={true}
             underlineColorAndroid="transparent"
             value={mail}
             onChangeText={(value) => setMail(value)}
@@ -164,7 +164,7 @@ function HomeScreen(props) {
         <TextInput
           style={styles.input}
           placeholder="Your email"
-          // autoComplete={true}
+          autoComplete={true}
           underlineColorAndroid="transparent"
           value={mail}
           onChangeText={(value) => setMail(value)}

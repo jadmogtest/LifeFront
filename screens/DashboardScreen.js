@@ -129,8 +129,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     bigButton: {
-        // backgroundColor: "#5BAA62",
-        backgroundColor: "green",
+        backgroundColor: "#5BAA62",
         marginBottom: 10,
         borderRadius: 50,
         height: 50,

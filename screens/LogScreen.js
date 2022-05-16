@@ -18,7 +18,7 @@ function LogScreen(props) {
   const [passwordVisible, setPasswordVisible] = useState(true); //Permet de cacher le password
 
   //CheckBox
-  const [isSelected, setSelection] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   //Logo
   const Logo = require("../assets/Logo-Life.png");
@@ -61,13 +61,13 @@ function LogScreen(props) {
     setMail(""); //Je vide le champ password si error
   };
 
-  useEffect(() => {
-    AsyncStorage.getItem("mail", function (error, data) {
-      if (data) {
-        setMail(data);
-      }
-    });
-  });
+  // useEffect(() => {
+  //   AsyncStorage.getItem("mail", function (error, data) {
+  //     if (data) {
+  //       setMail(data);
+  //     }
+  //   });
+  // });
 
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 
@@ -84,31 +84,35 @@ function LogScreen(props) {
         </Text>
         <View style={styles.inputContainer}>
           <TextInput
-            // label="Mail"
+            label="Your email"
             style={styles.input}
-            placeholder="Your email"
+            // placeholder="Your email"
             // autoComplete={true}
-            underlineColorAndroid="transparent"
+            underlineColor="transparent"
+            theme={{ colors: { primary: "#5BAA62" } }}
             value={mail}
             onChangeText={(value) => setMail(value)}
-            left={<TextInput.Icon name="email" color="#5BAA62" />}
+            left={<TextInput.Icon name="email" color="#5BAA62" size="30" />}
           />
         </View>
+
         <View style={styles.inputContainer}>
           <TextInput
-            // label="Password"
+            label="Your password"
             style={styles.input}
-            placeholder="Your password"
+            // placeholder="Your password"
             autoCorrect={false}
             secureTextEntry={passwordVisible}
-            underlineColorAndroid="transparent"
+            underlineColor="transparent"
+            theme={{ colors: { primary: "#5BAA62" } }}
             value={password}
             onChangeText={(value) => setPassword(value)}
-            left={<TextInput.Icon name="key" color="#5BAA62" />}
+            left={<TextInput.Icon name="key" color="#5BAA62" size="30" />}
             right={
               <TextInput.Icon
                 name={passwordVisible ? "eye" : "eye-off"}
                 color="#5BAA62"
+                size="30"
                 onPress={() => setPasswordVisible(!passwordVisible)}
               />
             }
@@ -116,10 +120,15 @@ function LogScreen(props) {
         </View>
         <View style={styles.checkboxContainer}>
           <CheckBox
-            value={isSelected}
-            onValueChange={setSelection}
-            style={styles.checkbox}
-            tintColors={{ true: "#5BAA62", false: "yellow" }}
+            center
+            status={checked ? "checked" : "unchecked"}
+            value={checked}
+            checked={checked}
+            // color={checked ? "#5BAA62" : undefined}
+            checkedColor="#5BAA62"
+            onPress={() => {
+              setChecked(!checked);
+            }}
           />
           <Text style={styles.textCheckbox}>Se souvenir de moi</Text>
         </View>
@@ -171,9 +180,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  checkbox: {
-    alignSelf: "center",
-  },
   image: {
     alignItems: "center",
     justifyContent: "center",
@@ -189,13 +195,12 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "white",
     borderRadius: 5,
-    alignSelf: "center",
-
-    // alignItems: "center",
+    // alignSelf: "center",
   },
   inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    // flexDirection: "row",
+    // alignItems: "center",
+    // alignSelf: "center",  
   },
   textSlogan: {
     color: "#37663B",
@@ -205,7 +210,6 @@ const styles = StyleSheet.create({
   },
   textCheckbox: {
     color: "#37663B",
-    textAlign: "center",
   },
 });
 

@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FONCTION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
-function HomeScreen(props) {
+function LogScreen(props) {
   //Input
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
@@ -218,4 +218,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(HomeScreen);
+export default connect(null, mapDispatchToProps)(LogScreen);

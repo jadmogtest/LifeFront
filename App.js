@@ -21,6 +21,10 @@ import DashboardScreen from "./screens/DashboardScreen";
 import LogScreen from "./screens/LogScreen";
 import ProfilScreen from "./screens/ProfilScreen";
 import SettingsScreen from "./screens/SettingsScreen";
+import MapScreen from "./screens/MapScreen";
+import SignUpInfosScreen from "./screens/SignUpInfosScreen";
+
+
 
 // NAVIGATION
 const Stack = createStackNavigator();
@@ -77,6 +81,8 @@ export default function App() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="LogScreen" component={LogScreen} />
           <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
+           <Stack.Screen name="MapScreen" component={MapScreen} />
+        <Stack.Screen name="SignUpInfosScreen" component={SignUpInfosScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Button, Overlay } from 'react-native-elements';
 
 
+
 LocaleConfig.locales['fr'] = {
     monthNames: [
         'Janvier',
@@ -27,7 +28,7 @@ LocaleConfig.locales['fr'] = {
 };
 LocaleConfig.defaultLocale = 'fr';
 
-export default function DashBoard() {
+export default function DashBoard(props) {
 
     const [visible, setVisible] = useState(false)
     const [overlayContent, setOverlayContent] = useState([{}])
@@ -63,7 +64,7 @@ export default function DashBoard() {
     }
 
     return (
-        <View >
+        <View style={styles.container}>
             <Overlay
                 overlayStyle={{ flex: 0.5, width: 300, borderRadius: 50 }}
                 width="5000"
@@ -88,6 +89,8 @@ export default function DashBoard() {
             <Button
                 buttonStyle={styles.bigButton}
                 title="Mes lieux de santé"
+                onPress={() =>
+                    props.navigation.navigate("MapScreen", { screen: "MapScreen" })}
             />
             <Calendar
                 locale="fr"
@@ -112,17 +115,30 @@ export default function DashBoard() {
 
 
                 }}
-                style={{ marginTop: 30 }}
+                style={styles.calendar}
                 markedDates={markedDates}
             />
         </View>
     )
 }
 const styles = StyleSheet.create({
-  bigButton: {
-    backgroundColor: "#5BAA62",
-    marginBottom: 10,
-    borderRadius: 50,
-    height: 50,
-  },
-});
+    container: {
+        flex: 1,
+        backgroundColor: "#EBFAD5",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    bigButton: {
+        // backgroundColor: "#5BAA62",
+        backgroundColor: "green",
+        marginBottom: 10,
+        borderRadius: 50,
+        height: 50,
+        width: 300
+    },
+    calendar: {
+        width: 300,
+        marginTop: 30,
+
+    }
+})

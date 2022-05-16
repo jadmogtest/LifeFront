@@ -22,8 +22,6 @@ function LogScreen(props) {
 
   //Logo
   const Logo = require("../assets/Logo-Life.png");
-    const Logo1 = require("../assets/Logo-Life.png");
-
 
   var connect = () => {
     props.addMail(mail);

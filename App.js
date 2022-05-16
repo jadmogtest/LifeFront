@@ -21,6 +21,7 @@ import DashboardScreen from "./screens/DashboardScreen";
 import HomeScreen from "./screens/LogScreen";
 import ProfilScreen from "./screens/ProfilScreen";
 import SettingsScreen from "./screens/SettingsScreen";
+import MapScreen from "./screens/MapScreen";
 
 
 // NAVIGATION

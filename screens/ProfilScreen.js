@@ -1,14 +1,20 @@
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 import React, { useState } from "react";
-import { Button, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Button,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Text } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker"; //npm install react-native-dropdown-picker
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker"; //npm install @react-native-community/datetimepicker --save
-import { TouchableHighlight } from "react-native-gesture-handler";
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FONCTION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 function ProfilScreen(props) {
+  // const dim = Dimensions.get("screen").width
   //Dropdown list filtre
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([
@@ -54,33 +60,31 @@ function ProfilScreen(props) {
     { label: "Prévus", value: "Prévus", parent: "État" },
   ]);
 
-  const vaccines = [
-    {
-      name: "Diphtérie",
-      status: "À jour",
-      date: "12/02/2021",
-    },
-  ];
+  //DropDownPicker État
+  const [openState1, setOpenState1] = useState(false);
+  const [openState2, setOpenState2] = useState(false);
+  const [openState3, setOpenState3] = useState(false);
+  const [openState4, setOpenState4] = useState(false);
+  const [openState5, setOpenState5] = useState(false);
 
-  //DropDownPicker table
-  const [openState, setOpenState] = useState([false, false, false]);
   const [valueState, setValueState] = useState(null);
   //Valeurs DropDownPicker
   const [state, setState] = useState([
-    { label: "À jour", value: "À jour" },
+    { label: "À jour du", value: "À jour" },
     { label: "À programmer", value: "À programmer" },
-    { label: "Programmé", value: "Programmé" },
+    { label: "Programmé le", value: "Programmé" },
   ]);
 
   /* Pour ouvrir un seul dropDownPicker à la fois dans le table */
-  const mySetOpenState = (i) => {
-    let temp = [...openState]; // création copie
-    temp = [...temp.slice(0, i), !temp[i], ...temp.slice(i + 1)];
-    setOpenState(temp); //MAJ de l'état
-  };
+  // const mySetOpenState = (i) => {
+  //   let temp = [...openState]; // création copie
+  //   temp = [...temp.slice(0, i), !temp[i], ...temp.slice(i + 1)];
+  //   setOpenState(temp); //MAJ de l'état
+  // };
 
   //Modal
   const [modalVisible, setModalVisible] = useState(false);
+
   //Click sur les icônes informations
   const infosObligatoire = (e) => {
     setModalVisible(true);
@@ -91,6 +95,8 @@ function ProfilScreen(props) {
   };
 
   //Click sur les icônes +
+  const [rowVisible, setRowVisible] = useState(false);
+
   const addHealthCare = (e) => {};
 
   const addTrip = (e) => {};
@@ -107,9 +113,9 @@ function ProfilScreen(props) {
     setVisible(!visible);
   };
 
-  // const hideDatePicker = () => {
-  //   setVisible(false);
-  // };
+  const hideDatePicker = () => {
+    setVisible(false);
+  };
 
   const onChange = (event, value) => {
     setDate(value);
@@ -161,67 +167,138 @@ function ProfilScreen(props) {
           Vaccins obligatoires :
         </Text>
       </View>
+      <View style={styles.headrow}>
+        <Text style={styles.textHeadColumn1}>Vaccin : </Text>
+        <Text style={styles.textHeadColumn2}>État : </Text>
+        <Text style={styles.textHeadColumn3}>Date : </Text>
+      </View>
       <View style={styles.row}>
-        <Text style={styles.textRow}>Diphtérie :</Text>
+        <Text style={styles.textRow}>Diphtérie </Text>
         <DropDownPicker
           style={styles.dropDownPickerState}
-          open={openState}
+          open={openState1}
           value={valueState}
+          placeholder="À renseigner"
           items={state}
+          zIndex={6}
           multiple={false} //Permet de sélectionner une seule option
-          setOpen={setOpenState}
+          setOpen={setOpenState1}
           setValue={setValueState}
           setItems={setState}
-
-          // onChangeItem={(item) => {
-          //   item.label, item.value;
-          // }}
+          stickyHeader={true}
+          onChangeItem={(item) => {
+            item.label, item.value;
+          }}
         />
-        {/* <TouchableOpacity
-          style={styles.button}
-          onPress={() => showDatePicker()}
-        >
-          <Text>{JSON.stringify(new Date(date))}</Text>
-        </TouchableOpacity>
-        {visible && (
-          <DateTimePicker
-            mode="date"
-            display={Platform.OS === "ios" ? "spinner" : "default"}
-            value={date}
-            onChange={onChange}
-          />
-        )} */}
+        <View>
+          {/* Le bouton pour afficher le dateTimePicker */}
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => showDatePicker()}
+          >
+            {/* Affiche la date sélectionnée par le user dans le bouton */}
+            <Text style={styles.textDatePicker}>
+              {new Date(date).toLocaleDateString("fr-FR")}
+            </Text>
+          </TouchableOpacity>
+          {/* Le dateTimePicker */}
+          {visible && (
+            <DateTimePicker
+              mode="date"
+              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+              value={date}
+              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+              onChange={onChange}
+              // onConfirm={handleDatePicker}
+              // onCancel={hideDatePicker}
+            />
+          )}
+        </View>
       </View>
       <View style={styles.row}>
         <Text style={styles.textRow}>Tétanos </Text>
         <DropDownPicker
           style={styles.dropDownPickerState}
-          open={openState}
+          open={openState2}
           value={valueState}
+          placeholder="À renseigner"
           items={state}
           multiple={false} //Permet de sélectionner une seule option
-          setOpen={setOpenState}
+          setOpen={setOpenState2}
+          zIndex={5}
           setValue={setValueState}
           setItems={setState}
-          // onChangeItem={(item) => {
-          //   item.label, item.value;
-          // }}
+          onChangeItem={(item) => {
+            item.label, item.value;
+          }}
         />
-        {/* <DropDownPicker
-          style={styles.dropDownPickerDate}
-          open={openState}
+        <View>
+          {/* Le bouton pour afficher le dateTimePicker */}
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => showDatePicker()}
+          >
+            {/* Affiche la date sélectionnée par le user dans le bouton */}
+            <Text style={styles.textDatePicker}>
+              {new Date(date).toLocaleDateString("fr-FR")}
+            </Text>
+          </TouchableOpacity>
+          {/* Le dateTimePicker */}
+          {visible && (
+            <DateTimePicker
+              mode="date"
+              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+              value={date}
+              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+              onChange={onChange}
+              // onConfirm={handleDatePicker}
+              // onCancel={hideDatePicker}
+            />
+          )}
+        </View>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.textRow}>Rougeole </Text>
+        <DropDownPicker
+          style={styles.dropDownPickerState}
+          open={openState3}
           value={valueState}
+          placeholder="À renseigner"
           items={state}
           multiple={false} //Permet de sélectionner une seule option
-          setOpen={setOpenState}
+          setOpen={setOpenState3}
           setValue={setValueState}
+          zIndex={4}
           setItems={setState}
-          // onChangeItem={(item) => {
-          //   item.label, item.value;
-          // }}
-        /> */}
+          onChangeItem={(item) => {
+            item.label, item.value;
+          }}
+        />
+        <View>
+          {/* Le bouton pour afficher le dateTimePicker */}
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => showDatePicker()}
+          >
+            {/* Affiche la date sélectionnée par le user dans le bouton */}
+            <Text style={styles.textDatePicker}>
+              {new Date(date).toLocaleDateString("fr-FR")}
+            </Text>
+          </TouchableOpacity>
+          {/* Le dateTimePicker */}
+          {visible && (
+            <DateTimePicker
+              mode="date"
+              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+              value={date}
+              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+              onChange={onChange}
+              // onConfirm={handleDatePicker}
+              // onCancel={hideDatePicker}
+            />
+          )}
+        </View>
       </View>
-
       <View style={styles.title}>
         <Ionicons
           name="ios-information-circle"
@@ -236,65 +313,106 @@ function ProfilScreen(props) {
           Vaccins recommandés :
         </Text>
       </View>
-      <View style={styles.row}>
-        <Text style={styles.textRow}>Diphtérie :</Text>
-        <DropDownPicker
-          style={styles.dropDownPickerState}
-          open={openState}
-          value={valueState}
-          items={state}
-          multiple={false} //Permet de sélectionner une seule option
-          setOpen={setOpenState}
-          setValue={setValueState}
-          setItems={setState}
-
-          // onChangeItem={(item) => {
-          //   item.label, item.value;
-          // }}
-        />
-        {/* <DropDownPicker
-          style={styles.dropDownPickerDate}
-          open={openState}
-          value={valueState}
-          items={state}
-          multiple={false} //Permet de sélectionner une seule option
-          setOpen={setOpenState}
-          setValue={setValueState}
-          setItems={setState}
-
-          // onChangeItem={(item) => {
-          //   item.label, item.value;
-          // }}
-        /> */}
+      <View style={styles.headrow}>
+        <Text style={styles.textHeadColumn1}>Vaccin : </Text>
+        <Text style={styles.textHeadColumn2}>État : </Text>
+        <Text style={styles.textHeadColumn3}>Date : </Text>
       </View>
       <View style={styles.row}>
-        <Text style={styles.textRow}>Tétanos </Text>
+        <Text style={styles.textRow}>COVID-19</Text>
         <DropDownPicker
           style={styles.dropDownPickerState}
-          open={openState}
+          open={openState4}
           value={valueState}
+          placeholder="À renseigner"
           items={state}
           multiple={false} //Permet de sélectionner une seule option
-          setOpen={setOpenState}
+          setOpen={setOpenState4}
           setValue={setValueState}
           setItems={setState}
-          // onChangeItem={(item) => {
-          //   item.label, item.value;
-          // }}
+          onChangeItem={(item) => {
+            item.label, item.value;
+          }}
         />
-        {/* <DropDownPicker
-          style={styles.dropDownPickerDate}
-          open={openState}
+        <View>
+          {/* Le bouton pour afficher le dateTimePicker */}
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => showDatePicker()}
+          >
+            {/* Affiche la date sélectionnée par le user dans le bouton */}
+            <Text style={styles.textDatePicker}>
+              {new Date(date).toLocaleDateString("fr-FR")}
+            </Text>
+          </TouchableOpacity>
+          {/* Le dateTimePicker */}
+          {visible && (
+            <DateTimePicker
+              mode="date"
+              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+              value={date}
+              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+              onChange={onChange}
+              // onConfirm={handleDatePicker}
+              // onCancel={hideDatePicker}
+            />
+          )}
+        </View>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.textRow}>Hépatite B </Text>
+        <DropDownPicker
+          style={styles.dropDownPickerState}
+          open={openState5}
           value={valueState}
+          placeholder="À renseigner"
           items={state}
           multiple={false} //Permet de sélectionner une seule option
-          setOpen={setOpenState}
+          setOpen={setOpenState5}
           setValue={setValueState}
           setItems={setState}
-          // onChangeItem={(item) => {
-          //   item.label, item.value;
-          // }}
-        /> */}
+          onChangeItem={(item) => {
+            item.label, item.value;
+          }}
+        />
+        <View>
+          {/* Le bouton pour afficher le dateTimePicker */}
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => showDatePicker()}
+          >
+            {/* Affiche la date sélectionnée par le user dans le bouton */}
+            <Text style={styles.textDatePicker}>
+              {new Date(date).toLocaleDateString("fr-FR")}
+            </Text>
+          </TouchableOpacity>
+          {/* Le dateTimePicker */}
+          {visible && (
+            <DateTimePicker
+              mode="date"
+              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+              value={date}
+              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+              onChange={onChange}
+              // onConfirm={handleDatePicker}
+              // onCancel={hideDatePicker}
+            />
+          )}
+        </View>
+      </View>
+      <View style={styles.title}>
+        <Ionicons
+          name="ios-information-circle"
+          size={30}
+          color="#5BAA62"
+          onPress={() => {
+            infosRecommandation();
+            // console.log("click détecté", infosRecommandésClick);
+          }}
+        />
+        <Text style={styles.textTitle} h4>
+          Vaccins projets personnels :
+        </Text>
       </View>
       <View style={styles.title}>
         <AntDesign
@@ -320,27 +438,6 @@ function ProfilScreen(props) {
         />
         <Text style={styles.text}>Préparer un voyage</Text>
       </View>
-      <View>
-        {/* The button that used to trigger the date picker */}
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => showDatePicker()}
-        >
-          <Text>{JSON.stringify(new Date(date))}</Text>
-        </TouchableOpacity>
-        {/* The date picker */}
-        {visible && (
-          <DateTimePicker
-            mode="date"
-            display={Platform.OS === "ios" ? "spinner" : "default"}
-            value={date}
-            // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-            onChange={onChange}
-            // onConfirm={handleDatePicker}
-            // onCancel={hideDatePicker}
-          />
-        )}
-      </View>
     </View>
   );
 }
@@ -349,11 +446,13 @@ function ProfilScreen(props) {
 const styles = StyleSheet.create({
   button: {
     height: 50,
-    width: 200,
+    width: 120,
     backgroundColor: "white",
-    borderRadius: 0,
     justifyContent: "center",
-    marginTop: 15,
+    // marginTop: 15,
+    marginRight: 240,
+    borderWidth: 1,
+    borderColor: "#EBFAD5",
   },
   container: {
     flex: 1,
@@ -367,25 +466,66 @@ const styles = StyleSheet.create({
   dropDownPickerDate: {
     height: 50,
     width: 100,
-    zIndex: 100,
     borderColor: "transparent",
     borderRadius: 0,
   },
   dropDownPickerState: {
     height: 50,
     width: 146,
-    zIndex: 100,
     borderColor: "transparent",
     borderRadius: 0,
+    borderColor: "#EBFAD5",
+    zIndex: 5,
+  },
+  headrow: {
+    flexDirection: "row",
   },
   row: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
+    marginLeft: 200,
+    zIndex: 1,
+    // paddingHorizontal: 20,
     // justifyContent: "space-between",
   },
   text: {
+    color: "#37663B",
     marginLeft: 10, //Espace entre texte et icône
+  },
+  textDatePicker: {
+    alignContent: "center",
+    padding: 20,
+  },
+  textHeadColumn1: {
+    flexDirection: "row",
+    backgroundColor: "#5BAA62",
+    borderColor: "#37663B",
+    width: 100,
+    color: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#EBFAD5",
+    paddingLeft: 8,
+    marginLeft: 12,
+  },
+  textHeadColumn2: {
+    flexDirection: "row",
+    backgroundColor: "#5BAA62",
+    borderColor: "#37663B",
+    width: 146,
+    color: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#EBFAD5",
+    paddingLeft: 8,
+  },
+  textHeadColumn3: {
+    flexDirection: "row",
+    backgroundColor: "#5BAA62",
+    borderColor: "#5BAA62",
+    width: 107,
+    color: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#EBFAD5",
+    paddingLeft: 8,
   },
   textRow: {
     height: 50,
@@ -394,16 +534,20 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 20,
     marginLeft: 50,
+    borderWidth: 1,
+    borderColor: "#EBFAD5",
   },
   textTitle: {
     fontWeight: "bold",
     textAlign: "center",
+    color: "#37663B",
     marginLeft: 10, //Espace entre texte et icône
   },
   title: {
     flexDirection: "row",
     alignItems: "center",
     padding: 9,
+    color: "#37663B",
   },
 });
 

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Modal, StyleSheet, View } from "react-native";
 import { Text } from "react-native-elements";
-import DropDownPicker from "react-native-dropdown-picker";
+import DropDownPicker from "react-native-dropdown-picker"; //npm install react-native-dropdown-picker
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FONCTION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //

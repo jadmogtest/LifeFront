@@ -1,10 +1,11 @@
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 import React, { useState } from "react";
-import { Modal, StyleSheet, View } from "react-native";
+import { Button, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Text } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker"; //npm install react-native-dropdown-picker
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { DataTable } from "react-native-paper";
+import DateTimePicker from "@react-native-community/datetimepicker"; //npm install @react-native-community/datetimepicker --save
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FONCTION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 function ProfilScreen(props) {
@@ -59,16 +60,6 @@ function ProfilScreen(props) {
       status: "À jour",
       date: "12/02/2021",
     },
-    {
-      name: "Tétanos",
-      status: "À programmer",
-      date: "choisir une date",
-    },
-    {
-      name: "Poliomélyte",
-      status: "Programmer",
-      date: "12/05/2023",
-    },
   ];
 
   //DropDownPicker table
@@ -91,18 +82,41 @@ function ProfilScreen(props) {
   //Modal
   const [modalVisible, setModalVisible] = useState(false);
   //Click sur les icônes informations
-  let infosObligatoire = (e) => {
+  const infosObligatoire = (e) => {
     setModalVisible(true);
   };
 
-  let infosRecommandation = (e) => {
+  const infosRecommandation = (e) => {
     setModalVisible(true);
   };
 
   //Click sur les icônes +
-  let addHealthCare = (e) => {};
+  const addHealthCare = (e) => {};
 
-  let addTrip = (e) => {};
+  const addTrip = (e) => {};
+
+  /* DateTimePicker */
+  const [visible, setVisible] = useState(false);
+  const [date, setDate] = useState(new Date(Date.now()));
+
+  const handleDatePicker = () => {
+    setVisible(false);
+  };
+
+  const showDatePicker = () => {
+    setVisible(!visible);
+  };
+
+  // const hideDatePicker = () => {
+  //   setVisible(false);
+  // };
+
+  const onChange = (event, value) => {
+    setDate(value);
+    if (Platform.OS === "android") {
+      setIsPickerShow(false);
+    }
+  };
 
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   return (
@@ -147,36 +161,66 @@ function ProfilScreen(props) {
           Vaccins obligatoires :
         </Text>
       </View>
-      <DataTable>
-        <DataTable.Header>
-          <DataTable.Title>Nom du vaccin</DataTable.Title>
-          <DataTable.Title>État</DataTable.Title>
-          <DataTable.Title numeric>Fait / Prévu le</DataTable.Title>
-        </DataTable.Header>
-        {vaccines.map((u, i) => {
-          return (
-            <DataTable.Row key={i} style={styles.table}>
-              <DataTable.Cell>{u.name}</DataTable.Cell>
-              <DataTable.Cell>
-                <DropDownPicker
-                  style={styles.dropDownPicker}
-                  open={openState[i]}
-                  value={valueState}
-                  items={state}
-                  multiple={false} //Permet de sélectionner une seule option
-                  setOpen={(i) => mySetOpenState(i)}
-                  setValue={setValueState}
-                  setItems={setState}
-                  onChangeItem={(item) => {
-                    item.label, item.value;
-                  }}
-                />
-              </DataTable.Cell>
-              <DataTable.Cell numeric>{u.date}</DataTable.Cell>
-            </DataTable.Row>
-          );
-        })}
-      </DataTable>
+      <View style={styles.row}>
+        <Text style={styles.textRow}>Diphtérie :</Text>
+        <DropDownPicker
+          style={styles.dropDownPickerState}
+          open={openState}
+          value={valueState}
+          items={state}
+          multiple={false} //Permet de sélectionner une seule option
+          setOpen={setOpenState}
+          setValue={setValueState}
+          setItems={setState}
+
+          // onChangeItem={(item) => {
+          //   item.label, item.value;
+          // }}
+        />
+        {/* <TouchableOpacity
+          style={styles.button}
+          onPress={() => showDatePicker()}
+        >
+          <Text>{JSON.stringify(new Date(date))}</Text>
+        </TouchableOpacity>
+        {visible && (
+          <DateTimePicker
+            mode="date"
+            display={Platform.OS === "ios" ? "spinner" : "default"}
+            value={date}
+            onChange={onChange}
+          />
+        )} */}
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.textRow}>Tétanos </Text>
+        <DropDownPicker
+          style={styles.dropDownPickerState}
+          open={openState}
+          value={valueState}
+          items={state}
+          multiple={false} //Permet de sélectionner une seule option
+          setOpen={setOpenState}
+          setValue={setValueState}
+          setItems={setState}
+          // onChangeItem={(item) => {
+          //   item.label, item.value;
+          // }}
+        />
+        {/* <DropDownPicker
+          style={styles.dropDownPickerDate}
+          open={openState}
+          value={valueState}
+          items={state}
+          multiple={false} //Permet de sélectionner une seule option
+          setOpen={setOpenState}
+          setValue={setValueState}
+          setItems={setState}
+          // onChangeItem={(item) => {
+          //   item.label, item.value;
+          // }}
+        /> */}
+      </View>
 
       <View style={styles.title}>
         <Ionicons
@@ -192,36 +236,66 @@ function ProfilScreen(props) {
           Vaccins recommandés :
         </Text>
       </View>
-      <DataTable style={styles.table}>
-        <DataTable.Header>
-          <DataTable.Title>Nom du vaccin</DataTable.Title>
-          <DataTable.Title>État</DataTable.Title>
-          <DataTable.Title numeric>Fait / Prévu le</DataTable.Title>
-        </DataTable.Header>
-        {vaccines.map((u, i) => {
-          return (
-            <DataTable.Row key={i} style={styles.table}>
-              <DataTable.Cell>{u.name}</DataTable.Cell>
-              <DataTable.Cell>
-                <DropDownPicker
-                  style={styles.dropDownPicker}
-                  open={openState[i]}
-                  value={valueState}
-                  items={state}
-                  multiple={false} //Permet de sélectionner une seule option
-                  setOpen={(i) => mySetOpenState(i)}
-                  setValue={setValueState}
-                  setItems={setState}
-                  onChangeItem={(item) => {
-                    item.label, item.value;
-                  }}
-                />
-              </DataTable.Cell>
-              <DataTable.Cell numeric>{u.date}</DataTable.Cell>
-            </DataTable.Row>
-          );
-        })}
-      </DataTable>
+      <View style={styles.row}>
+        <Text style={styles.textRow}>Diphtérie :</Text>
+        <DropDownPicker
+          style={styles.dropDownPickerState}
+          open={openState}
+          value={valueState}
+          items={state}
+          multiple={false} //Permet de sélectionner une seule option
+          setOpen={setOpenState}
+          setValue={setValueState}
+          setItems={setState}
+
+          // onChangeItem={(item) => {
+          //   item.label, item.value;
+          // }}
+        />
+        {/* <DropDownPicker
+          style={styles.dropDownPickerDate}
+          open={openState}
+          value={valueState}
+          items={state}
+          multiple={false} //Permet de sélectionner une seule option
+          setOpen={setOpenState}
+          setValue={setValueState}
+          setItems={setState}
+
+          // onChangeItem={(item) => {
+          //   item.label, item.value;
+          // }}
+        /> */}
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.textRow}>Tétanos </Text>
+        <DropDownPicker
+          style={styles.dropDownPickerState}
+          open={openState}
+          value={valueState}
+          items={state}
+          multiple={false} //Permet de sélectionner une seule option
+          setOpen={setOpenState}
+          setValue={setValueState}
+          setItems={setState}
+          // onChangeItem={(item) => {
+          //   item.label, item.value;
+          // }}
+        />
+        {/* <DropDownPicker
+          style={styles.dropDownPickerDate}
+          open={openState}
+          value={valueState}
+          items={state}
+          multiple={false} //Permet de sélectionner une seule option
+          setOpen={setOpenState}
+          setValue={setValueState}
+          setItems={setState}
+          // onChangeItem={(item) => {
+          //   item.label, item.value;
+          // }}
+        /> */}
+      </View>
       <View style={styles.title}>
         <AntDesign
           name="pluscircle"
@@ -246,12 +320,41 @@ function ProfilScreen(props) {
         />
         <Text style={styles.text}>Préparer un voyage</Text>
       </View>
+      <View>
+        {/* The button that used to trigger the date picker */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => showDatePicker()}
+        >
+          <Text>{JSON.stringify(new Date(date))}</Text>
+        </TouchableOpacity>
+        {/* The date picker */}
+        {visible && (
+          <DateTimePicker
+            mode="date"
+            display={Platform.OS === "ios" ? "spinner" : "default"}
+            value={date}
+            // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+            onChange={onChange}
+            // onConfirm={handleDatePicker}
+            // onCancel={hideDatePicker}
+          />
+        )}
+      </View>
     </View>
   );
 }
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STYLES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 const styles = StyleSheet.create({
+  button: {
+    height: 50,
+    width: 200,
+    backgroundColor: "white",
+    borderRadius: 0,
+    justifyContent: "center",
+    marginTop: 15,
+  },
   container: {
     flex: 1,
     alignItems: "center",
@@ -261,20 +364,36 @@ const styles = StyleSheet.create({
     // marginTop: 50,
   },
   DropDownPicker: { borderColor: "#37663B" },
-  dropDownPicker: {
-    height: 10,
+  dropDownPickerDate: {
+    height: 50,
     width: 100,
-    zIndex: -1,
-    borderColor: "#37663B",
+    zIndex: 100,
+    borderColor: "transparent",
+    borderRadius: 0,
+  },
+  dropDownPickerState: {
+    height: 50,
+    width: 146,
+    zIndex: 100,
+    borderColor: "transparent",
+    borderRadius: 0,
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    // justifyContent: "space-between",
   },
   text: {
     marginLeft: 10, //Espace entre texte et icône
   },
-  table: {
-    // margin: 10,
-  },
-  tableHeader: {
-    backgroundColor: "#DCDCDC",
+  textRow: {
+    height: 50,
+    width: 100,
+    alignContent: "center",
+    backgroundColor: "white",
+    padding: 20,
+    marginLeft: 50,
   },
   textTitle: {
     fontWeight: "bold",

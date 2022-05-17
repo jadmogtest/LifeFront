@@ -92,7 +92,7 @@ function LogScreen(props) {
             theme={{ colors: { primary: "#5BAA62" } }}
             value={mail}
             onChangeText={(value) => setMail(value)}
-            left={<TextInput.Icon name="email" color="#5BAA62" size="30" />}
+            left={<TextInput.Icon name="email" color="#5BAA62" size={30} />}
           />
         </View>
 
@@ -107,12 +107,12 @@ function LogScreen(props) {
             theme={{ colors: { primary: "#5BAA62" } }}
             value={password}
             onChangeText={(value) => setPassword(value)}
-            left={<TextInput.Icon name="key" color="#5BAA62" size="30" />}
+            left={<TextInput.Icon name="key" color="#5BAA62" size={30} />}
             right={
               <TextInput.Icon
                 name={passwordVisible ? "eye" : "eye-off"}
                 color="#5BAA62"
-                size="30"
+                size={30}
                 onPress={() => setPasswordVisible(!passwordVisible)}
               />
             }
@@ -156,75 +156,6 @@ function LogScreen(props) {
       </View>
     );
   }
-
-  return (
-    <View style={styles.container}>
-      <Image source={Logo} style={styles.image} />
-      <Text style={styles.textSlogan}>
-        Vos rappels de santé pour une vie sereine !
-      </Text>
-      <View style={styles.inputSection}>
-        <Ionicons
-          name="mail"
-          size={24}
-          color="#5BAA62"
-          tintColors={{ true: "#5BAA62", false: "red" }}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Your email"
-          autoComplete={true}
-          underlineColorAndroid="transparent"
-          value={mail}
-          onChangeText={(value) => setMail(value)}
-        />
-      </View>
-      <View style={styles.inputSection}>
-        <Ionicons
-          name="key"
-          size={24}
-          color="#5BAA62"
-          tintColors={{ true: "#5BAA62", false: "red" }}
-        />
-        <TextInput
-          icon="key"
-          style={styles.input}
-          placeholder="Your password"
-          autoCorrect={false}
-          secureTextEntry
-          underlineColorAndroid="transparent"
-          value={password}
-          onChangeText={(value) => setPassword(value)}
-        />
-      </View>
-      <View style={styles.checkboxContainer}>
-        <CheckBox
-          value={isSelected}
-          onValueChange={setSelection}
-          style={styles.checkbox}
-          tintColors={{ true: "#5BAA62", false: "yellow" }}
-        />
-        <Text style={styles.textCheckbox}>Se souvenir de moi</Text>
-      </View>
-      <Button
-        type="solid"
-        buttonStyle={styles.button}
-        title="Se connecter"
-        onPress={() =>
-          props.navigation.navigate("BottomNavigator", { screen: "Dashboard" })
-        }
-      ></Button>
-      <Button
-        type="solid"
-        buttonStyle={styles.button}
-        title="Pas encore de compte ?"
-        onPress={() =>
-          props.navigation.navigate("SignUpInfosScreen", { screen: "SignUpInfosScreen" })
-        }
-      ></Button>
-    </View>
-  );
-
 }
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STYLES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
@@ -269,7 +200,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     // flexDirection: "row",
     // alignItems: "center",
-    // alignSelf: "center",  
+    // alignSelf: "center",
   },
   textSlogan: {
     color: "#37663B",

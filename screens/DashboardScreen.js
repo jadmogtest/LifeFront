@@ -85,12 +85,13 @@ export default function DashBoard(props) {
             <Button
                 buttonStyle={styles.bigButton}
                 title="Rechercher un professionnel de santé"
+                onPress={() =>
+                    props.navigation.navigate("MapScreen", { screen: "MapScreen" })}
             />
             <Button
                 buttonStyle={styles.bigButton}
                 title="Mes lieux de santé"
-                onPress={() =>
-                    props.navigation.navigate("MapScreen", { screen: "MapScreen" })}
+
             />
             <Calendar
                 locale="fr"
@@ -129,8 +130,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     bigButton: {
-        // backgroundColor: "#5BAA62",
-        backgroundColor: "green",
+        backgroundColor: "#5BAA62",
         marginBottom: 10,
         borderRadius: 50,
         height: 50,

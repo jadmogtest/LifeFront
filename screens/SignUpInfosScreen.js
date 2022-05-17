@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TextInput, View, ScrollView } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { CheckBox, Button } from 'react-native-elements'
 import DropDownPicker from "react-native-dropdown-picker";
-import { LogBox } from "react-native";
+import { connect } from "react-redux";
+import { TextInput } from "react-native-paper";
 
 
 
 
-export default function SignUpInfosScreen() {
+function SignUpInfosScreen(props) {
 
     //DropDownPicker Sexe
     const [open, setOpen] = useState(false);
@@ -51,8 +52,48 @@ export default function SignUpInfosScreen() {
     //CheckBox1
     const [check2, setCheck2] = useState(false)
 
-    //Fonction Click Valider
+    //Fonction Click Valider => infos vers Backend
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [password2, setPassword2] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [birthdate, setBirthdate] = useState("");
+    const [sexe, setSexe] = useState("");
+    const [profession, setProfession] = useState("");
+    const [illnesses, setIllnesses] = useState([]);
+    const [familyHistory, setFamilyHistory] = useState([]);
+    const [pwdConfirmed, setPwdConfirmed] = useState(false);
+    const [passwordVisible, setPasswordVisible] = useState(true);
 
+    var handleSubmitSignUp = (email, password, firstName, lastName, birthdate, sexe, profession, illnesses, familyHistory) => {
+
+        async function addUser() {
+            //Remplacer privateIp par la vôtre
+            let privateIp = "192.168.10.131"
+            let rawRecUser = await fetch(`http://${privateIp}:3000/sign-up`, {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                // body: `emailFromFront=${email}&passwordFromFront=${password}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}`,
+                body: `emailFromFront=${email}&passwordFromFront=${password}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}`,
+            });
+            var recUser = await rawRecUser.json();
+
+
+            if (recUser.result === true) {
+                props.tokenStore(recUser.token);
+
+            }
+        }
+        if (pwdConfirmed) {
+            addUser()
+        }
+
+    };
+
+    console.log(password)
+    console.log(email)
+    console.log(illnesses)
 
     return (
         <ScrollView >
@@ -64,8 +105,8 @@ export default function SignUpInfosScreen() {
                     placeholder="Nom"
                     autoCorrect={false}
                     underlineColorAndroid="transparent"
-                // value={password}
-                // onChangeText={(value) => setPassword(value)}
+                    value={lastName}
+                    onChangeText={(value) => setLastName(value)}
                 />
                 <TextInput
                     icon="key"
@@ -73,8 +114,8 @@ export default function SignUpInfosScreen() {
                     placeholder="Prénom"
                     autoCorrect={false}
                     underlineColorAndroid="transparent"
-                // value={password}
-                // onChangeText={(value) => setPassword(value)}
+                    value={firstName}
+                    onChangeText={(value) => setFirstName(value)}
                 />
                 <TextInput
                     type="date"
@@ -83,8 +124,8 @@ export default function SignUpInfosScreen() {
                     placeholder="Date de naissance JJ/MM/AAAA"
                     autoCorrect={false}
                     underlineColorAndroid="transparent"
-                // value={password}
-                // onChangeText={(value) => setPassword(value)}
+                    value={birthdate}
+                    onChangeText={(value) => setBirthdate(new Date(value))}
                 />
 
                 <View>
@@ -100,6 +141,9 @@ export default function SignUpInfosScreen() {
                         setValue={setValue}
                         setItems={setSex}
                         placeholder="Sexe"
+                        onChangeValue={(value) => {
+                            setSexe(value);
+                        }}
 
                     />
                     <DropDownPicker
@@ -112,6 +156,9 @@ export default function SignUpInfosScreen() {
                         setOpen={setOpen2}
                         setValue={setValue2}
                         setItems={setJob}
+                        onChangeValue={(value) => {
+                            setProfession(value);
+                        }}
                         placeholder="Catégorie professionnelle"
                     />
                     <Text style={{ marginTop: 30, fontSize: 15, color: "green", fontStyle: 'italic', textAlign: "center" }}>Informations complémentaires de santé</Text>
@@ -126,6 +173,9 @@ export default function SignUpInfosScreen() {
                         setOpen={setOpen3}
                         setValue={setValue3}
                         setItems={setPathos}
+                        onChangeValue={(value) => {
+                            setIllnesses(value);
+                        }}
                         placeholder="Pathologies"
                         theme="LIGHT"
                         multiple={true} //Permet de sélectionner plusieurs options
@@ -148,6 +198,9 @@ export default function SignUpInfosScreen() {
                         setOpen={setOpen4}
                         setValue={setValue4}
                         setItems={setAnte}
+                        onChangeValue={(value) => {
+                            setFamilyHistory(value);
+                        }}
                         placeholder="Antécédents familiaux"
                         theme="LIGHT"
                         multiple={true} //Permet de sélectionner plusieurs options
@@ -165,10 +218,10 @@ export default function SignUpInfosScreen() {
                     style={styles.input}
                     placeholder="email"
                     autoCorrect={false}
-                    secureTextEntry
+
                     underlineColorAndroid="transparent"
-                // value={password}
-                // onChangeText={(value) => setPassword(value)}
+                    value={email}
+                    onChangeText={(value) => setEmail(value)}
                 />
                 <TextInput
                     type="password"
@@ -176,21 +229,47 @@ export default function SignUpInfosScreen() {
                     style={styles.input}
                     placeholder="Mot de passe"
                     autoCorrect={false}
-                    secureTextEntry
+                    secureTextEntry={passwordVisible}
                     underlineColorAndroid="transparent"
-                // value={password}
-                // onChangeText={(value) => setPassword(value)}
+                    value={password}
+                    onChangeText={(value) => setPassword(value)}
+
+                    right={
+                        <TextInput.Icon
+                            name={passwordVisible ? "eye" : "eye-off"}
+                            color="#5BAA62"
+                            size={30}
+                            onPress={() => setPasswordVisible(!passwordVisible)}
+                        />
+                    }
                 />
                 <TextInput
                     icon="key"
                     style={styles.input}
                     placeholder="Confirmer Mot de passe"
                     autoCorrect={false}
-                    secureTextEntry
+                    secureTextEntry={passwordVisible}
                     underlineColorAndroid="transparent"
-                // value={password}
-                // onChangeText={(value) => setPassword(value)}
+                    value={password2}
+                    onChangeText={(value) => {
+                        setPassword2(value)
+                        if (value === password) {
+                            setPwdConfirmed(true)
+                        } else {
+                            setPwdConfirmed(false)
+                        }
+
+                    }}
+                    right={
+                        <TextInput.Icon
+                            name={passwordVisible ? "eye" : "eye-off"}
+                            color="#5BAA62"
+                            size={30}
+                            onPress={() => setPasswordVisible(!passwordVisible)}
+                        />
+                    }
                 />
+                {!pwdConfirmed && <Text>Mot de passe incorrect !</Text>}
                 <View>
                     <CheckBox
                         title="Je certifie sur l'honneur l'exactitude des renseignements fournis."
@@ -222,6 +301,19 @@ export default function SignUpInfosScreen() {
                 <Button
                     buttonStyle={styles.smallButton}
                     title="Valider"
+                    onPress={() =>
+                        handleSubmitSignUp(
+                            email,
+                            password,
+                            firstName,
+                            lastName,
+                            birthdate,
+                            sexe,
+                            profession,
+                            illnesses,
+                            familyHistory
+                        )}
+
 
                 />
 
@@ -269,3 +361,11 @@ const styles = StyleSheet.create({
 
 
 })
+function mapDispatchToProps(dispatch) {
+    return {
+        tokenStore: function (token) {
+            dispatch({ type: "addToken", token: token });
+        },
+    };
+}
+export default connect(null, mapDispatchToProps)(SignUpInfosScreen);

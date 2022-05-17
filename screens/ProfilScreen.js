@@ -100,9 +100,9 @@ function ProfilScreen(props) {
   };
 
   //Click sur les icônes +
-  let addHealthCare = (e) => {};
+  let addHealthCare = (e) => { };
 
-  let addTrip = (e) => {};
+  let addTrip = (e) => { };
 
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   return (

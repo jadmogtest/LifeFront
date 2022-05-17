@@ -6,6 +6,7 @@ LogBox.ignoreLogs([
 ]);
 LogBox.ignoreLogs(["Disconnected from Metro."]);
 
+
 // IMPORT DES DIFFERENTES LIBRAIRIES
 import React from "react";
 import { FontAwesome } from "@expo/vector-icons";

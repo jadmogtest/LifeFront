@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TextInput, View, Image } from "react-native";
+import { StyleSheet, Text, TextInput, View, ScrollView } from "react-native";
 import { CheckBox, Button } from 'react-native-elements'
 import DropDownPicker from "react-native-dropdown-picker";
+import { LogBox } from "react-native";
+
 
 
 
@@ -26,7 +28,7 @@ export default function SignUpInfosScreen() {
 
     //DropDownPicker Pathos
     const [open3, setOpen3] = useState(false);
-    const [value3, setValue3] = useState(null);
+    const [value3, setValue3] = useState([]);
     const [pathos, setPathos] = useState([
         { label: "Diabète", value: "Diabète" },
         { label: "endométriose", value: "endométriose" },
@@ -35,7 +37,7 @@ export default function SignUpInfosScreen() {
 
     //DropDownPicker Antécédents
     const [open4, setOpen4] = useState(false);
-    const [value4, setValue4] = useState(null);
+    const [value4, setValue4] = useState([]);
     const [ante, setAnte] = useState([
         { label: "Diabète", value: "Diabète" },
         { label: "endométriose", value: "endométriose" },
@@ -49,134 +51,186 @@ export default function SignUpInfosScreen() {
     //CheckBox1
     const [check2, setCheck2] = useState(false)
 
+    //Fonction Click Valider
 
 
     return (
-        <View style={styles.container}>
-            <Text style={{ marginTop: 30, fontSize: 20, color: "green", fontStyle: 'italic' }}>Vos informations</Text>
-            <TextInput
-                icon="key"
-                style={styles.input}
-                placeholder="Nom"
-                autoCorrect={false}
-                secureTextEntry
-                underlineColorAndroid="transparent"
-            // value={password}
-            // onChangeText={(value) => setPassword(value)}
-            />
-            <TextInput
-                icon="key"
-                style={styles.input}
-                placeholder="Prénom"
-                autoCorrect={false}
-                secureTextEntry
-                underlineColorAndroid="transparent"
-            // value={password}
-            // onChangeText={(value) => setPassword(value)}
-            />
-            <TextInput
-                icon="key"
-                style={styles.input}
-                placeholder="Date de naissance JJ/MM/AAAA"
-                autoCorrect={false}
-                secureTextEntry
-                underlineColorAndroid="transparent"
-            // value={password}
-            // onChangeText={(value) => setPassword(value)}
-            />
-            <View>
-                <DropDownPicker
-                    style={styles.dropDownPicker}
-                    dropDownContainerStyle={{ width: 300 }}
-                    // dropDownDirection="TOP"
-                    open={open}
-                    value={value}
-                    items={sex}
-                    setOpen={setOpen}
-                    setValue={setValue}
-                    setItems={setSex}
-                    placeholder="Sexe"
-
+        <ScrollView >
+            <View style={styles.container}>
+                <Text style={{ marginTop: 60, fontSize: 30, color: "green", fontStyle: 'italic' }}>Vos informations</Text>
+                <TextInput
+                    icon="key"
+                    style={styles.input}
+                    placeholder="Nom"
+                    autoCorrect={false}
+                    underlineColorAndroid="transparent"
+                // value={password}
+                // onChangeText={(value) => setPassword(value)}
                 />
-                <DropDownPicker
-                    style={styles.dropDownPicker}
-                    dropDownContainerStyle={{ width: 300 }}
-                    open={open2}
-                    value={value2}
-                    items={job}
-                    setOpen={setOpen2}
-                    setValue={setValue2}
-                    setItems={setJob}
-                    placeholder="Catégorie professionnelle"
+                <TextInput
+                    icon="key"
+                    style={styles.input}
+                    placeholder="Prénom"
+                    autoCorrect={false}
+                    underlineColorAndroid="transparent"
+                // value={password}
+                // onChangeText={(value) => setPassword(value)}
                 />
-                <Text style={{ marginTop: 30, fontSize: 15, color: "green", fontStyle: 'italic', textAlign: "center" }}>Informations complémentaires de santé</Text>
-                <DropDownPicker
-                    style={styles.dropDownPicker}
-                    dropDownDirection="BOTTOM"
-                    dropDownContainerStyle={{ width: 300 }}
-                    open={open3}
-                    value={value3}
-                    items={pathos}
-                    setOpen={setOpen3}
-                    setValue={setValue3}
-                    setItems={setPathos}
-                    placeholder="Pathologies"
+                <TextInput
+                    type="date"
+                    icon="key"
+                    style={styles.input}
+                    placeholder="Date de naissance JJ/MM/AAAA"
+                    autoCorrect={false}
+                    underlineColorAndroid="transparent"
+                // value={password}
+                // onChangeText={(value) => setPassword(value)}
+                />
+
+                <View>
+                    <DropDownPicker
+                        listMode="SCROLLVIEW"
+                        style={styles.dropDownPicker}
+                        dropDownContainerStyle={{ width: 300 }}
+                        // dropDownDirection="TOP"
+                        open={open}
+                        value={value}
+                        items={sex}
+                        setOpen={setOpen}
+                        setValue={setValue}
+                        setItems={setSex}
+                        placeholder="Sexe"
+
+                    />
+                    <DropDownPicker
+                        listMode="SCROLLVIEW"
+                        style={styles.dropDownPicker}
+                        dropDownContainerStyle={{ width: 300 }}
+                        open={open2}
+                        value={value2}
+                        items={job}
+                        setOpen={setOpen2}
+                        setValue={setValue2}
+                        setItems={setJob}
+                        placeholder="Catégorie professionnelle"
+                    />
+                    <Text style={{ marginTop: 30, fontSize: 15, color: "green", fontStyle: 'italic', textAlign: "center" }}>Informations complémentaires de santé</Text>
+                    <DropDownPicker
+                        listMode="SCROLLVIEW"
+                        style={styles.dropDownPicker}
+                        dropDownDirection="BOTTOM"
+                        dropDownContainerStyle={{ width: 300 }}
+                        open={open3}
+                        value={value3}
+                        items={pathos}
+                        setOpen={setOpen3}
+                        setValue={setValue3}
+                        setItems={setPathos}
+                        placeholder="Pathologies"
+                        theme="LIGHT"
+                        multiple={true} //Permet de sélectionner plusieurs options
+                        min={0}
+                        mode="BADGE"
+                        valueStyle={{
+                            fontWeight: "bold",
+                        }}
 
 
-                />
-                <DropDownPicker
-                    style={styles.dropDownPicker}
-                    dropDownDirection="BOTTOM"
-                    dropDownContainerStyle={{ width: 300 }}
-                    open={open4}
-                    value={value4}
-                    items={ante}
-                    setOpen={setOpen4}
-                    setValue={setValue4}
-                    setItems={setAnte}
-                    placeholder="Antécédents familiaux"
+                    />
+                    <DropDownPicker
+                        listMode="SCROLLVIEW"
+                        style={styles.dropDownPicker}
+                        dropDownDirection="BOTTOM"
+                        dropDownContainerStyle={{ width: 300 }}
+                        open={open4}
+                        value={value4}
+                        items={ante}
+                        setOpen={setOpen4}
+                        setValue={setValue4}
+                        setItems={setAnte}
+                        placeholder="Antécédents familiaux"
+                        theme="LIGHT"
+                        multiple={true} //Permet de sélectionner plusieurs options
+                        min={0}
+                        mode="BADGE"
+                        valueStyle={{
+                            fontWeight: "bold",
+                        }}
 
+                    />
+                </View>
+                <Text style={{ marginTop: 30, fontSize: 15, color: "green", fontStyle: 'italic', textAlign: "center" }}>Informations de connexion</Text>
+                <TextInput
+                    icon="key"
+                    style={styles.input}
+                    placeholder="email"
+                    autoCorrect={false}
+                    secureTextEntry
+                    underlineColorAndroid="transparent"
+                // value={password}
+                // onChangeText={(value) => setPassword(value)}
                 />
-            </View>
-            <View>
-                <CheckBox
-                    title="Je certifie sur l'honneur l'exactitude des renseignements fournis."
-                    checked={check}
-                    onPress={() => {
-                        if (check === false) {
-                            setCheck(true)
-                        } else if (check === true) {
-                            setCheck(false)
+                <TextInput
+                    type="password"
+                    icon="key"
+                    style={styles.input}
+                    placeholder="Mot de passe"
+                    autoCorrect={false}
+                    secureTextEntry
+                    underlineColorAndroid="transparent"
+                // value={password}
+                // onChangeText={(value) => setPassword(value)}
+                />
+                <TextInput
+                    icon="key"
+                    style={styles.input}
+                    placeholder="Confirmer Mot de passe"
+                    autoCorrect={false}
+                    secureTextEntry
+                    underlineColorAndroid="transparent"
+                // value={password}
+                // onChangeText={(value) => setPassword(value)}
+                />
+                <View>
+                    <CheckBox
+                        title="Je certifie sur l'honneur l'exactitude des renseignements fournis."
+                        checked={check}
+                        onPress={() => {
+                            if (check === false) {
+                                setCheck(true)
+                            } else if (check === true) {
+                                setCheck(false)
+                            }
                         }
-                    }
-                    }
-                />
-                <CheckBox
-
-                    title="Accepter les termes d’utilisation"
-                    checked={check2}
-                    onPress={() => {
-                        if (check2 === false) {
-                            setCheck2(true)
-                        } else if (check2 === true) {
-                            setCheck2(false)
                         }
-                    }
-                    }
+                    />
+                    <CheckBox
+
+                        title="Accepter les termes d’utilisation"
+                        checked={check2}
+                        onPress={() => {
+                            if (check2 === false) {
+                                setCheck2(true)
+                            } else if (check2 === true) {
+                                setCheck2(false)
+                            }
+                        }
+                        }
+                    />
+
+                </View>
+                <Button
+                    buttonStyle={styles.smallButton}
+                    title="Valider"
+
                 />
+
+
+
+
 
             </View>
-            <Button
-                buttonStyle={styles.smallButton}
-                title="Valider"
-
-            />
-
-
-
-
-
-        </View>
+        </ScrollView>
     );
 }
 
@@ -207,7 +261,9 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderRadius: 50,
         height: 50,
-        width: 100
+        width: 150,
+        marginBottom: 10,
+
 
     }
 

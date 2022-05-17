@@ -1,8 +1,10 @@
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 import React, { useState } from "react";
 import {
+  Animated,
   Button,
   Dimensions,
+  Modal,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -11,6 +13,47 @@ import { Text } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker"; //npm install react-native-dropdown-picker
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker"; //npm install @react-native-community/datetimepicker --save
+import DateTimePickerModal from "react-native-modal-datetime-picker"; //expo install react-native-modal-datetime-picker @react-native-community/datetimepicker
+
+// *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> COMPOSENT MODAL <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
+const ModalPoup = ({ visible, children }) => {
+  const [showModal, setShowModal] = React.useState(visible);
+  const scaleValue = React.useRef(new Animated.Value(0)).current;
+  React.useEffect(() => {
+    toggleModal();
+  }, [visible]);
+  const toggleModal = () => {
+    if (visible) {
+      setShowModal(true);
+      Animated.spring(scaleValue, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      setTimeout(() => setShowModal(false), 200);
+      Animated.timing(scaleValue, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
+  return (
+    <Modal transparent visible={showModal}>
+      <View style={styles.modalBackGround}>
+        <Animated.View
+          style={[
+            styles.modalContainer,
+            { transform: [{ scale: scaleValue }] },
+          ]}
+        >
+          {children}
+        </Animated.View>
+      </View>
+    </Modal>
+  );
+};
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FONCTION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 function ProfilScreen(props) {
@@ -60,14 +103,21 @@ function ProfilScreen(props) {
     { label: "Prévus", value: "Prévus", parent: "État" },
   ]);
 
-  //DropDownPicker État
-  const [openState1, setOpenState1] = useState(false);
-  const [openState2, setOpenState2] = useState(false);
-  const [openState3, setOpenState3] = useState(false);
-  const [openState4, setOpenState4] = useState(false);
-  const [openState5, setOpenState5] = useState(false);
+  /* DropDownPicker État */
+  // 6 ouvertures individuelles pour les 6 dropdown
+  const [open1, setOpen1] = useState(false);
+  const [open2, setOpen2] = useState(false);
+  const [open3, setOpen3] = useState(false);
+  const [open4, setOpen4] = useState(false);
+  const [open5, setOpen5] = useState(false);
 
-  const [valueState, setValueState] = useState(null);
+  // 6 valeurs individuelles pour les 6 dropdown
+  const [value1, setValue1] = useState(null);
+  const [value2, setValue2] = useState(null);
+  const [value3, setValue3] = useState(null);
+  const [value4, setValue4] = useState(null);
+  const [value5, setValue5] = useState(null);
+
   //Valeurs DropDownPicker
   const [state, setState] = useState([
     { label: "À jour du", value: "À jour" },
@@ -130,6 +180,7 @@ function ProfilScreen(props) {
       <DropDownPicker
         style={styles.DropDownPicker}
         open={open}
+        placeholder="Aucun filtre sélectionné" //Ce texte apparait si aucun filtre sélectionné
         value={value}
         items={items}
         setOpen={setOpen}
@@ -137,7 +188,7 @@ function ProfilScreen(props) {
         setItems={setItems}
         theme="LIGHT"
         multiple={true} //Permet de sélectionner plusieurs options
-        min={0}
+        min={0} //Possible de ne rien sélectionner
         mode="BADGE"
         valueStyle={{
           fontWeight: "bold",
@@ -158,10 +209,7 @@ function ProfilScreen(props) {
           name="ios-information-circle"
           size={30}
           color="#5BAA62"
-          onPress={() => {
-            infosObligatoire();
-            // console.log("click détecté", infosObligatoireClick);
-          }}
+          onPress={() => setModalVisible(true)}
         />
         <Text style={styles.textTitle} h4>
           Vaccins obligatoires :
@@ -176,19 +224,15 @@ function ProfilScreen(props) {
         <Text style={styles.textRow}>Diphtérie </Text>
         <DropDownPicker
           style={styles.dropDownPickerState}
-          open={openState1}
-          value={valueState}
+          open={open1}
+          value={value1}
           placeholder="À renseigner"
           items={state}
           zIndex={6}
           multiple={false} //Permet de sélectionner une seule option
-          setOpen={setOpenState1}
-          setValue={setValueState}
+          setOpen={setOpen1}
+          setValue={setValue1}
           setItems={setState}
-          stickyHeader={true}
-          onChangeItem={(item) => {
-            item.label, item.value;
-          }}
         />
         <View>
           {/* Le bouton pour afficher le dateTimePicker */}
@@ -219,18 +263,15 @@ function ProfilScreen(props) {
         <Text style={styles.textRow}>Tétanos </Text>
         <DropDownPicker
           style={styles.dropDownPickerState}
-          open={openState2}
-          value={valueState}
+          open={open2}
+          value={value2}
           placeholder="À renseigner"
           items={state}
           multiple={false} //Permet de sélectionner une seule option
-          setOpen={setOpenState2}
+          setOpen={setOpen2}
           zIndex={5}
-          setValue={setValueState}
+          setValue={setValue2}
           setItems={setState}
-          onChangeItem={(item) => {
-            item.label, item.value;
-          }}
         />
         <View>
           {/* Le bouton pour afficher le dateTimePicker */}
@@ -261,18 +302,15 @@ function ProfilScreen(props) {
         <Text style={styles.textRow}>Rougeole </Text>
         <DropDownPicker
           style={styles.dropDownPickerState}
-          open={openState3}
-          value={valueState}
+          open={open3}
+          value={value3}
           placeholder="À renseigner"
           items={state}
           multiple={false} //Permet de sélectionner une seule option
-          setOpen={setOpenState3}
-          setValue={setValueState}
+          setOpen={setOpen3}
+          setValue={setValue3}
           zIndex={4}
           setItems={setState}
-          onChangeItem={(item) => {
-            item.label, item.value;
-          }}
         />
         <View>
           {/* Le bouton pour afficher le dateTimePicker */}
@@ -322,17 +360,14 @@ function ProfilScreen(props) {
         <Text style={styles.textRow}>COVID-19</Text>
         <DropDownPicker
           style={styles.dropDownPickerState}
-          open={openState4}
-          value={valueState}
+          open={open4}
+          value={value4}
           placeholder="À renseigner"
           items={state}
           multiple={false} //Permet de sélectionner une seule option
-          setOpen={setOpenState4}
-          setValue={setValueState}
+          setOpen={setOpen4}
+          setValue={setValue4}
           setItems={setState}
-          onChangeItem={(item) => {
-            item.label, item.value;
-          }}
         />
         <View>
           {/* Le bouton pour afficher le dateTimePicker */}
@@ -363,17 +398,14 @@ function ProfilScreen(props) {
         <Text style={styles.textRow}>Hépatite B </Text>
         <DropDownPicker
           style={styles.dropDownPickerState}
-          open={openState5}
-          value={valueState}
+          open={open5}
+          value={value5}
           placeholder="À renseigner"
           items={state}
           multiple={false} //Permet de sélectionner une seule option
-          setOpen={setOpenState5}
-          setValue={setValueState}
+          setOpen={setOpen5}
+          setValue={setValue5}
           setItems={setState}
-          onChangeItem={(item) => {
-            item.label, item.value;
-          }}
         />
         <View>
           {/* Le bouton pour afficher le dateTimePicker */}
@@ -438,6 +470,60 @@ function ProfilScreen(props) {
         />
         <Text style={styles.text}>Préparer un voyage</Text>
       </View>
+
+      {/* Modal Vaccins obligatoires */}
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ModalPoup visible={modalVisible}>
+          <View style={{ alignItems: "center" }}>
+            <View style={styles.header}>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                {/* <Image
+                  source={require("./assets/x.png")}
+                  style={{ height: 30, width: 30 }}
+                /> */}
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.title}>
+            <Ionicons
+              name="ios-information-circle"
+              size={30}
+              color="#FFFFFF"
+              onPress={() => setModalVisible(true)}
+            />
+            <Text
+              style={{
+                textAlign: "center",
+                color: "#FFFFFF",
+                paddingLeft: 9,
+              }}
+              h4
+            >
+              Vaccins obligatoires :
+            </Text>
+          </View>
+
+          <Text
+            style={{
+              marginVertical: 30,
+              fontSize: 17,
+              textAlign: "center",
+              color: "#FFFFFF",
+            }}
+          >
+            11 vaccins sont obligatoires chez les nourrissons nés après le 1er
+            janvier 2018. Trois vaccins restent obligatoires chez les enfants
+            nés avant cette date. Le vaccin contre la fièvre jaune l'est aussi
+            pour les résidents de Guyane française. En milieu professionnel,
+            selon l’activité exercée, certaines vaccinations sont exigées.
+          </Text>
+          <Button
+            title="OK"
+            style={styles.buttonModal}
+            onPress={() => setModalVisible(false)}
+          />
+        </ModalPoup>
+      </View>
     </View>
   );
 }
@@ -453,6 +539,16 @@ const styles = StyleSheet.create({
     marginRight: 240,
     borderWidth: 1,
     borderColor: "#EBFAD5",
+  },
+  buttonModal: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 40,
+    size: "md",
+    backgroundColor: "#37663B",
+    width: 300,
+    height: 60,
+    margin: 15,
   },
   container: {
     flex: 1,
@@ -479,6 +575,26 @@ const styles = StyleSheet.create({
   },
   headrow: {
     flexDirection: "row",
+  },
+  modalBackGround: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    width: "80%",
+    backgroundColor: "#37663B",
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    borderRadius: 20,
+    elevation: 20,
+  },
+  header: {
+    width: "100%",
+    height: 40,
+    alignItems: "flex-end",
+    justifyContent: "center",
   },
   row: {
     flexDirection: "row",

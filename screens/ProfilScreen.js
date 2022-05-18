@@ -2,14 +2,13 @@
 import React, { useState } from "react";
 import {
   Animated,
-  Button,
   Dimensions,
   Modal,
   StyleSheet,
   TouchableOpacity,
   View,
 } from "react-native";
-import { Text } from "react-native-elements";
+import { Button, Text } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker"; //npm install react-native-dropdown-picker
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker"; //npm install @react-native-community/datetimepicker --save
@@ -104,14 +103,14 @@ function ProfilScreen(props) {
   ]);
 
   /* DropDownPicker État */
-  // 6 ouvertures individuelles pour les 6 dropdown
+  // 5 ouvertures individuelles pour les 6 dropdown
   const [open1, setOpen1] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [open3, setOpen3] = useState(false);
   const [open4, setOpen4] = useState(false);
   const [open5, setOpen5] = useState(false);
 
-  // 6 valeurs individuelles pour les 6 dropdown
+  // 5  valeurs individuelles pour les 6 dropdown
   const [value1, setValue1] = useState(null);
   const [value2, setValue2] = useState(null);
   const [value3, setValue3] = useState(null);
@@ -132,19 +131,17 @@ function ProfilScreen(props) {
   //   setOpenState(temp); //MAJ de l'état
   // };
 
-  //Modal
-  const [modalVisible, setModalVisible] = useState(false);
+  /* Les différents modals  apparaissent au clic sur les icones info */
+  // Modal Vaccins obligatoires (VO)
+  const [modalVOVisible, setModalVOVisible] = useState(false);
 
-  //Click sur les icônes informations
-  const infosObligatoire = (e) => {
-    setModalVisible(true);
-  };
+  // Modal Vaccins recommandés (VR)
+  const [modalVRVisible, setModalVRVisible] = useState(false);
 
-  const infosRecommandation = (e) => {
-    setModalVisible(true);
-  };
+  // Modal Vaccins projets personnels (VPP)
+  const [modalVPPVisible, setModalVPPVisible] = useState(false);
 
-  //Click sur les icônes +
+  // Click sur les icônes +
   const [rowVisible, setRowVisible] = useState(false);
 
   const addHealthCare = (e) => {};
@@ -204,12 +201,13 @@ function ProfilScreen(props) {
         ]}
       />
 
+      {/*>>>>>>>>>>>>>>>>>>>>> Vaccins obligatoires <<<<<<<<<<<<<<<<<<<<<< */}
       <View style={styles.title}>
         <Ionicons
           name="ios-information-circle"
           size={30}
           color="#5BAA62"
-          onPress={() => setModalVisible(true)}
+          onPress={() => setModalVOVisible(true)}
         />
         <Text style={styles.textTitle} h4>
           Vaccins obligatoires :
@@ -228,7 +226,6 @@ function ProfilScreen(props) {
           value={value1}
           placeholder="À renseigner"
           items={state}
-          zIndex={6}
           multiple={false} //Permet de sélectionner une seule option
           setOpen={setOpen1}
           setValue={setValue1}
@@ -251,6 +248,7 @@ function ProfilScreen(props) {
               mode="date"
               display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
               value={date}
+              zIndex={1000}
               // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
               onChange={onChange}
               // onConfirm={handleDatePicker}
@@ -269,7 +267,6 @@ function ProfilScreen(props) {
           items={state}
           multiple={false} //Permet de sélectionner une seule option
           setOpen={setOpen2}
-          zIndex={5}
           setValue={setValue2}
           setItems={setState}
         />
@@ -309,7 +306,6 @@ function ProfilScreen(props) {
           multiple={false} //Permet de sélectionner une seule option
           setOpen={setOpen3}
           setValue={setValue3}
-          zIndex={4}
           setItems={setState}
         />
         <View>
@@ -337,15 +333,14 @@ function ProfilScreen(props) {
           )}
         </View>
       </View>
+
+      {/* >>>>>>>>>>>>>>>>>>>>> Vaccins recommandés <<<<<<<<<<<<<<<<<<<<<< */}
       <View style={styles.title}>
         <Ionicons
           name="ios-information-circle"
           size={30}
           color="#5BAA62"
-          onPress={() => {
-            infosRecommandation();
-            // console.log("click détecté", infosRecommandésClick);
-          }}
+          onPress={() => setModalVRVisible(true)}
         />
         <Text style={styles.textTitle} h4>
           Vaccins recommandés :
@@ -432,20 +427,21 @@ function ProfilScreen(props) {
           )}
         </View>
       </View>
+
+      {/*>>>>>>>>>>>>>>>>>>>>> Vaccins projets personnels <<<<<<<<<<<<<<<<<<<<<< */}
       <View style={styles.title}>
         <Ionicons
           name="ios-information-circle"
           size={30}
           color="#5BAA62"
-          onPress={() => {
-            infosRecommandation();
-            // console.log("click détecté", infosRecommandésClick);
-          }}
+          onPress={() => setModalVPPVisible(true)}
         />
         <Text style={styles.textTitle} h4>
           Vaccins projets personnels :
         </Text>
       </View>
+
+      {/*>>>>>>>>>>>>>>>>>>>>> Ajouter un vaccin <<<<<<<<<<<<<<<<<<<<<< */}
       <View style={styles.title}>
         <AntDesign
           name="pluscircle"
@@ -471,17 +467,14 @@ function ProfilScreen(props) {
         <Text style={styles.text}>Préparer un voyage</Text>
       </View>
 
-      {/* Modal Vaccins obligatoires */}
+      {/*>>>>>>>>>>>>>>>>>>>>> Modal vaccins obligatoires <<<<<<<<<<<<<<<<<<<<<< */}
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ModalPoup visible={modalVisible}>
+        <ModalPoup visible={modalVOVisible}>
           <View style={{ alignItems: "center" }}>
             <View style={styles.header}>
-              <TouchableOpacity onPress={() => setModalVisible(false)}>
-                {/* <Image
-                  source={require("./assets/x.png")}
-                  style={{ height: 30, width: 30 }}
-                /> */}
-              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setModalVOVisible(false)}
+              ></TouchableOpacity>
             </View>
           </View>
           <View style={styles.title}>
@@ -489,7 +482,7 @@ function ProfilScreen(props) {
               name="ios-information-circle"
               size={30}
               color="#FFFFFF"
-              onPress={() => setModalVisible(true)}
+              onPress={() => setModalVOVisible(true)}
             />
             <Text
               style={{
@@ -520,7 +513,117 @@ function ProfilScreen(props) {
           <Button
             title="OK"
             style={styles.buttonModal}
-            onPress={() => setModalVisible(false)}
+            onPress={() => setModalVRVisible(false)}
+          />
+        </ModalPoup>
+      </View>
+
+      {/*>>>>>>>>>>>>>>>>>>>>> Modal vaccins recommandés <<<<<<<<<<<<<<<<<<<<<< */}
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ModalPoup visible={modalVRVisible}>
+          <View style={{ alignItems: "center" }}>
+            <View style={styles.header}>
+              <TouchableOpacity
+                onPress={() => setModalVRVisible(false)}
+              ></TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.title}>
+            <Ionicons
+              name="ios-information-circle"
+              size={30}
+              color="#FFFFFF"
+              onPress={() => setModalVRVisible(true)}
+            />
+            <Text
+              style={{
+                textAlign: "center",
+                color: "#FFFFFF",
+                paddingLeft: 9,
+              }}
+              h4
+            >
+              Vaccins recommandés :
+            </Text>
+          </View>
+
+          <Text
+            style={{
+              marginVertical: 30,
+              fontSize: 17,
+              textAlign: "center",
+              color: "#FFFFFF",
+            }}
+          >
+            Des vaccins existent contre diverses maladies graves telles que la
+            tuberculose, l'hépatite A... S’ils ne sont pas obligatoires, ils
+            restent la meilleure façon d’éviter ces maladies et de protéger les
+            personnes fragiles (nourrissons, femmes enceintes, personnes
+            âgées…).
+          </Text>
+          <Button
+            title="OK"
+            style={styles.buttonModal}
+            onPress={() => setModalVRVisible(false)}
+          />
+        </ModalPoup>
+      </View>
+
+      {/*>>>>>>>>>>>>>>>>>>>>> Modal vaccins projets personnels <<<<<<<<<<<<<<<<<<<<<< */}
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ModalPoup visible={modalVPPVisible}>
+          <View style={{ alignItems: "center" }}>
+            <View style={styles.header}>
+              <TouchableOpacity
+                onPress={() => setModalVPPVisible(false)}
+              ></TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.title}>
+            <Ionicons
+              name="ios-information-circle"
+              size={30}
+              color="#FFFFFF"
+              onPress={() => setModalVPPVisible(true)}
+            />
+            <Text
+              style={{
+                textAlign: "center",
+                color: "#FFFFFF",
+                paddingLeft: 9,
+              }}
+              h4
+            >
+              Vaccins projets personnels :
+            </Text>
+          </View>
+
+          <Text
+            style={{
+              marginVertical: 30,
+              fontSize: 17,
+              textAlign: "center",
+              color: "#FFFFFF",
+            }}
+          >
+            Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la
+            liste des vaccins obligatoires et des vaccins recommandés vous
+            pouvez en ajouter dans la section "Vaccins projets personnels" en
+            cliquant sur
+            <AntDesign
+              name="pluscircle"
+              size={24}
+              color="#FFFFFF"
+              style={{
+                paddingLeft: 15,
+              }}
+            />{" "}
+            situé sur votre profil.
+          </Text>
+          <Button
+            title="OK"
+            style={styles.buttonModal}
+            onPress={() => setModalVPPVisible(false)}
           />
         </ModalPoup>
       </View>
@@ -558,7 +661,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#EBFAD5",
     // marginTop: 50,
   },
-  DropDownPicker: { borderColor: "#37663B" },
+  DropDownPicker: { borderColor: "#37663B", marginTop: 50 },
   dropDownPickerDate: {
     height: 50,
     width: 100,
@@ -571,7 +674,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
     borderRadius: 0,
     borderColor: "#EBFAD5",
-    zIndex: 5,
+    zIndex: -1,
   },
   headrow: {
     flexDirection: "row",

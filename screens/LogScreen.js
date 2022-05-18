@@ -92,7 +92,7 @@ function LogScreen(props) {
             theme={{ colors: { primary: "#5BAA62" } }}
             value={mail}
             onChangeText={(value) => setMail(value)}
-            left={<TextInput.Icon name="email" color="#5BAA62" size="30" />}
+            left={<TextInput.Icon name="email" color="#5BAA62" size={30} />}
           />
         </View>
 
@@ -107,12 +107,12 @@ function LogScreen(props) {
             theme={{ colors: { primary: "#5BAA62" } }}
             value={password}
             onChangeText={(value) => setPassword(value)}
-            left={<TextInput.Icon name="key" color="#5BAA62" size="30" />}
+            left={<TextInput.Icon name="key" color="#5BAA62" size={30} />}
             right={
               <TextInput.Icon
                 name={passwordVisible ? "eye" : "eye-off"}
                 color="#5BAA62"
-                size="30"
+                size={30}
                 onPress={() => setPasswordVisible(!passwordVisible)}
               />
             }

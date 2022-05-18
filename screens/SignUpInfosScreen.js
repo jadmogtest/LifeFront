@@ -65,6 +65,7 @@ function SignUpInfosScreen(props) {
     const [familyHistory, setFamilyHistory] = useState([]);
     const [pwdConfirmed, setPwdConfirmed] = useState(false);
     const [passwordVisible, setPasswordVisible] = useState(true);
+    const [passwordVisible2, setPasswordVisible2] = useState(true);
 
     var handleSubmitSignUp = (email, password, firstName, lastName, birthdate, sexe, profession, illnesses, familyHistory) => {
 
@@ -85,15 +86,15 @@ function SignUpInfosScreen(props) {
 
             }
         }
-        if (pwdConfirmed) {
+        if (pwdConfirmed && check === true && check2 === true) {
             addUser()
         }
 
     };
 
-    console.log(password)
-    console.log(email)
-    console.log(illnesses)
+    // console.log(birthdate)
+    // console.log(email)
+    // console.log(illnesses)
 
     return (
         <ScrollView >
@@ -121,11 +122,12 @@ function SignUpInfosScreen(props) {
                     type="date"
                     icon="key"
                     style={styles.input}
-                    placeholder="Date de naissance JJ/MM/AAAA"
+                    placeholder="Date de naissance MM/JJ/AAAA"
                     autoCorrect={false}
                     underlineColorAndroid="transparent"
                     value={birthdate}
                     onChangeText={(value) => setBirthdate(new Date(value))}
+
                 />
 
                 <View>
@@ -233,7 +235,6 @@ function SignUpInfosScreen(props) {
                     underlineColorAndroid="transparent"
                     value={password}
                     onChangeText={(value) => setPassword(value)}
-
                     right={
                         <TextInput.Icon
                             name={passwordVisible ? "eye" : "eye-off"}
@@ -248,7 +249,7 @@ function SignUpInfosScreen(props) {
                     style={styles.input}
                     placeholder="Confirmer Mot de passe"
                     autoCorrect={false}
-                    secureTextEntry={passwordVisible}
+                    secureTextEntry={passwordVisible2}
                     underlineColorAndroid="transparent"
                     value={password2}
                     onChangeText={(value) => {
@@ -262,14 +263,14 @@ function SignUpInfosScreen(props) {
                     }}
                     right={
                         <TextInput.Icon
-                            name={passwordVisible ? "eye" : "eye-off"}
+                            name={passwordVisible2 ? "eye" : "eye-off"}
                             color="#5BAA62"
                             size={30}
-                            onPress={() => setPasswordVisible(!passwordVisible)}
+                            onPress={() => setPasswordVisible(!passwordVisible2)}
                         />
                     }
                 />
-                {!pwdConfirmed && <Text>Mot de passe incorrect !</Text>}
+                {!pwdConfirmed && <Text style={{ textAlign: "center", color: "red" }}>Veuillez entrer le même mot de passe !</Text>}
                 <View>
                     <CheckBox
                         title="Je certifie sur l'honneur l'exactitude des renseignements fournis."
@@ -296,7 +297,7 @@ function SignUpInfosScreen(props) {
                         }
                         }
                     />
-
+                    {(!check || !check2) && <Text style={{ textAlign: "center", color: "red" }}>Veuillez cocher les cases !</Text>}
                 </View>
                 <Button
                     buttonStyle={styles.smallButton}

@@ -4,10 +4,11 @@ import { Modal, StyleSheet, View } from "react-native";
 import { Text } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker"; //npm install react-native-dropdown-picker
 import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { DataTable } from "react-native-paper";
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FONCTION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 function ProfilScreen(props) {
-  //Dropdown list
+  //Dropdown list filtre
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([
     "Profil",
@@ -52,6 +53,41 @@ function ProfilScreen(props) {
     { label: "Prévus", value: "Prévus", parent: "État" },
   ]);
 
+  const vaccines = [
+    {
+      name: "Diphtérie",
+      status: "À jour",
+      date: "12/02/2021",
+    },
+    {
+      name: "Tétanos",
+      status: "À programmer",
+      date: "choisir une date",
+    },
+    {
+      name: "Poliomélyte",
+      status: "Programmer",
+      date: "12/05/2023",
+    },
+  ];
+
+  //DropDownPicker table
+  const [openState, setOpenState] = useState([false, false, false]);
+  const [valueState, setValueState] = useState(null);
+  //Valeurs DropDownPicker
+  const [state, setState] = useState([
+    { label: "À jour", value: "À jour" },
+    { label: "À programmer", value: "À programmer" },
+    { label: "Programmé", value: "Programmé" },
+  ]);
+
+  /* Pour ouvrir un seul dropDownPicker à la fois dans le table */
+  const mySetOpenState = (i) => {
+    let temp = [...openState]; // création copie
+    temp = [...temp.slice(0, i), !temp[i], ...temp.slice(i + 1)];
+    setOpenState(temp); //MAJ de l'état
+  };
+
   //Modal
   const [modalVisible, setModalVisible] = useState(false);
   //Click sur les icônes informations
@@ -64,9 +100,9 @@ function ProfilScreen(props) {
   };
 
   //Click sur les icônes +
-  let addHealthCare = (e) => {};
+  let addHealthCare = (e) => { };
 
-  let addTrip = (e) => {};
+  let addTrip = (e) => { };
 
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   return (
@@ -111,6 +147,37 @@ function ProfilScreen(props) {
           Vaccins obligatoires :
         </Text>
       </View>
+      <DataTable>
+        <DataTable.Header>
+          <DataTable.Title>Nom du vaccin</DataTable.Title>
+          <DataTable.Title>État</DataTable.Title>
+          <DataTable.Title numeric>Fait / Prévu le</DataTable.Title>
+        </DataTable.Header>
+        {vaccines.map((u, i) => {
+          return (
+            <DataTable.Row key={i} style={styles.table}>
+              <DataTable.Cell>{u.name}</DataTable.Cell>
+              <DataTable.Cell>
+                <DropDownPicker
+                  style={styles.dropDownPicker}
+                  open={openState[i]}
+                  value={valueState}
+                  items={state}
+                  multiple={false} //Permet de sélectionner une seule option
+                  setOpen={(i) => mySetOpenState(i)}
+                  setValue={setValueState}
+                  setItems={setState}
+                  onChangeItem={(item) => {
+                    item.label, item.value;
+                  }}
+                />
+              </DataTable.Cell>
+              <DataTable.Cell numeric>{u.date}</DataTable.Cell>
+            </DataTable.Row>
+          );
+        })}
+      </DataTable>
+
       <View style={styles.title}>
         <Ionicons
           name="ios-information-circle"
@@ -125,6 +192,36 @@ function ProfilScreen(props) {
           Vaccins recommandés :
         </Text>
       </View>
+      <DataTable style={styles.table}>
+        <DataTable.Header>
+          <DataTable.Title>Nom du vaccin</DataTable.Title>
+          <DataTable.Title>État</DataTable.Title>
+          <DataTable.Title numeric>Fait / Prévu le</DataTable.Title>
+        </DataTable.Header>
+        {vaccines.map((u, i) => {
+          return (
+            <DataTable.Row key={i} style={styles.table}>
+              <DataTable.Cell>{u.name}</DataTable.Cell>
+              <DataTable.Cell>
+                <DropDownPicker
+                  style={styles.dropDownPicker}
+                  open={openState[i]}
+                  value={valueState}
+                  items={state}
+                  multiple={false} //Permet de sélectionner une seule option
+                  setOpen={(i) => mySetOpenState(i)}
+                  setValue={setValueState}
+                  setItems={setState}
+                  onChangeItem={(item) => {
+                    item.label, item.value;
+                  }}
+                />
+              </DataTable.Cell>
+              <DataTable.Cell numeric>{u.date}</DataTable.Cell>
+            </DataTable.Row>
+          );
+        })}
+      </DataTable>
       <View style={styles.title}>
         <AntDesign
           name="pluscircle"
@@ -161,10 +258,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 20,
     backgroundColor: "#EBFAD5",
+    // marginTop: 50,
   },
-  DropDownPicker: {},
+  DropDownPicker: { borderColor: "#37663B" },
+  dropDownPicker: {
+    height: 10,
+    width: 100,
+    zIndex: -1,
+    borderColor: "#37663B",
+  },
   text: {
     marginLeft: 10, //Espace entre texte et icône
+  },
+  table: {
+    // margin: 10,
+  },
+  tableHeader: {
+    backgroundColor: "#DCDCDC",
   },
   textTitle: {
     fontWeight: "bold",
@@ -174,6 +284,7 @@ const styles = StyleSheet.create({
   title: {
     flexDirection: "row",
     alignItems: "center",
+    padding: 9,
   },
 });
 

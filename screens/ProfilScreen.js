@@ -4,6 +4,7 @@ import {
   Animated,
   Dimensions,
   Modal,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -16,8 +17,48 @@ import DateTimePickerModal from "react-native-modal-datetime-picker"; //expo ins
 //Librairie avec laquelle pas besoin de gérer le zIndex
 import { Dropdown } from "react-native-element-dropdown"; //npm install react-native-element-dropdown --save
 
-// *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> COMPOSENT MODAL <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
-const ModalPoup = ({ visible, children }) => {
+// *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> COMPOSENT MODAL INFOS ICÔNES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
+const ModalInfos = ({ visible, children }) => {
+  const [showModal, setShowModal] = React.useState(visible);
+  const scaleValue = React.useRef(new Animated.Value(0)).current;
+  React.useEffect(() => {
+    toggleModal();
+  }, [visible]);
+  const toggleModal = () => {
+    if (visible) {
+      setShowModal(true);
+      Animated.spring(scaleValue, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      setTimeout(() => setShowModal(false), 200);
+      Animated.timing(scaleValue, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
+  return (
+    <Modal transparent visible={showModal}>
+      <View style={styles.modalBackGround}>
+        <Animated.View
+          style={[
+            styles.modalContainer,
+            { transform: [{ scale: scaleValue }] },
+          ]}
+        >
+          {children}
+        </Animated.View>
+      </View>
+    </Modal>
+  );
+};
+
+// *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> COMPOSENT MODAL DÉFINITIONS VACCINS/EXAMENS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
+const ModalDefinitions = ({ visible, children }) => {
   const [showModal, setShowModal] = React.useState(visible);
   const scaleValue = React.useRef(new Animated.Value(0)).current;
   React.useEffect(() => {
@@ -112,7 +153,7 @@ function ProfilScreen(props) {
   /* 
   ! À AMÉLIORER 
   */
-  
+
   const [value1, setValue1] = useState(null);
   const [value2, setValue2] = useState(null);
   const [value3, setValue3] = useState(null);
@@ -134,6 +175,7 @@ function ProfilScreen(props) {
   //   setOpenState(temp); //MAJ de l'état
   // };
 
+  /* ________________ LES DIFFÉRENTS MODALS ________________ */
   /* Les différents modals  apparaissent au clic sur les icones info */
   const modal = [
     {
@@ -160,6 +202,9 @@ function ProfilScreen(props) {
 
   // Modal Vaccins projets personnels (VPP)
   const [modalVPPVisible, setModalVPPVisible] = useState(false);
+
+  // Modal défition diphtérie (Diph)
+  const [modalDiphVisible, setModalDiphVisible] = useState(false);
 
   /*
   TODO :
@@ -227,61 +272,63 @@ function ProfilScreen(props) {
   //Je map sur vaccinesList pour ajouter une nouvelle ligne de vaccin
   var healthCarePerso = vaccinesList.map((i, element) => {
     return (
-      <View style={styles.row} key={i}>
-        <Dropdown
-          style={styles.dropDownPickerVaccines}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          value={valueVaccine}
-          search //Permet au user de chercher le nom du vaccin sans avoir besoin de scroller sur la liste de nom proposée
-          placeholder="À renseigner"
-          labelField="label"
-          valueField="value"
-          items={vaccinesName}
-          multiple={false} //Permet de sélectionner une seule option
-          onChange={(item) => {
-            setValueVaccine(item.value);
-          }}
-        />
-        <Dropdown
-          style={styles.dropDownPickerState}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          value={list[i]}
-          placeholder="À renseigner"
-          labelField="label"
-          valueField="value"
-          maxHeight={165}
-          data={state}
-          multiple={false} //Permet de sélectionner une seule option
-          onChange={(item) => {
-            setValue6(item.value);
-            list.push(item.value); //Pour pusher la valeur du dropdown au tableau
-          }}
-        />
-        <View>
-          {/* Le bouton pour afficher le dateTimePicker */}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => showDatePicker()}
-          >
-            {/* Affiche la date sélectionnée par le user dans le bouton */}
-            <Text style={styles.textDatePicker}>
-              {new Date(date).toLocaleDateString("fr-FR")}
-            </Text>
-          </TouchableOpacity>
-          {/* Le dateTimePicker */}
-          {visible && (
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange}
-              // onConfirm={handleDatePicker}
-              // onCancel={hideDatePicker}
-            />
-          )}
+      <View style={{ backgroundColor: "#fff" }}>
+        <View style={styles.row} key={i}>
+          <Dropdown
+            style={styles.dropDownPickerVaccines}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            value={valueVaccine}
+            search //Permet au user de chercher le nom du vaccin sans avoir besoin de scroller sur la liste de nom proposée
+            placeholder="À renseigner"
+            labelField="label"
+            valueField="value"
+            items={vaccinesName}
+            multiple={false} //Permet de sélectionner une seule option
+            onChange={(item) => {
+              setValueVaccine(item.value);
+            }}
+          />
+          <Dropdown
+            style={styles.dropDownPickerState}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            value={list[i]}
+            placeholder="À renseigner"
+            labelField="label"
+            valueField="value"
+            maxHeight={165}
+            data={state}
+            multiple={false} //Permet de sélectionner une seule option
+            onChange={(item) => {
+              setValue6(item.value);
+              list.push(item.value); //Pour pusher la valeur du dropdown au tableau
+            }}
+          />
+          <View>
+            {/* Le bouton pour afficher le dateTimePicker */}
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => showDatePicker()}
+            >
+              {/* Affiche la date sélectionnée par le user dans le bouton */}
+              <Text style={styles.textDatePicker}>
+                {new Date(date).toLocaleDateString("fr-FR")}
+              </Text>
+            </TouchableOpacity>
+            {/* Le dateTimePicker */}
+            {visible && (
+              <DateTimePicker
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+                value={date}
+                // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+                onChange={onChange}
+                // onConfirm={handleDatePicker}
+                // onCancel={hideDatePicker}
+              />
+            )}
+          </View>
         </View>
       </View>
     );
@@ -289,616 +336,721 @@ function ProfilScreen(props) {
 
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   return (
-    <View style={styles.container}>
-      <DropDownPicker
-        style={styles.DropDownPicker}
-        open={open}
-        placeholder="Aucun filtre sélectionné" //Ce texte apparait si aucun filtre sélectionné
-        value={value}
-        items={items}
-        setOpen={setOpen}
-        setValue={setValue}
-        setItems={setItems}
-        theme="LIGHT"
-        multiple={true} //Permet de sélectionner plusieurs options
-        min={0} //Possible de ne rien sélectionner
-        mode="BADGE"
-        valueStyle={{
-          fontWeight: "bold",
-        }}
-        badgeDotColors={[
-          "#e76f51",
-          "#00b4d8",
-          "#e9c46a",
-          "#e76f51",
-          "#8ac926",
-          "#00b4d8",
-          "#e9c46a",
-        ]}
-      />
+    <ScrollView style={styles.scroll}>
+      <View style={styles.container}>
+        <DropDownPicker
+          style={styles.DropDownPicker}
+          open={open}
+          placeholder="Aucun filtre sélectionné" //Ce texte apparait si aucun filtre sélectionné
+          value={value}
+          items={items}
+          setOpen={setOpen}
+          setValue={setValue}
+          setItems={setItems}
+          theme="LIGHT"
+          multiple={true} //Permet de sélectionner plusieurs options
+          min={0} //Possible de ne rien sélectionner
+          mode="BADGE"
+          valueStyle={{
+            fontWeight: "bold",
+          }}
+          badgeDotColors={[
+            "#e76f51",
+            "#00b4d8",
+            "#e9c46a",
+            "#e76f51",
+            "#8ac926",
+            "#00b4d8",
+            "#e9c46a",
+          ]}
+        />
 
-      {/*>>>>>>>>>>>>>>>>>>>>> Vaccins obligatoires <<<<<<<<<<<<<<<<<<<<<< */}
-      <View style={styles.title}>
-        <Ionicons
-          name="ios-information-circle"
-          size={30}
-          color="#5BAA62"
-          onPress={() => setModalVOVisible(true)}
-        />
-        <Text style={styles.textTitle} h4>
-          Vaccins obligatoires :
-        </Text>
-      </View>
-      <View style={styles.headrow}>
-        <Text style={styles.textHeadColumn1}>Vaccin : </Text>
-        <Text style={styles.textHeadColumn2}>État : </Text>
-        <Text style={styles.textHeadColumn3}>Date : </Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.textRow}>Diphtérie </Text>
-        {/* Pour colorer la bordure du dropdown picker */}
-        <Dropdown
-          style={[
-            styles.dropDownPickerState,
-            isFocus && { borderColor: "#5BAA62" },
-          ]}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          value={value1}
-          placeholder="À renseigner"
-          labelField="label"
-          valueField="value"
-          maxHeight={165}
-          data={state}
-          multiple={false} //Permet de sélectionner une seule option
-          onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(false)}
-          onChange={(item) => {
-            setValue1(item.value);
-          }}
-        />
-        <View>
-          {/* Le bouton pour afficher le dateTimePicker */}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => showDatePicker()}
-          >
-            {/* Affiche la date sélectionnée par le user dans le bouton */}
-            <Text style={styles.textDatePicker}>
-              {new Date(date).toLocaleDateString("fr-FR")}
-            </Text>
-          </TouchableOpacity>
-          {/* Le dateTimePicker */}
-          {visible && (
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date}
-              minimumDate={new Date(Date.now())}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange}
-              // onConfirm={handleDatePicker}
-              // onCancel={hideDatePicker}
-            />
-          )}
+        {/*>>>>>>>>>>>>>>>>>>>>> Vaccins obligatoires <<<<<<<<<<<<<<<<<<<<<< */}
+        <View style={styles.title}>
+          <Ionicons
+            name="ios-information-circle"
+            size={30}
+            color="#5BAA62"
+            onPress={() => setModalVOVisible(true)}
+          />
+          <Text style={styles.textTitle}>Vaccins obligatoires :</Text>
         </View>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.textRow}>Tétanos </Text>
-        {/* Pour colorer la bordure du dropdown picker */}
-        <Dropdown
-          style={[
-            styles.dropDownPickerState,
-            isFocus1 && { borderColor: "#5BAA62" },
-          ]}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          value={value1}
-          placeholder="À renseigner"
-          labelField="label"
-          valueField="value"
-          maxHeight={165}
-          data={state}
-          multiple={false} //Permet de sélectionner une seule option
-          onFocus={() => setIsFocus1(true)}
-          onBlur={() => setIsFocus1(false)}
-          onChange={(item) => {
-            setValue2(item.value);
-          }}
-        />
-        <View>
-          {/* Le bouton pour afficher le dateTimePicker */}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => showDatePicker()}
-          >
-            {/* Affiche la date sélectionnée par le user dans le bouton */}
-            <Text style={styles.textDatePicker}>
-              {new Date(date).toLocaleDateString("fr-FR")}
-            </Text>
-          </TouchableOpacity>
-          {/* Le dateTimePicker */}
-          {visible && (
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange}
-              // onConfirm={handleDatePicker}
-              // onCancel={hideDatePicker}
-            />
-          )}
+        <View style={styles.headrow}>
+          <Text style={styles.textHeadColumn1}>Nom : </Text>
+          <Text style={styles.textHeadColumn2}>État : </Text>
+          <Text style={styles.textHeadColumn3}>Date : </Text>
         </View>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.textRow}>Rougeole </Text>
-        <Dropdown
-          style={[
-            styles.dropDownPickerState,
-            isFocus2 && { borderColor: "#5BAA62" },
-          ]}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          value={value2}
-          placeholder="À renseigner"
-          labelField="label"
-          valueField="value"
-          maxHeight={165}
-          data={state}
-          multiple={false} //Permet de sélectionner une seule option
-          onFocus={() => setIsFocus2(true)}
-          onBlur={() => setIsFocus2(false)}
-          onChange={(item) => {
-            setValue2(item.value);
-          }}
-        />
-        <View>
-          {/* Le bouton pour afficher le dateTimePicker */}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => showDatePicker()}
-          >
-            {/* Affiche la date sélectionnée par le user dans le bouton */}
-            <Text style={styles.textDatePicker}>
-              {new Date(date).toLocaleDateString("fr-FR")}
+        <View style={{ backgroundColor: "#fff" }}>
+          <View style={styles.row}>
+            <Text
+              style={styles.textRow}
+              onPress={() => setModalDiphVisible(true)}
+            >
+              Diphtérie{" "}
             </Text>
-          </TouchableOpacity>
-          {/* Le dateTimePicker */}
-          {visible && (
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange}
-              // onConfirm={handleDatePicker}
-              // onCancel={hideDatePicker}
+            {/* Pour colorer la bordure du dropdown picker */}
+            <Dropdown
+              style={[
+                styles.dropDownPickerState,
+                isFocus && { borderColor: "#5BAA62" },
+              ]}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              value={value1}
+              placeholder="À renseigner"
+              labelField="label"
+              valueField="value"
+              maxHeight={165}
+              data={state}
+              multiple={false} //Permet de sélectionner une seule option
+              onFocus={() => setIsFocus(true)}
+              onBlur={() => setIsFocus(false)}
+              onChange={(item) => {
+                setValue1(item.value);
+              }}
             />
-          )}
-        </View>
-      </View>
-
-      {/* >>>>>>>>>>>>>>>>>>>>> Vaccins recommandés <<<<<<<<<<<<<<<<<<<<<< */}
-      <View></View>
-      <View style={styles.title}>
-        <Ionicons
-          name="ios-information-circle"
-          size={30}
-          color="#5BAA62"
-          onPress={() => setModalVRVisible(true)}
-        />
-        <Text style={styles.textTitle} h4>
-          Vaccins recommandés :
-        </Text>
-      </View>
-      <View style={styles.headrow}>
-        <Text style={styles.textHeadColumn1}>Vaccin : </Text>
-        <Text style={styles.textHeadColumn2}>État : </Text>
-        <Text style={styles.textHeadColumn3}>Date : </Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.textRow}>COVID-19</Text>
-        <Dropdown
-          style={[
-            styles.dropDownPickerState,
-            isFocus3 && { borderColor: "#5BAA62" },
-          ]}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          value={value3}
-          placeholder="À renseigner"
-          labelField="label"
-          valueField="value"
-          maxHeight={165}
-          data={state}
-          multiple={false} //Permet de sélectionner une seule option
-          onFocus={() => setIsFocus3(true)}
-          onBlur={() => setIsFocus3(false)}
-          onChange={(item) => {
-            setValue3(item.value);
-          }}
-        />
-        <View>
-          {/* Le bouton pour afficher le dateTimePicker */}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => showDatePicker()}
-          >
-            {/* Affiche la date sélectionnée par le user dans le bouton */}
-            <Text style={styles.textDatePicker}>
-              {new Date(date).toLocaleDateString("fr-FR")}
-            </Text>
-          </TouchableOpacity>
-          {/* Le dateTimePicker */}
-          {visible && (
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange}
-              // onConfirm={handleDatePicker}
-              // onCancel={hideDatePicker}
-            />
-          )}
-        </View>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.textRow}>Hépatite B </Text>
-        <Dropdown
-          style={[
-            styles.dropDownPickerState,
-            isFocus4 && { borderColor: "#5BAA62" },
-          ]}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          value={value4}
-          placeholder="À renseigner"
-          labelField="label"
-          valueField="value"
-          maxHeight={165}
-          data={state}
-          multiple={false} //Permet de sélectionner une seule option
-          onFocus={() => setIsFocus4(true)}
-          onBlur={() => setIsFocus4(false)}
-          onChange={(item) => {
-            setValue4(item.value);
-          }}
-        />
-        <View>
-          {/* Le bouton pour afficher le dateTimePicker */}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => showDatePicker()}
-          >
-            {/* Affiche la date sélectionnée par le user dans le bouton */}
-            <Text style={styles.textDatePicker}>
-              {new Date(date).toLocaleDateString("fr-FR")}
-            </Text>
-          </TouchableOpacity>
-          {/* Le dateTimePicker */}
-          {visible && (
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange}
-              // onConfirm={handleDatePicker}
-              // onCancel={hideDatePicker}
-            />
-          )}
-        </View>
-      </View>
-
-      {/* >>>>>>>>>>>>>>>>>>>>> Examens de santé recommandés <<<<<<<<<<<<<<<<<<<<<< */}
-      <View></View>
-      <View style={styles.title}>
-        <Ionicons
-          name="ios-information-circle"
-          size={30}
-          color="#5BAA62"
-          onPress={() => setModalVRVisible(true)}
-        />
-        <Text style={styles.textTitle} h4>
-          Examens de santé recommandés :
-        </Text>
-      </View>
-      <View style={styles.headrow}>
-        <Text style={styles.textHeadColumn1}>Vaccin : </Text>
-        <Text style={styles.textHeadColumn2}>État : </Text>
-        <Text style={styles.textHeadColumn3}>Date : </Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.textRow}>COVID-19</Text>
-        <Dropdown
-          style={[
-            styles.dropDownPickerState,
-            isFocus3 && { borderColor: "#5BAA62" },
-          ]}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          value={value3}
-          placeholder="À renseigner"
-          labelField="label"
-          valueField="value"
-          maxHeight={165}
-          data={state}
-          multiple={false} //Permet de sélectionner une seule option
-          onFocus={() => setIsFocus3(true)}
-          onBlur={() => setIsFocus3(false)}
-          onChange={(item) => {
-            setValue3(item.value);
-          }}
-        />
-        <View>
-          {/* Le bouton pour afficher le dateTimePicker */}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => showDatePicker()}
-          >
-            {/* Affiche la date sélectionnée par le user dans le bouton */}
-            <Text style={styles.textDatePicker}>
-              {new Date(date).toLocaleDateString("fr-FR")}
-            </Text>
-          </TouchableOpacity>
-          {/* Le dateTimePicker */}
-          {visible && (
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange}
-              // onConfirm={handleDatePicker}
-              // onCancel={hideDatePicker}
-            />
-          )}
-        </View>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.textRow}>Hépatite B </Text>
-        <Dropdown
-          style={[
-            styles.dropDownPickerState,
-            isFocus4 && { borderColor: "#5BAA62" },
-          ]}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          value={value4}
-          placeholder="À renseigner"
-          labelField="label"
-          valueField="value"
-          maxHeight={165}
-          data={state}
-          multiple={false} //Permet de sélectionner une seule option
-          onFocus={() => setIsFocus4(true)}
-          onBlur={() => setIsFocus4(false)}
-          onChange={(item) => {
-            setValue4(item.value);
-          }}
-        />
-        <View>
-          {/* Le bouton pour afficher le dateTimePicker */}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => showDatePicker()}
-          >
-            {/* Affiche la date sélectionnée par le user dans le bouton */}
-            <Text style={styles.textDatePicker}>
-              {new Date(date).toLocaleDateString("fr-FR")}
-            </Text>
-          </TouchableOpacity>
-          {/* Le dateTimePicker */}
-          {visible && (
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange}
-              // onConfirm={handleDatePicker}
-              // onCancel={hideDatePicker}
-            />
-          )}
-        </View>
-      </View>
-
-      {/*>>>>>>>>>>>>>>>>>>>>> Vaccins/Examens projets personnels <<<<<<<<<<<<<<<<<<<<<< */}
-      <View style={styles.title}>
-        <Ionicons
-          name="ios-information-circle"
-          size={30}
-          color="#5BAA62"
-          onPress={() => setModalVPPVisible(true)}
-        />
-        <Text style={styles.textTitle} h4>
-          Vaccins/Examens projets personnels :
-        </Text>
-      </View>
-
-      {/*>>>>>>>>>>>>>>>>>>>>> Ajouter un vaccin/un examen <<<<<<<<<<<<<<<<<<<<<< */}
-      {/* Ajout d'une ligne quand le user clic sur l'icône + */}
-      {healthCarePerso}
-      <View style={styles.title}>
-        <AntDesign
-          name="pluscircle"
-          size={24}
-          color="#5BAA62"
-          onPress={() => {
-            addVaccines();
-          }}
-        />
-        <Text style={styles.text}>Ajouter un vaccin </Text>
-      </View>
-
-      {/*>>>>>>>>>>>>>>>>>>>>> Modal vaccins obligatoires <<<<<<<<<<<<<<<<<<<<<< */}
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ModalPoup visible={modalVOVisible}>
-          <View style={{ alignItems: "center" }}>
-            <View style={styles.header}>
+            <View>
+              {/* Le bouton pour afficher le dateTimePicker */}
               <TouchableOpacity
-                onPress={() => setModalVOVisible(false)}
-              ></TouchableOpacity>
+                style={styles.button}
+                onPress={() => showDatePicker()}
+              >
+                {/* Affiche la date sélectionnée par le user dans le bouton */}
+                <Text style={styles.textDatePicker}>
+                  {new Date(date).toLocaleDateString("fr-FR")}
+                </Text>
+              </TouchableOpacity>
+              {/* Le dateTimePicker */}
+              {visible && (
+                <DateTimePicker
+                  mode="date"
+                  display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+                  value={date}
+                  minimumDate={new Date(Date.now())}
+                  // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+                  onChange={onChange}
+                  // onConfirm={handleDatePicker}
+                  // onCancel={hideDatePicker}
+                />
+              )}
             </View>
           </View>
-          <View style={styles.title}>
-            <Ionicons
-              name="ios-information-circle"
-              size={30}
-              color="#FFFFFF"
-              onPress={() => setModalVOVisible(true)}
-            />
+          <View style={styles.row}>
             <Text
-              style={{
-                textAlign: "center",
-                color: "#FFFFFF",
-                paddingLeft: 9,
-              }}
-              h4
+              style={styles.textRow}
+              onPress={() => setModalTetanosVisible(true)}
             >
-              Vaccins obligatoires :
+              Tétanos{" "}
             </Text>
-          </View>
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <Text
-              style={{
-                marginVertical: 30,
-                fontSize: 17,
-                textAlign: "center",
-                color: "#FFFFFF",
+            {/* Pour colorer la bordure du dropdown picker */}
+            <Dropdown
+              style={[
+                styles.dropDownPickerState,
+                isFocus1 && { borderColor: "#5BAA62" },
+              ]}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              value={value2}
+              placeholder="À renseigner"
+              labelField="label"
+              valueField="value"
+              maxHeight={165}
+              data={state}
+              multiple={false} //Permet de sélectionner une seule option
+              onFocus={() => setIsFocus1(true)}
+              onBlur={() => setIsFocus1(false)}
+              onChange={(item) => {
+                setValue2(item.value);
               }}
-            >
-              11 vaccins sont obligatoires chez les nourrissons nés après le 1er
-              janvier 2018. Trois vaccins restent obligatoires chez les enfants
-              nés avant cette date. Le vaccin contre la fièvre jaune l'est aussi
-              pour les résidents de Guyane française. En milieu professionnel,
-              selon l’activité exercée, certaines vaccinations sont exigées.
-            </Text>
-            <Button
-              title="OK"
-              buttonStyle={styles.buttonModal}
-              onPress={() => setModalVOVisible(false)}
             />
-          </View>
-        </ModalPoup>
-      </View>
-
-      {/*>>>>>>>>>>>>>>>>>>>>> Modal vaccins recommandés <<<<<<<<<<<<<<<<<<<<<< */}
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ModalPoup visible={modalVRVisible}>
-          <View style={{ alignItems: "center" }}>
-            <View style={styles.header}>
+            <View>
+              {/* Le bouton pour afficher le dateTimePicker */}
               <TouchableOpacity
-                onPress={() => setModalVRVisible(false)}
-              ></TouchableOpacity>
+                style={styles.button}
+                onPress={() => showDatePicker()}
+              >
+                {/* Affiche la date sélectionnée par le user dans le bouton */}
+                <Text style={styles.textDatePicker}>
+                  {new Date(date).toLocaleDateString("fr-FR")}
+                </Text>
+              </TouchableOpacity>
+              {/* Le dateTimePicker */}
+              {visible && (
+                <DateTimePicker
+                  mode="date"
+                  display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+                  value={date}
+                  // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+                  onChange={onChange}
+                  // onConfirm={handleDatePicker}
+                  // onCancel={hideDatePicker}
+                />
+              )}
             </View>
           </View>
-          <View style={styles.title}>
-            <Ionicons
-              name="ios-information-circle"
-              size={30}
-              color="#FFFFFF"
-              onPress={() => setModalVRVisible(true)}
-            />
+          <View style={styles.row}>
             <Text
-              style={{
-                textAlign: "center",
-                color: "#FFFFFF",
-                paddingLeft: 9,
-              }}
-              h4
+              style={styles.textRow}
+              onPress={() => setModalRougeoleVisible(true)}
             >
-              Vaccins recommandés :
+              Rougeole{" "}
             </Text>
-          </View>
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <Text
-              style={{
-                marginVertical: 30,
-                fontSize: 17,
-                textAlign: "center",
-                color: "#FFFFFF",
+            <Dropdown
+              style={[
+                styles.dropDownPickerState,
+                isFocus2 && { borderColor: "#5BAA62" },
+              ]}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              value={value3}
+              placeholder="À renseigner"
+              labelField="label"
+              valueField="value"
+              maxHeight={165}
+              data={state}
+              multiple={false} //Permet de sélectionner une seule option
+              onFocus={() => setIsFocus2(true)}
+              onBlur={() => setIsFocus2(false)}
+              onChange={(item) => {
+                setValue3(item.value);
               }}
-            >
-              Des vaccins existent contre diverses maladies graves telles que la
-              tuberculose, l'hépatite A... S’ils ne sont pas obligatoires, ils
-              restent la meilleure façon d’éviter ces maladies et de protéger
-              les personnes fragiles (nourrissons, femmes enceintes, personnes
-              âgées…).
-            </Text>
-            <Button
-              title="OK"
-              type="solid"
-              buttonStyle={styles.buttonModal}
-              onPress={() => setModalVRVisible(false)}
             />
-          </View>
-        </ModalPoup>
-      </View>
-
-      {/*>>>>>>>>>>>>>>>>>>>>> Modal vaccins projets personnels <<<<<<<<<<<<<<<<<<<<<< */}
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ModalPoup visible={modalVPPVisible}>
-          <View style={{ alignItems: "center" }}>
-            <View style={styles.header}>
+            <View>
+              {/* Le bouton pour afficher le dateTimePicker */}
               <TouchableOpacity
-                onPress={() => setModalVPPVisible(false)}
-              ></TouchableOpacity>
+                style={styles.button}
+                onPress={() => showDatePicker()}
+              >
+                {/* Affiche la date sélectionnée par le user dans le bouton */}
+                <Text style={styles.textDatePicker}>
+                  {new Date(date).toLocaleDateString("fr-FR")}
+                </Text>
+              </TouchableOpacity>
+              {/* Le dateTimePicker */}
+              {visible && (
+                <DateTimePicker
+                  mode="date"
+                  display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+                  value={date}
+                  // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+                  onChange={onChange}
+                  // onConfirm={handleDatePicker}
+                  // onCancel={hideDatePicker}
+                />
+              )}
             </View>
           </View>
-          <View style={styles.title}>
-            <Ionicons
-              name="ios-information-circle"
-              size={30}
-              color="#FFFFFF"
-              onPress={() => setModalVPPVisible(true)}
+        </View>
+
+        {/* >>>>>>>>>>>>>>>>>>>>> Vaccins recommandés <<<<<<<<<<<<<<<<<<<<<< */}
+        <View style={{ backgroundColor: "#fff" }}></View>
+        <View style={styles.title}>
+          <Ionicons
+            name="ios-information-circle"
+            size={30}
+            color="#5BAA62"
+            onPress={() => setModalVRVisible(true)}
+          />
+          <Text style={styles.textTitle}>Vaccins recommandés :</Text>
+        </View>
+        <View style={styles.headrow}>
+          <Text style={styles.textHeadColumn1}>Nom : </Text>
+          <Text style={styles.textHeadColumn2}>État : </Text>
+          <Text style={styles.textHeadColumn3}>Date : </Text>
+        </View>
+        <View style={{ backgroundColor: "#fff" }}>
+          <View style={styles.row}>
+            <Text style={styles.textRow}>COVID-19</Text>
+            <Dropdown
+              style={[
+                styles.dropDownPickerState,
+                isFocus3 && { borderColor: "#5BAA62" },
+              ]}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              value={value3}
+              placeholder="À renseigner"
+              labelField="label"
+              valueField="value"
+              maxHeight={165}
+              data={state}
+              multiple={false} //Permet de sélectionner une seule option
+              onFocus={() => setIsFocus3(true)}
+              onBlur={() => setIsFocus3(false)}
+              onChange={(item) => {
+                setValue3(item.value);
+              }}
             />
-            <Text
-              style={{
-                textAlign: "center",
-                color: "#FFFFFF",
-                paddingLeft: 9,
-              }}
-              h4
-            >
-              Vaccins projets personnels :
-            </Text>
+            <View>
+              {/* Le bouton pour afficher le dateTimePicker */}
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => showDatePicker()}
+              >
+                {/* Affiche la date sélectionnée par le user dans le bouton */}
+                <Text style={styles.textDatePicker}>
+                  {new Date(date).toLocaleDateString("fr-FR")}
+                </Text>
+              </TouchableOpacity>
+              {/* Le dateTimePicker */}
+              {visible && (
+                <DateTimePicker
+                  mode="date"
+                  display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+                  value={date}
+                  // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+                  onChange={onChange}
+                  // onConfirm={handleDatePicker}
+                  // onCancel={hideDatePicker}
+                />
+              )}
+            </View>
           </View>
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <Text
-              style={{
-                marginVertical: 30,
-                fontSize: 17,
-                textAlign: "center",
-                color: "#FFFFFF",
+          <View style={styles.row}>
+            <Text style={styles.textRow}>Hépatite B </Text>
+            <Dropdown
+              style={[
+                styles.dropDownPickerState,
+                isFocus4 && { borderColor: "#5BAA62" },
+              ]}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              value={value4}
+              placeholder="À renseigner"
+              labelField="label"
+              valueField="value"
+              maxHeight={165}
+              data={state}
+              multiple={false} //Permet de sélectionner une seule option
+              onFocus={() => setIsFocus4(true)}
+              onBlur={() => setIsFocus4(false)}
+              onChange={(item) => {
+                setValue4(item.value);
               }}
-            >
-              Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la
-              liste des vaccins obligatoires et des vaccins recommandés vous
-              pouvez en ajouter dans la section "Vaccins projets personnels" en
-              cliquant sur
-              <AntDesign
-                name="pluscircle"
-                size={24}
+            />
+            <View>
+              {/* Le bouton pour afficher le dateTimePicker */}
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => showDatePicker()}
+              >
+                {/* Affiche la date sélectionnée par le user dans le bouton */}
+                <Text style={styles.textDatePicker}>
+                  {new Date(date).toLocaleDateString("fr-FR")}
+                </Text>
+              </TouchableOpacity>
+              {/* Le dateTimePicker */}
+              {visible && (
+                <DateTimePicker
+                  mode="date"
+                  display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+                  value={date}
+                  // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+                  onChange={onChange}
+                  // onConfirm={handleDatePicker}
+                  // onCancel={hideDatePicker}
+                />
+              )}
+            </View>
+          </View>
+        </View>
+
+        {/* >>>>>>>>>>>>>>>>>>>>> Examens de santé recommandés <<<<<<<<<<<<<<<<<<<<<< */}
+        <View></View>
+        <View style={styles.title}>
+          <Ionicons
+            name="ios-information-circle"
+            size={30}
+            color="#5BAA62"
+            onPress={() => setModalVRVisible(true)}
+          />
+          <Text style={styles.textTitle}>Examens de santé recommandés :</Text>
+        </View>
+        <View style={styles.headrow}>
+          <Text style={styles.textHeadColumn1}>Nom : </Text>
+          <Text style={styles.textHeadColumn2}>État : </Text>
+          <Text style={styles.textHeadColumn3}>Date : </Text>
+        </View>
+        <View style={{ backgroundColor: "#fff" }}>
+          <View style={styles.row}>
+            <Text style={styles.textRow}>Bilan sanguin</Text>
+            <Dropdown
+              style={[
+                styles.dropDownPickerState,
+                isFocus3 && { borderColor: "#5BAA62" },
+              ]}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              value={value3}
+              placeholder="À renseigner"
+              labelField="label"
+              valueField="value"
+              maxHeight={165}
+              data={state}
+              multiple={false} //Permet de sélectionner une seule option
+              onFocus={() => setIsFocus3(true)}
+              onBlur={() => setIsFocus3(false)}
+              onChange={(item) => {
+                setValue3(item.value);
+              }}
+            />
+            <View>
+              {/* Le bouton pour afficher le dateTimePicker */}
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => showDatePicker()}
+              >
+                {/* Affiche la date sélectionnée par le user dans le bouton */}
+                <Text style={styles.textDatePicker}>
+                  {new Date(date).toLocaleDateString("fr-FR")}
+                </Text>
+              </TouchableOpacity>
+              {/* Le dateTimePicker */}
+              {visible && (
+                <DateTimePicker
+                  mode="date"
+                  display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+                  value={date}
+                  // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+                  onChange={onChange}
+                  // onConfirm={handleDatePicker}
+                  // onCancel={hideDatePicker}
+                />
+              )}
+            </View>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.textRow}>Bilan urinaire </Text>
+            <Dropdown
+              style={[
+                styles.dropDownPickerState,
+                isFocus4 && { borderColor: "#5BAA62" },
+              ]}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              value={value4}
+              placeholder="À renseigner"
+              labelField="label"
+              valueField="value"
+              maxHeight={165}
+              data={state}
+              multiple={false} //Permet de sélectionner une seule option
+              onFocus={() => setIsFocus4(true)}
+              onBlur={() => setIsFocus4(false)}
+              onChange={(item) => {
+                setValue4(item.value);
+              }}
+            />
+            <View>
+              {/* Le bouton pour afficher le dateTimePicker */}
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => showDatePicker()}
+              >
+                {/* Affiche la date sélectionnée par le user dans le bouton */}
+                <Text style={styles.textDatePicker}>
+                  {new Date(date).toLocaleDateString("fr-FR")}
+                </Text>
+              </TouchableOpacity>
+              {/* Le dateTimePicker */}
+              {visible && (
+                <DateTimePicker
+                  mode="date"
+                  display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+                  value={date}
+                  // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+                  onChange={onChange}
+                  // onConfirm={handleDatePicker}
+                  // onCancel={hideDatePicker}
+                />
+              )}
+            </View>
+          </View>
+        </View>
+
+        {/*>>>>>>>>>>>>>>>>>>>>> Vaccins/Examens projets personnels <<<<<<<<<<<<<<<<<<<<<< */}
+        <View style={styles.title}>
+          <Ionicons
+            name="ios-information-circle"
+            size={30}
+            color="#5BAA62"
+            onPress={() => setModalVPPVisible(true)}
+          />
+          <Text style={styles.textTitle}>
+            Vaccins/Examens projets personnels :
+          </Text>
+        </View>
+
+        {/*>>>>>>>>>>>>>>>>>>>>> Ajouter un vaccin/un examen <<<<<<<<<<<<<<<<<<<<<< */}
+        {/* Ajout d'une ligne quand le user clic sur l'icône + */}
+        {healthCarePerso}
+        <View style={styles.title}>
+          <AntDesign
+            name="pluscircle"
+            size={24}
+            color="#5BAA62"
+            onPress={() => {
+              addVaccines();
+            }}
+          />
+          <Text style={styles.text}>Ajouter un vaccin </Text>
+        </View>
+
+        {/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> LES MODALS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */}
+        {/*>>>>>>>>>>>>>>>>>>>>> Modal vaccins obligatoires <<<<<<<<<<<<<<<<<<<<<< */}
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ModalInfos visible={modalVOVisible}>
+            <View style={{ alignItems: "center" }}>
+              <View style={styles.header}>
+                <TouchableOpacity
+                  onPress={() => setModalVOVisible(false)}
+                ></TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.title}>
+              <Ionicons
+                name="ios-information-circle"
+                size={30}
                 color="#FFFFFF"
+                onPress={() => setModalVOVisible(true)}
+              />
+              <Text
                 style={{
-                  paddingLeft: 15,
+                  textAlign: "center",
+                  color: "#FFFFFF",
+                  paddingLeft: 9,
                 }}
-              />{" "}
-              situé sur votre profil.
-            </Text>
-            <Button
-              title="OK"
-              type="solid"
-              buttonStyle={styles.buttonModal}
-              onPress={() => setModalVPPVisible(false)}
-            />
+                h4
+              >
+                Vaccins obligatoires :
+              </Text>
+            </View>
+            <View style={{ justifyContent: "center", alignItems: "center" }}>
+              <Text
+                style={{
+                  marginVertical: 30,
+                  fontSize: 17,
+                  textAlign: "center",
+                  color: "#FFFFFF",
+                }}
+              >
+                11 vaccins sont obligatoires chez les nourrissons nés après le
+                1er janvier 2018. Trois vaccins restent obligatoires chez les
+                enfants nés avant cette date. Le vaccin contre la fièvre jaune
+                l'est aussi pour les résidents de Guyane française. En milieu
+                professionnel, selon l’activité exercée, certaines vaccinations
+                sont exigées.
+              </Text>
+              <Button
+                title="OK"
+                buttonStyle={styles.buttonModal}
+                onPress={() => setModalVOVisible(false)}
+              />
+            </View>
+          </ModalInfos>
+        </View>
+
+        {/*>>>>>>>>>>>>>>>>>>>>> Modal vaccins recommandés <<<<<<<<<<<<<<<<<<<<<< */}
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ModalInfos visible={modalVRVisible}>
+            <View style={{ alignItems: "center" }}>
+              <View style={styles.header}>
+                <TouchableOpacity
+                  onPress={() => setModalVRVisible(false)}
+                ></TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.title}>
+              <Ionicons
+                name="ios-information-circle"
+                size={30}
+                color="#FFFFFF"
+                onPress={() => setModalVRVisible(true)}
+              />
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "#FFFFFF",
+                  paddingLeft: 9,
+                }}
+                h4
+              >
+                Vaccins recommandés :
+              </Text>
+            </View>
+            <View style={{ justifyContent: "center", alignItems: "center" }}>
+              <Text
+                style={{
+                  marginVertical: 30,
+                  fontSize: 17,
+                  textAlign: "center",
+                  color: "#FFFFFF",
+                }}
+              >
+                Des vaccins existent contre diverses maladies graves telles que
+                la tuberculose, l'hépatite A... S’ils ne sont pas obligatoires,
+                ils restent la meilleure façon d’éviter ces maladies et de
+                protéger les personnes fragiles (nourrissons, femmes enceintes,
+                personnes âgées…).
+              </Text>
+              <Button
+                title="OK"
+                type="solid"
+                buttonStyle={styles.buttonModal}
+                onPress={() => setModalVRVisible(false)}
+              />
+            </View>
+          </ModalInfos>
+        </View>
+
+        {/*>>>>>>>>>>>>>>>>>>>>> Modal vaccins projets personnels <<<<<<<<<<<<<<<<<<<<<< */}
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ModalInfos visible={modalVPPVisible}>
+            <View style={{ alignItems: "center" }}>
+              <View style={styles.header}>
+                <TouchableOpacity
+                  onPress={() => setModalVPPVisible(false)}
+                ></TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.title}>
+              <Ionicons
+                name="ios-information-circle"
+                size={30}
+                color="#FFFFFF"
+                onPress={() => setModalVPPVisible(true)}
+              />
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "#FFFFFF",
+                  paddingLeft: 9,
+                }}
+                h4
+              >
+                Vaccins projets personnels :
+              </Text>
+            </View>
+            <View style={{ justifyContent: "center", alignItems: "center" }}>
+              <Text
+                style={{
+                  marginVertical: 30,
+                  fontSize: 17,
+                  textAlign: "center",
+                  color: "#FFFFFF",
+                }}
+              >
+                Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la
+                liste des vaccins obligatoires et des vaccins recommandés vous
+                pouvez en ajouter dans la section "Vaccins projets personnels"
+                en cliquant sur
+                <AntDesign
+                  name="pluscircle"
+                  size={24}
+                  color="#FFFFFF"
+                  style={{
+                    paddingLeft: 15,
+                  }}
+                />{" "}
+                situé sur votre profil.
+              </Text>
+              <Button
+                title="OK"
+                type="solid"
+                buttonStyle={styles.buttonModal}
+                onPress={() => setModalVPPVisible(false)}
+              />
+            </View>
+          </ModalInfos>
+        </View>
+
+        {/*>>>>>>>>>>>>>>>>>>>>> Modal défitions Diphtérie <<<<<<<<<<<<<<<<<<<<<< */}
+        <ScrollView>
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ModalDefinitions visible={modalDiphVisible}>
+              <View style={{ alignItems: "center" }}>
+                <View style={styles.header}>
+                  <TouchableOpacity
+                    onPress={() => setModalDiphVisible(false)}
+                  ></TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.title}>
+                <Ionicons
+                  name="ios-information-circle"
+                  size={30}
+                  color="#FFFFFF"
+                  onPress={() => setModalDiphVisible(true)}
+                />
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: "#FFFFFF",
+                    paddingLeft: 9,
+                  }}
+                  h4
+                >
+                  Vaccin Diphtérie :
+                </Text>
+              </View>
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <Text
+                  style={{
+                    marginVertical: 30,
+                    fontSize: 17,
+                    textAlign: "center",
+                    color: "#FFFFFF",
+                  }}
+                >
+                  La vaccination antidiphtérique est le seul moyen de contrôler
+                  cette infection grave. Le vaccin est composé de la toxine
+                  diphtérique purifiée et inactivée. La vaccination est
+                  obligatoire pour tous les enfants et les professionnels de
+                  santé. La primo-vaccination est maintenant obligatoire chez
+                  l’enfant à 2 et 4 mois. Le premier rappel se fait à l’âge de
+                  11 mois et les autres rappels se font à 6 ans, 11/13 ans, 25
+                  ans, 45 ans, 65 ans et puis tous les 10 ans. Les études de
+                  séroprévalence montrent qu’une haute proportion de sujets âgés
+                  de 50 ans et plus en France ont un titre d’anticorps non
+                  détectable ou inférieur au seuil considéré comme protecteur.
+                  Ces données soulignent l’importance de suivre les
+                  recommandations vaccinales, notamment les rappels tous les 10
+                  ans chez les adultes âgés de plus de 65 ans. La vaccination
+                  antidiphtérique est le seul moyen de contrôler cette infection
+                  grave. Le vaccin est composé de la toxine diphtérique purifiée
+                  et inactivée. La vaccination est obligatoire pour tous les
+                  enfants et les professionnels de santé. La primo-vaccination
+                  est maintenant obligatoire chez l’enfant à 2 et 4 mois. Le
+                  premier rappel se fait à l’âge de 11 mois et les autres
+                  rappels se font à 6 ans, 11/13 ans, 25 ans, 45 ans, 65 ans et
+                  puis tous les 10 ans. Les études de séroprévalence montrent
+                  qu’une haute proportion de sujets âgés de 50 ans et plus en
+                  France ont un titre d’anticorps non détectable ou inférieur au
+                  seuil considéré comme protecteur. Ces données soulignent
+                  l’importance de suivre les recommandations vaccinales,
+                  notamment les rappels tous les 10 ans chez les adultes âgés de
+                  plus de 65 ans.
+                </Text>
+                <Button
+                  title="OK"
+                  type="solid"
+                  buttonStyle={styles.buttonModal}
+                  onPress={() => setModalDiphVisible(false)}
+                />
+              </View>
+            </ModalDefinitions>
           </View>
-        </ModalPoup>
+        </ScrollView>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -906,11 +1058,8 @@ function ProfilScreen(props) {
 const styles = StyleSheet.create({
   button: {
     height: 50,
-    width: 120,
-    backgroundColor: "white",
     justifyContent: "center",
     // marginTop: 15,
-    marginRight: 240,
     borderWidth: 1,
     borderColor: "#EBFAD5",
   },
@@ -930,7 +1079,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 20,
     backgroundColor: "#EBFAD5",
-    // marginTop: 50,
+    marginTop: 40,
   },
   DropDownPicker: { borderColor: "#37663B", marginTop: 50 },
   dropDownPickerDate: {
@@ -946,6 +1095,7 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     borderColor: "#EBFAD5",
     borderWidth: 0.5,
+    paddingHorizontal: 10,
   },
   dropDownPickerVaccines: {
     height: 50,
@@ -964,6 +1114,7 @@ const styles = StyleSheet.create({
   },
   headrow: {
     flexDirection: "row",
+    display: "flex",
   },
   modalBackGround: {
     flex: 1,
@@ -984,11 +1135,8 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
+    display: "flex",
     alignItems: "center",
-    marginLeft: 200,
-    backgroundColor: "#FFFFFF",
-    // paddingHorizontal: 20,
-    // justifyContent: "space-between",
   },
   selectedTextStyle: {
     fontSize: 13,
@@ -1005,46 +1153,41 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#5BAA62",
     borderColor: "#37663B",
-    width: 100,
+    width: "30%",
     color: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#EBFAD5",
-    paddingLeft: 8,
-    marginLeft: 12,
   },
   textHeadColumn2: {
     flexDirection: "row",
     backgroundColor: "#5BAA62",
     borderColor: "#37663B",
-    width: 146,
+    width: "43%",
     color: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#EBFAD5",
-    paddingLeft: 8,
   },
   textHeadColumn3: {
     flexDirection: "row",
     backgroundColor: "#5BAA62",
     borderColor: "#5BAA62",
-    width: 107,
+    width: "35%",
     color: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#EBFAD5",
-    paddingLeft: 8,
   },
   textRow: {
     height: 50,
     width: 100,
-    alignContent: "center",
-    backgroundColor: "white",
-    padding: 20,
-    marginLeft: 50,
+    paddingTop: 15,
+    padding: 10,
     borderWidth: 1,
     borderColor: "#EBFAD5",
     borderRadius: 0,
   },
   textTitle: {
     fontWeight: "bold",
+    fontSize: 18,
     textAlign: "center",
     color: "#37663B",
     marginLeft: 10, //Espace entre texte et icône

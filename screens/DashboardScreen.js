@@ -2,7 +2,9 @@ import { Calendar, LocaleConfig } from "react-native-calendars";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button, Overlay } from "react-native-elements";
+import { connect } from "react-redux";
 
+//Pour mettre le calendrier en français
 LocaleConfig.locales["fr"] = {
   monthNames: [
     "Janvier",
@@ -47,18 +49,64 @@ LocaleConfig.locales["fr"] = {
 };
 LocaleConfig.defaultLocale = "fr";
 
-export default function DashBoard(props) {
+function DashBoardScreen(props) {
   const [visible, setVisible] = useState(false);
   const [overlayContent, setOverlayContent] = useState([{}]);
+  const [exams, setExams] = useState([]);
 
-  let exams = [
-    { name: "Prise de sang", date: "2022-05-13" },
-    { name: "Détartrage", date: "2022-05-26" },
-    { name: "Vaccin covid", date: "2022-05-31" },
-    { name: "Ophtalmo", date: "2022-06-29" },
-  ];
+  //Récupération des vaccins et tests médicaux en BDD
+  useEffect(() => {
+    async function takeExams() {
+      let privateIp = "192.168.10.131"; //Remplacer privateIp par la vôtre
+      let brutResponse = await fetch(
+        `http://${privateIp}:3000/exams/${props.userId}`
+      );
+      let jsonResponse = await brutResponse.json();
+      let vaccinesList = jsonResponse.vaccines;
+      let medicalTestsList = jsonResponse.medicalTests;
+
+      //Création d'un tableau avec TOUS les examens (vaccins et test médicaux) sous forme d'objets {date: , name: }
+      let temp = [];
+      for (let i = 0; i < vaccinesList.length; i++) {
+        let date = new Date(vaccinesList[i].endDate);
+        let year = date.getFullYear();
+        let month = date.getMonth();
+        let day = date.getDate();
+
+        if (month < 10) month = "0" + month;
+        if (day < 10) day = "0" + day;
+
+        temp.push({
+          name: vaccinesList[i].name,
+          date: `${year}-${month}-${day}`,
+        });
+      }
+
+      for (let i = 0; i < medicalTestsList.length; i++) {
+        let date = new Date(medicalTestsList[i].endDate);
+        let year = date.getFullYear();
+        let month = date.getMonth();
+        let day = date.getDate();
+
+        if (month < 10) month = "0" + month;
+        if (day < 10) day = "0" + day;
+
+        temp.push({
+          name: medicalTestsList[i].name,
+          date: `${year}-${month}-${day}`,
+        });
+      }
+      setExams(temp);
+    }
+    takeExams();
+  }, [overlayContent]);
+
   let markedDates = {};
 
+  //Création des marqueurs de couleur sur le calendrier en fonction de l'échéance
+  //Passée = rouge
+  //Moins de 32 jours = orange
+  //Plus de 32 jours = vert
   for (let i = 0; i < exams.length; i++) {
     let examDate = new Date(exams[i].date);
     let todayDate = new Date();
@@ -73,6 +121,9 @@ export default function DashBoard(props) {
       markedDates[exams[i].date] = { selected: true, selectedColor: "green" };
     }
   }
+  // console.log("Premier", exams)
+
+  // console.log(exams)
 
   return (
     <View style={styles.container}>
@@ -99,9 +150,15 @@ export default function DashBoard(props) {
           fontStyle: "italic",
         }}
       >
-        Bonjour Marie !
+        Bonjour {props.firstName} !
       </Text>
-      <Button buttonStyle={styles.bigButton} title="Profil santé" />
+      <Button
+        buttonStyle={styles.bigButton}
+        title="Profil santé"
+        onPress={() =>
+          props.navigation.navigate("ProfilScreen", { screen: "ProfilScreen" })
+        }
+      />
       <Button
         buttonStyle={styles.bigButton}
         title="Rechercher un professionnel de santé"
@@ -117,10 +174,29 @@ export default function DashBoard(props) {
             let filter = exams.filter((e) => e.date === day.dateString);
 
             if (filter[0] !== undefined) {
+              let temp = new Date(filter[0].date);
+              let yy = temp.getFullYear();
+              let mm = temp.getMonth() + 1;
+              let dd = temp.getDate();
+
+              if (mm < 10) mm = "0" + mm;
+              if (dd < 10) dd = "0" + dd;
+
+              filter[0].date = `${dd}-${mm}-${yy}`;
+
               setVisible(true);
               setOverlayContent(filter);
             } else if (filter[0] === undefined) {
               filter.push({ date: day.dateString, name: "Pas d'examen prévu" });
+              let temp = new Date(filter[0].date);
+              let yy = temp.getFullYear();
+              let mm = temp.getMonth() + 1;
+              let dd = temp.getDate();
+
+              if (mm < 10) mm = "0" + mm;
+              if (dd < 10) dd = "0" + dd;
+
+              filter[0].date = `${dd}-${mm}-${yy}`;
               setVisible(true);
               setOverlayContent(filter);
             }
@@ -153,3 +229,9 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
 });
+
+function mapStateToProps(state) {
+  return { userId: state.userId, firstName: state.firstName };
+}
+
+export default connect(mapStateToProps, null)(DashBoardScreen);

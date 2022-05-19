@@ -1,5 +1,5 @@
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Animated,
   Dimensions,
@@ -59,20 +59,21 @@ function ProfilScreen(props) {
   // const dim = Dimensions.get("screen").width
   //Dropdown list filtre
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState([
-    "Profil",
-    "Catégorie",
-    "Priorité",
-    "Échéancé",
-    "État",
-  ]);
+  const [value, setValue] = useState([]);
+  // const [value, setValue] = useState([
+  //   "Profil",
+  //   "Catégorie",
+  //   "Priorité",
+  //   "Échéancé",
+  //   "État",
+  // ]);
   const [items, setItems] = useState([
     //Profil
-    { label: "Profil", value: "Profil" },
-    { label: "Claire", value: "Claire", parent: "Profil" },
-    { label: "Mandy", value: "Mandy", parent: "Profil" },
-    { label: "Jad", value: "Jad", parent: "Profil" },
-    { label: "Nicolas", value: "Nicolas", parent: "Profil" },
+    // { label: "Profil", value: "Profil" },
+    // { label: "Claire", value: "Claire", parent: "Profil" },
+    // { label: "Mandy", value: "Mandy", parent: "Profil" },
+    // { label: "Jad", value: "Jad", parent: "Profil" },
+    // { label: "Nicolas", value: "Nicolas", parent: "Profil" },
 
     //Catégorie
     { label: "Catégorie", value: "Catégorie" },
@@ -86,7 +87,7 @@ function ProfilScreen(props) {
     { label: "Personnel", value: "Personnel", parent: "Priorité" },
 
     //Priorité
-    { label: "Priorité", value: "Échéancé" },
+    { label: "Échéancé", value: "Échéancé" },
     { label: "Mois prochain", value: "Mois prochain", parent: "Échéancé" },
     {
       label: "6 prochains mois",
@@ -101,6 +102,27 @@ function ProfilScreen(props) {
     { label: "Fait", value: "Fait", parent: "État" },
     { label: "Prévus", value: "Prévus", parent: "État" },
   ]);
+
+  let names = ['Claire', 'Mandy', 'Nicolas', 'Jad']
+  let tempArray = items;
+  let tempDropDownArray = [];
+  let vaccines = [{ name: 'Diphtérie', status: 'Obligatoire' },
+  { name: 'Rougeole', status: 'Obligatoire' },
+  { name: 'Rhume', status: 'Recommandé' },
+  { name: 'Varicelle', status: 'Obligatoire' },
+  // { name: 'Choléra', status: 'Obligatoire' },
+  // { name: 'Coqueluche', status: 'Obligatoire' },
+  { name: 'Mal de tête', status: 'Recommandé' },
+  { name: 'Mal de ventre', status: 'Recommandé' }]
+
+  let exams = [{ name: 'examen1', status: 'Obligatoire' },
+  { name: 'examen2', status: 'Obligatoire' },
+  { name: 'examen3', status: 'Recommandé' },
+  { name: 'examen4', status: 'Obligatoire' },
+  // { name: 'Choléra', status: 'Obligatoire' },
+  // { name: 'Coqueluche', status: 'Obligatoire' },
+  { name: 'Mal de tête', status: 'Recommandé' },
+  { name: 'Mal de ventre', status: 'Recommandé' }]
 
   /* DropDownPicker État */
   // 5 ouvertures individuelles pour les 6 dropdown
@@ -124,6 +146,7 @@ function ProfilScreen(props) {
     { label: "Programmé le", value: "Programmé" },
   ]);
 
+  const [filters, setFilters] = useState([])
   /* Pour ouvrir un seul dropDownPicker à la fois dans le table */
   // const mySetOpenState = (i) => {
   //   let temp = [...openState]; // création copie
@@ -144,9 +167,9 @@ function ProfilScreen(props) {
   // Click sur les icônes +
   const [rowVisible, setRowVisible] = useState(false);
 
-  const addHealthCare = (e) => {};
+  const addHealthCare = (e) => { };
 
-  const addTrip = (e) => {};
+  const addTrip = (e) => { };
 
   /* DateTimePicker */
   const [visible, setVisible] = useState(false);
@@ -171,6 +194,43 @@ function ProfilScreen(props) {
     }
   };
 
+  const itemSetter = () => {
+    for (let i = 0; i < names.length; i++) {
+      tempArray.unshift({
+        label: names[i],
+        value: names[i],
+        parent: 'Profil'
+      })
+    }
+    tempArray.unshift({ label: "Profil", value: "Profil" });
+    setItems(tempArray);
+    console.log('items1', items)
+    console.log('tempArray', tempArray)
+  };
+
+  const setFilterCriteria = (item) => {
+    console.log('selectedItems', item);
+    setValue(item);
+    // for (let k = 0; k < item.length; k++) {
+    if (!tempDropDownArray.find(element => element === item[item.length - 1])) {
+      tempDropDownArray.push(item[item.length - 1]);
+    }
+
+    setFilters(tempDropDownArray);
+    // for (let j = 0; j < item.length; j++) {
+    //   console.log()
+    //   setFilters(prevState => [...prevState, { parent: item[j].parent, filter: item[j].value }]);
+    //   console.log('filtersinfor', filters);
+    // }
+  }
+
+  useEffect(() => {
+    itemSetter();
+  }, [items]);
+  console.log('items2', items)
+
+  console.log('filters', filters);
+
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   return (
     <View style={styles.container}>
@@ -183,9 +243,11 @@ function ProfilScreen(props) {
         setOpen={setOpen}
         setValue={setValue}
         setItems={setItems}
+        onSelectItem={(item) => setFilterCriteria(item)}
         theme="LIGHT"
         multiple={true} //Permet de sélectionner plusieurs options
         min={0} //Possible de ne rien sélectionner
+        max={10}
         mode="BADGE"
         valueStyle={{
           fontWeight: "bold",
@@ -218,8 +280,8 @@ function ProfilScreen(props) {
         <Text style={styles.textHeadColumn2}>État : </Text>
         <Text style={styles.textHeadColumn3}>Date : </Text>
       </View>
-      <View style={styles.row}>
-        <Text style={styles.textRow}>Diphtérie </Text>
+      {filters.find(element => element.value === 'Vaccin') && vaccines.filter(element => element.status === 'Obligatoire').map(vaccine => <View style={styles.row}>
+        <Text style={styles.textRow}>{vaccine.name}</Text>
         <DropDownPicker
           style={styles.dropDownPickerState}
           open={open1}
@@ -251,88 +313,12 @@ function ProfilScreen(props) {
               zIndex={1000}
               // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
               onChange={onChange}
-              // onConfirm={handleDatePicker}
-              // onCancel={hideDatePicker}
+            // onConfirm={handleDatePicker}
+            // onCancel={hideDatePicker}
             />
           )}
         </View>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.textRow}>Tétanos </Text>
-        <DropDownPicker
-          style={styles.dropDownPickerState}
-          open={open2}
-          value={value2}
-          placeholder="À renseigner"
-          items={state}
-          multiple={false} //Permet de sélectionner une seule option
-          setOpen={setOpen2}
-          setValue={setValue2}
-          setItems={setState}
-        />
-        <View>
-          {/* Le bouton pour afficher le dateTimePicker */}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => showDatePicker()}
-          >
-            {/* Affiche la date sélectionnée par le user dans le bouton */}
-            <Text style={styles.textDatePicker}>
-              {new Date(date).toLocaleDateString("fr-FR")}
-            </Text>
-          </TouchableOpacity>
-          {/* Le dateTimePicker */}
-          {visible && (
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange}
-              // onConfirm={handleDatePicker}
-              // onCancel={hideDatePicker}
-            />
-          )}
-        </View>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.textRow}>Rougeole </Text>
-        <DropDownPicker
-          style={styles.dropDownPickerState}
-          open={open3}
-          value={value3}
-          placeholder="À renseigner"
-          items={state}
-          multiple={false} //Permet de sélectionner une seule option
-          setOpen={setOpen3}
-          setValue={setValue3}
-          setItems={setState}
-        />
-        <View>
-          {/* Le bouton pour afficher le dateTimePicker */}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => showDatePicker()}
-          >
-            {/* Affiche la date sélectionnée par le user dans le bouton */}
-            <Text style={styles.textDatePicker}>
-              {new Date(date).toLocaleDateString("fr-FR")}
-            </Text>
-          </TouchableOpacity>
-          {/* Le dateTimePicker */}
-          {visible && (
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange}
-              // onConfirm={handleDatePicker}
-              // onCancel={hideDatePicker}
-            />
-          )}
-        </View>
-      </View>
+      </View>)}
 
       {/* >>>>>>>>>>>>>>>>>>>>> Vaccins recommandés <<<<<<<<<<<<<<<<<<<<<< */}
       <View style={styles.title}>
@@ -351,8 +337,8 @@ function ProfilScreen(props) {
         <Text style={styles.textHeadColumn2}>État : </Text>
         <Text style={styles.textHeadColumn3}>Date : </Text>
       </View>
-      <View style={styles.row}>
-        <Text style={styles.textRow}>COVID-19</Text>
+      {vaccines.filter(element => element.status === 'Recommandé').map(vaccine => <View style={styles.row}>
+        <Text style={styles.textRow}>{vaccine.name}</Text>
         <DropDownPicker
           style={styles.dropDownPickerState}
           open={open4}
@@ -383,50 +369,13 @@ function ProfilScreen(props) {
               value={date}
               // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
               onChange={onChange}
-              // onConfirm={handleDatePicker}
-              // onCancel={hideDatePicker}
+            // onConfirm={handleDatePicker}
+            // onCancel={hideDatePicker}
             />
           )}
         </View>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.textRow}>Hépatite B </Text>
-        <DropDownPicker
-          style={styles.dropDownPickerState}
-          open={open5}
-          value={value5}
-          placeholder="À renseigner"
-          items={state}
-          multiple={false} //Permet de sélectionner une seule option
-          setOpen={setOpen5}
-          setValue={setValue5}
-          setItems={setState}
-        />
-        <View>
-          {/* Le bouton pour afficher le dateTimePicker */}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => showDatePicker()}
-          >
-            {/* Affiche la date sélectionnée par le user dans le bouton */}
-            <Text style={styles.textDatePicker}>
-              {new Date(date).toLocaleDateString("fr-FR")}
-            </Text>
-          </TouchableOpacity>
-          {/* Le dateTimePicker */}
-          {visible && (
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange}
-              // onConfirm={handleDatePicker}
-              // onCancel={hideDatePicker}
-            />
-          )}
-        </View>
-      </View>
+      </View>)}
+
 
       {/*>>>>>>>>>>>>>>>>>>>>> Vaccins projets personnels <<<<<<<<<<<<<<<<<<<<<< */}
       <View style={styles.title}>

@@ -47,7 +47,7 @@ const store = createStore(combineReducers({ mail, userId })); //J'appelle les re
 // FONCTION TABBAR
 function BottomNavigator() {
   return (
-    <Tab.Navigator
+    <Tab.Navigator 
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }) => {
           let iconName;

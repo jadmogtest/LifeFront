@@ -155,7 +155,6 @@ function LogScreen(props) {
       </View>
     );
   }
-
 }
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STYLES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
@@ -200,7 +199,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     // flexDirection: "row",
     // alignItems: "center",
-    // alignSelf: "center",  
+    // alignSelf: "center",
   },
   textSlogan: {
     color: "#37663B",

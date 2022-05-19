@@ -287,6 +287,11 @@ function ProfilScreen(props) {
     );
   });
 
+  //Click sur les icônes +
+  let addHealthCare = (e) => { };
+
+  let addTrip = (e) => { };
+
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   return (
     <View style={styles.container}>

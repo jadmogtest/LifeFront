@@ -38,6 +38,9 @@ function MapScreen(props) {
   const [jobs, setJobs] = useState([]);
   // const jobs = [];
 
+  //Variable qui va stocker les types de professionnels de santé
+  const [markerCategory, setMarkerCategory] = useState([]);
+
   const [text, onChangeText] = React.useState();
 
   //Variable qui va rendre visible ou non le modal
@@ -92,7 +95,6 @@ function MapScreen(props) {
 
   //Boucle pour push les types d'établissement de santé dans le tableau "jobs" si le type n'existe pas déjà
   function listCategory() {
-    // let copyList = [...jobs,]
     for (let i = 0; i < listAPI.length; i++) {
       setJobs((prevState) => [
         ...prevState,
@@ -143,7 +145,7 @@ function MapScreen(props) {
           valueField="value"
           placeholder="Rechercher un professionnel de santé"
           value={value}
-          onChange={() => {}}
+          onPress={() => {}}
           renderLeftIcon={() => (
             <Entypo style={styles.icon} color="#5BAA62" name="leaf" size={20} />
           )}

@@ -24,8 +24,6 @@ import SettingsScreen from "./screens/SettingsScreen";
 import MapScreen from "./screens/MapScreen";
 import SignUpInfosScreen from "./screens/SignUpInfosScreen";
 
-
-
 // NAVIGATION
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -82,7 +80,12 @@ export default function App() {
           <Stack.Screen name="LogScreen" component={LogScreen} />
           <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
           <Stack.Screen name="MapScreen" component={MapScreen} />
-          <Stack.Screen name="SignUpInfosScreen" component={SignUpInfosScreen} />
+          <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
+
+          <Stack.Screen
+            name="SignUpInfosScreen"
+            component={SignUpInfosScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

@@ -38,7 +38,7 @@ function MapScreen(props) {
   const [jobs, setJobs] = useState([]);
   // const jobs = [];
 
-  //Variable qui va stocker les types de professionnels de santé
+  //Variable qui va changer les markers en fonctions du type professionnel de santé
   const [markerCategory, setMarkerCategory] = useState([]);
 
   const [text, onChangeText] = React.useState();

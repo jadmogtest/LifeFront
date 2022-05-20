@@ -4,6 +4,8 @@ import { StyleSheet, Text, View } from "react-native";
 import { Button, Overlay } from "react-native-elements";
 import { connect } from "react-redux";
 
+var moment = require('moment');
+
 //Pour mettre le calendrier en français
 LocaleConfig.locales["fr"] = {
   monthNames: [
@@ -57,7 +59,10 @@ function DashBoardScreen(props) {
   //Récupération des vaccins et tests médicaux en BDD
   useEffect(() => {
     async function takeExams() {
-      let privateIp = "192.168.10.131"; //Remplacer privateIp par la vôtre
+      // let privateIp = "192.168.10.131"; //Remplacer privateIp par la vôtre
+      // let privateIp = "192.168.1.43"; //Remplacer privateIp par la vôtre
+      let privateIp = "192.168.10.116"; //Remplacer privateIp par la vôtre
+
       let brutResponse = await fetch(
         `http://${privateIp}:3000/exams/${props.userId}`
       );
@@ -65,37 +70,37 @@ function DashBoardScreen(props) {
       let vaccinesList = jsonResponse.vaccines;
       let medicalTestsList = jsonResponse.medicalTests;
 
+      // console.log(props.userId)
+
       //Création d'un tableau avec TOUS les examens (vaccins et test médicaux) sous forme d'objets {date: , name: }
       let temp = [];
       for (let i = 0; i < vaccinesList.length; i++) {
         let date = new Date(vaccinesList[i].endDate);
-        let year = date.getFullYear();
-        let month = date.getMonth();
-        let day = date.getDate();
 
-        if (month < 10) month = "0" + month;
-        if (day < 10) day = "0" + day;
+        // console.log("date 1 !!!!!!!!!!!!!!", date)
+        let dateFormated = moment(date).format('YYYY-MM-DD')
+        // console.log(moment(date).format('DD-MM-YYYY'))
 
         temp.push({
           name: vaccinesList[i].name,
-          date: `${year}-${month}-${day}`,
+          date: dateFormated
         });
       }
 
       for (let i = 0; i < medicalTestsList.length; i++) {
         let date = new Date(medicalTestsList[i].endDate);
-        let year = date.getFullYear();
-        let month = date.getMonth();
-        let day = date.getDate();
 
-        if (month < 10) month = "0" + month;
-        if (day < 10) day = "0" + day;
+        // console.log("date 2 !!!!!!!!!!!!!!!", date)
+        let dateFormated = moment(date).format('YYYY-MM-DD')
+        // console.log(dateFormated)
+
 
         temp.push({
           name: medicalTestsList[i].name,
-          date: `${year}-${month}-${day}`,
+          date: dateFormated
         });
       }
+
       setExams(temp);
     }
     takeExams();
@@ -121,10 +126,9 @@ function DashBoardScreen(props) {
       markedDates[exams[i].date] = { selected: true, selectedColor: "green" };
     }
   }
-  // console.log("Premier", exams)
 
-  // console.log(exams)
-
+  // console.log(markedDates)
+  // console.log(props.firstName)
   return (
     <View style={styles.container}>
       <Overlay
@@ -175,28 +179,17 @@ function DashBoardScreen(props) {
 
             if (filter[0] !== undefined) {
               let temp = new Date(filter[0].date);
-              let yy = temp.getFullYear();
-              let mm = temp.getMonth() + 1;
-              let dd = temp.getDate();
+              let dateFormated = moment(temp).format('DD-MM-YYYY')
+              filter[0].date = dateFormated
 
-              if (mm < 10) mm = "0" + mm;
-              if (dd < 10) dd = "0" + dd;
-
-              filter[0].date = `${dd}-${mm}-${yy}`;
 
               setVisible(true);
               setOverlayContent(filter);
             } else if (filter[0] === undefined) {
               filter.push({ date: day.dateString, name: "Pas d'examen prévu" });
               let temp = new Date(filter[0].date);
-              let yy = temp.getFullYear();
-              let mm = temp.getMonth() + 1;
-              let dd = temp.getDate();
-
-              if (mm < 10) mm = "0" + mm;
-              if (dd < 10) dd = "0" + dd;
-
-              filter[0].date = `${dd}-${mm}-${yy}`;
+              let dateFormated = moment(temp).format('DD-MM-YYYY')
+              filter[0].date = dateFormated;
               setVisible(true);
               setOverlayContent(filter);
             }
@@ -206,6 +199,7 @@ function DashBoardScreen(props) {
         }}
         style={styles.calendar}
         markedDates={markedDates}
+
       />
     </View>
   );

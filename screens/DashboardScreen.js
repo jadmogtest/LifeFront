@@ -55,6 +55,7 @@ function DashBoardScreen(props) {
   const [visible, setVisible] = useState(false);
   const [overlayContent, setOverlayContent] = useState([{}]);
   const [exams, setExams] = useState([]);
+  const [firstName, setFirstName] = useState("")
 
   //Récupération des vaccins et tests médicaux en BDD
   useEffect(() => {
@@ -64,13 +65,15 @@ function DashBoardScreen(props) {
       let privateIp = "192.168.10.116"; //Remplacer privateIp par la vôtre
 
       let brutResponse = await fetch(
-        `http://${privateIp}:3000/exams/${props.userId}`
+        `http://${privateIp}:3000/user/${props.userId}`
       );
       let jsonResponse = await brutResponse.json();
       let vaccinesList = jsonResponse.vaccines;
       let medicalTestsList = jsonResponse.medicalTests;
+      let firstname = jsonResponse.firstname;
+      setFirstName(firstname)
 
-      // console.log(props.userId)
+      console.log(firstname)
 
       //Création d'un tableau avec TOUS les examens (vaccins et test médicaux) sous forme d'objets {date: , name: }
       let temp = [];
@@ -154,7 +157,7 @@ function DashBoardScreen(props) {
           fontStyle: "italic",
         }}
       >
-        Bonjour {props.firstName} !
+        Bonjour {firstName} !
       </Text>
       <Button
         buttonStyle={styles.bigButton}
@@ -225,7 +228,7 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
-  return { userId: state.userId, firstName: state.firstName };
+  return { userId: state.userId };
 }
 
 export default connect(mapStateToProps, null)(DashBoardScreen);

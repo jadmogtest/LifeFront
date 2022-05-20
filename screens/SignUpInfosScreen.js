@@ -377,9 +377,7 @@ function mapDispatchToProps(dispatch) {
         setUserId: function (userId) {
             dispatch({ type: "addUserId", userId: userId })
         },
-        setfirstName: function (firstName) {
-            dispatch({ type: "addfirstName", firstName: firstName })
-        }
+
     };
 }
 export default connect(null, mapDispatchToProps)(SignUpInfosScreen);

@@ -15,6 +15,8 @@ function LogScreen(props) {
   //Input
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+
   const [passwordVisible, setPasswordVisible] = useState(true); //Permet de cacher le password
 
   //CheckBox
@@ -290,6 +292,9 @@ function mapDispatchToProps(dispatch) {
       dispatch({ type: "saveMail", mail: mail });
       dispatch({ type: "addToken", token: token });
     },
+    setfirstName: function (firstName) {
+      dispatch({ type: "addfirstName", firstName: firstName })
+    }
   };
 }
 

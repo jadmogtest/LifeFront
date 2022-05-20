@@ -34,13 +34,14 @@ const Tab = createBottomTabNavigator();
 import mail from "./reducers/mail";
 import userId from "./reducers/userId";
 import etab from "./reducers/etablissementsdesante";
+import token from "./reducers/token";
 
 /* J'importe le Provider */
 import { Provider } from "react-redux";
 /* J'importe le Store */
 import { createStore, combineReducers } from "redux";
 /* Je crée le store */
-const store = createStore(combineReducers({ mail, etab, userId })); //J'appelle les reducers
+const store = createStore(combineReducers({ mail, etab, userId, token })); //J'appelle les reducers
 
 // FONCTION TABBAR
 function BottomNavigator() {

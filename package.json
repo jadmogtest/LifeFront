@@ -26,6 +26,7 @@
     "react-native": "0.68.2",
     "react-native-calendars": "^1.1284.0",
     "react-native-dropdown-picker": "^5.4.2",
+    "react-native-element-dropdown": "^1.8.11",
     "react-native-elements": "^3.4.2",
     "react-native-gesture-handler": "~2.2.1",
     "react-native-maps": "0.30.1",

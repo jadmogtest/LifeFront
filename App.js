@@ -5,6 +5,8 @@ LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
 ]);
 LogBox.ignoreLogs(["Disconnected from Metro."]);
+import { ViewPropTypes } from 'deprecated-react-native-prop-types';
+
 
 // IMPORT DES DIFFERENTES LIBRAIRIES
 import React from "react";
@@ -31,13 +33,14 @@ const Tab = createBottomTabNavigator();
 // <<<<<<<<<<<<<<<<<<<< J'INITIALISE LE STORE >>>>>>>>>>>>>>>>>>>>>>
 /* J'importe les reducers */
 import mail from "./reducers/mail";
+import userId from "./reducers/userId";
 
 /* J'importe le Provider */
 import { Provider } from "react-redux";
 /* J'importe le Store */
 import { createStore, combineReducers } from "redux";
 /* Je crée le store */
-const store = createStore(combineReducers({ mail })); //J'appelle les reducers
+const store = createStore(combineReducers({ mail, userId })); //J'appelle les reducers
 
 // FONCTION TABBAR
 function BottomNavigator() {

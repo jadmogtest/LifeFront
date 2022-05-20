@@ -665,6 +665,11 @@ function ProfilScreen(props) {
     );
   });
 
+  //Click sur les icônes +
+  let addHealthCare = (e) => { };
+
+  let addTrip = (e) => { };
+
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   return (
     <ScrollView style={styles.scroll}>

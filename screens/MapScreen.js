@@ -52,7 +52,7 @@ function MapScreen(props) {
           //Fonction qui récupère la géolocalisation en temps réel tous les 2 mètres
           setCurrentLatitude(location.coords.latitude);
           setCurrentLongitude(location.coords.longitude);
-          console.log("|| Coords ||", location);
+          // console.log("|| Coords ||", location);
         });
       }
     }

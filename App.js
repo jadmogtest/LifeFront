@@ -26,9 +26,6 @@ import SettingsScreen from "./screens/SettingsScreen";
 import MapScreen from "./screens/MapScreen";
 import SignUpInfosScreen from "./screens/SignUpInfosScreen";
 
-
-
-
 // NAVIGATION
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();

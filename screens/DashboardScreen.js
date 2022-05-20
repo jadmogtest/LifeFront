@@ -129,6 +129,125 @@ function DashBoardScreen(props) {
       markedDates[exams[i].date] = { selected: true, selectedColor: "green" };
     }
   }
+  // console.log("Premier", exams)
+
+  // console.log(exams)
+
+  //   return (
+  //     <View style={styles.container}>
+  //       <Overlay
+  //         overlayStyle={{ flex: 0.5, width: 300, borderRadius: 50 }}
+  //         width="5000"
+  //         isVisible={visible}
+  //         onBackdropPress={() => {
+  //           setVisible(false);
+  //         }}
+  //       >
+  //         <View
+  //           style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
+  //         >
+  //           <Text style={{ fontSize: 30 }}>{overlayContent[0].date}</Text>
+  //           <Text style={{ fontSize: 30 }}>{overlayContent[0].name}</Text>
+  //         </View>
+  //       </Overlay>
+  //       <Text
+  //         style={{
+  //           marginBottom: 30,
+  //           fontSize: 30,
+  //           color: "green",
+  //           fontStyle: "italic",
+  //         }}
+  //       >
+  //         Bonjour Marie !
+  //       </Text>
+  //       <Button
+  //         buttonStyle={styles.bigButton}
+  //         title="Profil santé"
+  //         onPress={() =>
+  //           props.navigation.navigate("ProfilScreen", {
+  //             screen: "ProfilScreen",
+  //           })
+  //         }
+  //       />
+  //       <Button
+  //         buttonStyle={styles.bigButton}
+  //         title="Rechercher un professionnel de santé"
+  //         onPress={() =>
+  //           props.navigation.navigate("MapScreen", { screen: "MapScreen" })
+  //         }
+  //       />
+  //       <Button buttonStyle={styles.bigButton} title="Mes lieux de santé" />
+  //           <Text style={{ marginBottom: 30, fontSize: 30, color: "green", fontStyle: 'italic' }}>Bonjour Marie !</Text>
+  //           <Button
+  //               buttonStyle={styles.bigButton}
+  //               title="Profil santé"
+  //           />
+  //           <Button
+  //               buttonStyle={styles.bigButton}
+  //               title="Rechercher un professionnel de santé"
+  //               onPress={() =>
+  //                   props.navigation.navigate("MapScreen", { screen: "MapScreen" })}
+  //           />
+  //           <Button
+  //               buttonStyle={styles.bigButton}
+  //               title="Mes lieux de santé"
+
+  //           />
+  //           <Calendar
+  //               locale="fr"
+  //               onDayPress={day => {
+  //                   if (visible === false) {
+
+
+  //                       let filter = exams.filter(e => e.date === day.dateString)
+
+  //                       if (filter[0] !== undefined) {
+  //                           let temp = new Date(filter[0].date)
+  //                           let yy = temp.getFullYear();
+  //                           let mm = temp.getMonth() + 1;
+  //                           let dd = temp.getDate();
+
+  //                           if (mm < 10)
+  //                               mm = '0' + mm;
+  //                           if (dd < 10)
+  //                               dd = '0' + dd;
+
+  //                           filter[0].date = `${dd}-${mm}-${yy}`
+
+  //                           setVisible(true)
+  //                           setOverlayContent(filter)
+
+
+
+  //                       } else if (filter[0] === undefined) {
+  //                           filter.push({ date: day.dateString, name: "Pas d'examen prévu" })
+  //                           let temp = new Date(filter[0].date)
+  //                           let yy = temp.getFullYear();
+  //                           let mm = temp.getMonth() + 1;
+  //                           let dd = temp.getDate();
+
+  //                           if (mm < 10)
+  //                               mm = '0' + mm;
+  //                           if (dd < 10)
+  //                               dd = '0' + dd;
+
+  //                           filter[0].date = `${dd}-${mm}-${yy}`
+  //                           setVisible(true)
+  //                           setOverlayContent(filter)
+  //                       }
+
+
+  //                   } else if (visible === true) {
+  //                       setVisible(false)
+  //                   }
+
+
+  //               }}
+  //               style={styles.calendar}
+  //               markedDates={markedDates}
+  //           />
+
+  // }
 
   // console.log(markedDates)
   // console.log(props.firstName)

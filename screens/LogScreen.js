@@ -9,6 +9,9 @@ import {
   Platform,
 } from "react-native";
 
+import DashBoard from "./DashboardScreen";
+import ProfilScreen from "./ProfilScreen";
+
 import { Button, CheckBox } from "react-native-elements";
 // import { TextInput } from "react-native-paper"; // npm install react-native-paper
 import Icon from "react-native-vector-icons/Ionicons";
@@ -39,9 +42,6 @@ function LogScreen(props) {
 
   //Sign-in
   const signIn = async (mail, password) => {
-    props.navigation.navigate("BottomNavigator", {
-      screen: "Profilscreen",
-    });
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
     let privateIp = "192.168.10.155"; //Remplacer privateIp par la vôtre
     // let privateIp = "172.20.10.3"; //Remplacer privateIp par la vôtre
@@ -61,6 +61,12 @@ function LogScreen(props) {
       console.log("coucoucoucouc", response)
       props.tokenStore(response.token)
       props.addMail(mail);
+      if (response.token) {
+        props.navigation.navigate("Dashboard", {
+          screen: "DashboardScreen",
+        });
+      }
+
     } else {
       setErrorSignIn(
         //J'affiche un message d'erreur si l'utilisateur n'existe pas ou champs de saisies vide

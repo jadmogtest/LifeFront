@@ -52,7 +52,7 @@ function MapScreen(props) {
           //Fonction qui récupère la géolocalisation en temps réel tous les 2 mètres
           setCurrentLatitude(location.coords.latitude);
           setCurrentLongitude(location.coords.longitude);
-          console.log("|| Coords ||", location);
+          // console.log("|| Coords ||", location);
         });
       }
     }
@@ -153,8 +153,8 @@ function MapScreen(props) {
         <MapView
           style={styles.map}
           initialRegion={{
-            latitude: 48.856614, // pour centrer la carte
-            longitude: 2.3522219,
+            latitude: 43.604652, // pour centrer la carte
+            longitude: 1.444209,
             latitudeDelta: 0.0922, // le rayon à afficher à partir du centre
             longitudeDelta: 0.0421,
           }}
@@ -167,8 +167,8 @@ function MapScreen(props) {
             // icon = {require('../assets/leaf.png') }
             // size={20}
             coordinate={{
-              latitude: currentLatitude,
-              longitude: currentLongitude,
+              latitude: 43.604652,
+              longitude: 1.444209,
             }}
             draggable
           />
@@ -180,7 +180,6 @@ function MapScreen(props) {
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => {
-              Alert.alert("Modal has been closed.");
               setModalVisible(!modalVisible);
             }}
           >

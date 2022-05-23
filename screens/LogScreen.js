@@ -8,6 +8,9 @@ import {
   Image,
   Platform,
 } from "react-native";
+
+import DashBoard from "./DashboardScreen"
+
 import { Button, CheckBox } from "react-native-elements";
 // import { TextInput } from "react-native-paper"; // npm install react-native-paper
 import Icon from "react-native-vector-icons/Ionicons";
@@ -37,42 +40,48 @@ function LogScreen(props) {
   const [errorSignIn, setErrorSignIn] = useState("");
 
   //Sign-in
-  const signIn = async () => {
-    props.navigation.navigate("BottomNavigator", {
-      screen: "ProfilScreen",
-    });
+  const signIn = async (mail, password) => {
+
 
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
-    const rawResponse = await fetch("http://192.168.10.111:3000/sign-in", {
+    let privateIp = "192.168.10.116"; //Remplacer privateIp par la vôtre
+    const rawResponse = await fetch(`http://${privateIp}:3000/sign-in`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `passwordFromFront=${password}&emailFromFront=${mail}`,
     });
 
+
     let response = await rawResponse.json();
+    console.log("yooooooooooooooooooooooooooo", response)
 
 
-    if (response.login === true) {
+    if (response.result === true) {
       //Si la bdd retrouve le user on se connecte
       setLogin(true);
       props.addMail(mail);
+      props.navigation.navigate("BottomNavigator", {
+        screen: "ProfilScreen",
+      });
     } else {
       setErrorSignIn(
         //J'affiche un message d'erreur si l'utilisateur n'existe pas ou champs de saisies vide
         "Les champs n'ont pas été remplit correctement ou votre compte n'existe pas encore !"
       );
-    }
-    setPassword(""); //Je vide le champ mail si error
-    setMail(""); //Je vide le champ password si error
+
+      setPassword(""); //Je vide le champ mail si error
+      setMail(""); //Je vide le champ password si error
+    };
+
+    // // *<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SIGN-UP >>>>>>>>>>>>>>>>>>>>>>>>>>*
+
   };
 
-  // *<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SIGN-UP >>>>>>>>>>>>>>>>>>>>>>>>>>*
   const signUp = async () => {
     props.navigation.navigate("SignUpInfosScreen", {
       screen: "SignUpInfosScreen",
-    });
+    })
   };
-
   // useEffect(() => {
   //   AsyncStorage.getItem("mail", function (error, data) {
   //     if (data) {
@@ -82,10 +91,9 @@ function LogScreen(props) {
   // });
 
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
-
   if (login) {
     // Si le mail et le password sont reconnus
-    return <ProfilScreen />;
+    return <DashBoard />;
   } else {
     // Si le mail et le password ne sont pas reconnus
     return (
@@ -162,7 +170,7 @@ function LogScreen(props) {
           type="solid"
           buttonStyle={styles.button}
           title="Se connecter"
-          onPress={() => signIn()}
+          onPress={() => signIn(mail, password)}
         ></Button>
         <Button
           type="solid"

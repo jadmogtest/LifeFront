@@ -132,10 +132,9 @@ function ProfilScreen(props) {
     "Examen de santé",
     "Vaccin",
     "Obligatoire",
-    "Recommandé"
+    "Recommandé",
   ]);
 
-  console.log('value', value);
   const [items, setItems] = useState([
     //Profil
     { label: "Profil", value: "Profil", disabled: true }, //disabled: true => le user ne peux pas le sélectionner
@@ -261,50 +260,34 @@ function ProfilScreen(props) {
     },
   ];
 
-  //Tableau des données infos
-  const infos = [
-    {
-      title: "Vaccins obligatoires :",
-      infos:
-        "11 vaccins sont obligatoires chez les nourrissons nés après le 1er janvier 2018. Trois vaccins restent obligatoires chez les enfants nés avant cette date. Le vaccin contre la fièvre jaune l'est aussi pour les résidents de Guyane française. En milieu professionnel, selon l’activité exercée, certaines vaccinations sont exigées.",
-    },
-    {
-      title: "Vaccins recommandés :",
-      infos:
-        "Des vaccins existent contre diverses maladies graves telles que la tuberculose, l'hépatite A... S’ils ne sont pas obligatoires, ils restent la meilleure façon d’éviter ces maladies et de protéger les personnes fragiles (nourrissons, femmes enceintes, personnes âgées…). ",
-    },
-    {
-      title: "Vaccins projets personnels :",
-      infos:
-        "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la liste des vaccins obligatoires et des vaccins recommandés vous pouvez en ajouter dans la section 'Vaccins projets personnels' en cliquant sur",
-    },
-  ];
-
   // /* DropDown État */
   // // Pour l'ouverture individuelle des dropdown d'état
   // const [open1, setOpen1] = useState(false);
   // const [open2, setOpen2] = useState(false);
   // const [open3, setOpen3] = useState(false);
   // const [open4, setOpen4] = useState(false);
-  let names = ['Claire', 'Mandy', 'Nicolas', 'Jad']
+  let names = ["Claire", "Mandy", "Nicolas", "Jad"];
   let tempArray = items;
-  let vaccines = [{ name: 'Diphtérie', status: 'Obligatoire' },
-  { name: 'Rougeole', status: 'Obligatoire' },
-  { name: 'Rhume', status: 'Recommandé' },
-  { name: 'Varicelle', status: 'Obligatoire' },
-  // { name: 'Choléra', status: 'Obligatoire' },
-  // { name: 'Coqueluche', status: 'Obligatoire' },
-  { name: 'Mal de tête', status: 'Recommandé' },
-  { name: 'Mal de ventre', status: 'Recommandé' }]
+  let vaccines = [
+    //Vaccins obligatoires
+    { name: "Diphtérie", status: "Obligatoire" },
+    { name: "Rougeole", status: "Obligatoire" },
+    { name: "Tétanos", status: "Obligatoire" },
+    //Vaccins recommandés
+    { name: "COVID-19", status: "Recommandé" },
+    { name: "Hépatite B", status: "Recommandé" },
+  ];
 
-  let exams = [{ name: 'examen1', status: 'Obligatoire' },
-  { name: 'examen2', status: 'Obligatoire' },
-  { name: 'examen3', status: 'Recommandé' },
-  { name: 'examen4', status: 'Obligatoire' },
-  // { name: 'Choléra', status: 'Obligatoire' },
-  // { name: 'Coqueluche', status: 'Obligatoire' },
-  { name: 'Mal de tête', status: 'Recommandé' },
-  { name: 'Mal de ventre', status: 'Recommandé' }]
+  let exams = [
+    //Examens obligatoires
+    { name: "examen1", status: "Obligatoire" },
+    { name: "examen2", status: "Obligatoire" },
+    { name: "examen3", status: "Obligatoire" },
+    { name: "examen4", status: "Obligatoire" },
+    //Examens recommandés
+    { name: "Bilan sanguin", status: "Recommandé" },
+    { name: "Bilan urinaire", status: "Recommandé" },
+  ];
 
   /* DropDownPicker État */
   // 5 ouvertures individuelles pour les 6 dropdown
@@ -368,58 +351,53 @@ function ProfilScreen(props) {
       label: "Vaccin",
       parent: "Catégorie",
       value: "Vaccin",
-    }, {
+    },
+    {
       label: "Examen de santé",
       parent: "Catégorie",
       value: "Examen de santé",
-    }, {
+    },
+    {
       label: "Obligatoire",
       parent: "Priorité",
       value: "Obligatoire",
-    }, {
+    },
+    {
       label: "Recommandé",
       parent: "Priorité",
       value: "Recommandé",
-    }])
-
-  let tempDropDownArray = [...filters];
-  /* Pour ouvrir un seul dropDownPicker à la fois dans le table */
-  // const mySetOpenState = (i) => {
-  //   let temp = [...openState]; // création copie
-  //   temp = [...temp.slice(0, i), !temp[i], ...temp.slice(i + 1)];
-  //   setOpenState(temp); //MAJ de l'état
-  // };
+    },
+  ]);
 
   /* ________________ LES DIFFÉRENTS MODALS ________________ */
   /* Les différents modals  apparaissent au clic sur les icones info */
-  const modal = [
+  //Tableau des données infos
+  const infos = [
     {
-      title: "Vaccins obligatoires",
-      description:
-        "11 vaccins sont obligatoires chez les nourrissons nés après le 1er  ",
+      title: "Vaccins obligatoires :",
+      infos:
+        "11 vaccins sont obligatoires chez les nourrissons nés après le 1er janvier 2018. Trois vaccins restent obligatoires chez les enfants nés avant cette date. Le vaccin contre la fièvre jaune l'est aussi pour les résidents de Guyane française. En milieu professionnel, selon l’activité exercée, certaines vaccinations sont exigées.",
     },
     {
-      title: "Vaccins recommandés",
-      description:
-        "Des vaccins existent contre diverses maladies graves telles que la  ",
+      title: "Vaccins recommandés :",
+      infos:
+        "Des vaccins existent contre diverses maladies graves telles que la tuberculose, l'hépatite A... S’ils ne sont pas obligatoires, ils restent la meilleure façon d’éviter ces maladies et de protéger les personnes fragiles (nourrissons, femmes enceintes, personnes âgées…). ",
     },
     {
-      title: "Vaccins projets personnels",
-      description:
-        "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la  ",
+      title: "Vaccins projets personnels :",
+      infos:
+        "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la liste des vaccins obligatoires et des vaccins recommandés vous pouvez en ajouter dans la section 'Vaccins projets personnels' en cliquant sur",
     },
   ];
-  // Modal Vaccins obligatoires (VO)
-  const [modalVOVisible, setModalVOVisible] = useState(false);
 
-  // Modal Vaccins recommandés (VR)
-  const [modalVRVisible, setModalVRVisible] = useState(false);
+  // Modal Infos Vaccins qui apparait au clic sur l'icône info
+  const [modalInfosVisible, setModalInfosVisible] = useState(false);
 
-  // Modal Vaccins projets personnels (VPP)
-  const [modalVPPVisible, setModalVPPVisible] = useState(false);
+  // // Modal Vaccins projets personnels (VPP)
+  // const [modalVPPVisible, setModalVPPVisible] = useState(false);
 
-  // Modal défition diphtérie (Diph)
-  const [modalDiphVisible, setModalDiphVisible] = useState(false);
+  // // Modal défition diphtérie (Diph)
+  const [modalDefVisible, setModalDefVisible] = useState(false);
 
   // Modal date
   const [modalDate, setModalDate] = useState(false);
@@ -430,18 +408,6 @@ function ProfilScreen(props) {
   const [modalDate6, setModalDate6] = useState(false);
   const [modalDate7, setModalDate7] = useState(false);
   const [modalDate8, setModalDate8] = useState(false);
-
-  /*
-  TODO :
-  // Click sur les icônes +
-  const [rowVisible, setRowVisible] = useState(false);
-
-  const addHealthCare = (e) => { };
-
-  const addTrip = (e) => { };
-  // const addHealthCare = (e) => {};
-
-  // const addTrip = (e) => {};
 
   /* DateTimePicker */
   const [visible, setVisible] = useState(false);
@@ -526,7 +492,7 @@ function ProfilScreen(props) {
   const launchModal = (name, description) => {
     setName(name);
     setDescription(description);
-    setModalDiphVisible(true);
+    setModalDefVisible(true);
   };
 
   const dateModal = () => {
@@ -645,7 +611,7 @@ function ProfilScreen(props) {
   const infosModal = (title, infos) => {
     setName(title);
     setDescription(infos);
-    setModalVRVisible(true);
+    setModalInfosVisible(true);
   };
 
   //liste dynamique filtre profils
@@ -654,8 +620,8 @@ function ProfilScreen(props) {
       tempArray.unshift({
         label: names[i],
         value: names[i],
-        parent: 'Profil'
-      })
+        parent: "Profil",
+      });
     }
     tempArray.unshift({ label: "Profil", value: "Profil" });
     setItems(tempArray);
@@ -665,23 +631,27 @@ function ProfilScreen(props) {
   const setFilterCriteria = (item) => {
     if (item.length > 0) {
       let tempDropDownValuesArray = [...value];
-      console.log('tempDropDown', tempDropDownValuesArray)
-      console.log('selectedItems', item);
+      // console.log('tempDropDown', tempDropDownValuesArray)
+      // console.log('selectedItems', item);
       // if (!tempDropDownArray.find(element => element === item[item.length - 1])) {
       //   tempDropDownArray.push(item[item.length - 1]);
       // }
-      if (!tempDropDownValuesArray.find(element => element === item[item.length - 1].value)) {
-        tempDropDownValuesArray.push(item[item.length - 1].value)
+      if (
+        !tempDropDownValuesArray.find(
+          (element) => element === item[item.length - 1].value
+        )
+      ) {
+        tempDropDownValuesArray.push(item[item.length - 1].value);
       }
 
-      console.log('tempDrop after', tempDropDownValuesArray)
+      // console.log('tempDrop after', tempDropDownValuesArray)
       // setFilters(tempDropDownArray);
       setValue(tempDropDownValuesArray);
     }
     //  else {
     //   setFilters(arr);
     // }
-  }
+  };
 
   // const removeFilterCriteria = () => {
   //   return filters;
@@ -695,13 +665,13 @@ function ProfilScreen(props) {
   // }, []);
 
   useEffect(() => {
-    console.log('value useeffect', value)
+    // console.log("value useeffect", value);
   }, [value]);
-
 
   useEffect(() => {
     itemSetter();
   }, [items]);
+  
   /* >>>>>>>>>> Ajout d'une ligne de vaccin au clic sur l'icône + <<<<<<<<<<<<<< */
   const [healthCare, setHealthCare] = useState([]); //Pour garder afficher les vaccins déja ajoutés lorsque le user reclic sur l'icône +
   const [valueVaccine, setValueVaccine] = useState(null); //Pour afficher les valeurs dans le dropDown
@@ -724,7 +694,7 @@ function ProfilScreen(props) {
   const list = []; //Je crée un tableau vide dans lequel je vais pusher les vaccins que le user va ajouter au clic sur l'icône +
   const addHealthCare = () => {
     let val = healthCare.length;
-    console.log("added to tab", val);
+    // console.log("added to tab", val);
     setHealthCare([...healthCare, { pos: val }]); //Copie de la liste des vaccins ajoutés
   };
 
@@ -735,7 +705,7 @@ function ProfilScreen(props) {
     let position = 0;
     let healthCareCopy = [...healthCare];
     healthCareCopy[index].status = item.value;
-    console.log(healthCareCopy);
+    // console.log(healthCareCopy);
   };
 
   /* Fonction name pour le dropDown d'ajout de soin */
@@ -770,9 +740,9 @@ function ProfilScreen(props) {
 
   /* Je supprime un soin de la liste en cliquant sur l'icône poubelle */
   var deleteHealthCare = (element) => {
-    console.log(state5);
+    // console.log(state5);
     let tempo = [...healthCare];
-    console.log(tempo);
+    // console.log(tempo);
 
     for (let i = 0; i < tempo.length; i++) {
       tempo[i].pos = i;
@@ -780,7 +750,7 @@ function ProfilScreen(props) {
 
     // tempo = tempo.splice(element, 1);
     tempo = tempo.filter((e) => e.pos != element); // Je fais une copie de mon tableau
-    console.log(tempo);
+    // console.log(tempo);
     setHealthCare(tempo);
 
     props.deleteToProfil(element);
@@ -852,7 +822,7 @@ function ProfilScreen(props) {
 
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   return (
-    <ScrollView style={styles.scroll}>
+    <ScrollView>
       <View style={styles.container}>
         <DropDownPicker
           style={styles.DropDownPicker}
@@ -889,12 +859,12 @@ function ProfilScreen(props) {
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          {/* JAD N'affiche ce qui est après le '&&' que si au moins un élément des filtres est égal à Vaccin*/}
+          {/* Affiche ce qui est après le '&&' que si au moins un élément des filtres est égal à Vaccin*/}
           {value.find((element) => element === "Vaccin") && (
             <View style={styles.filterView}>
-              {/* JAD N'affiche ce qui est après le '&&' que si au moins un élément des filtres est égal à Obligatoire*/}
+              {/* Affiche ce qui est après le '&&' que si au moins un élément des filtres est égal à Obligatoire*/}
               {value.find((element) => element === "Obligatoire") && (
-                <View style={styles.filterView}>
+                <View>
                   <View style={styles.title}>
                     <Ionicons
                       name="ios-information-circle"
@@ -910,18 +880,18 @@ function ProfilScreen(props) {
                     <Text style={styles.textHeadColumn3}>Date : </Text>
                   </View>
 
-                  {/* JAD Affiche dynamiquement la liste des vaccins qui sont obligatoires uniquement */}
+                  {/* Affiche dynamiquement la liste des vaccins obligatoires  */}
                   {vaccines
                     .filter((element) => element.status === "Obligatoire")
-                    .map((vaccine) => (
+                    .map((e, index) => (
                       <View style={{ backgroundColor: "#fff" }}>
-                        <View style={styles.row}>
+                        <View style={styles.row} key={e}>
                           <Text
                             style={styles.textRow}
                             onPress={() => launchModal(name, description)}
                           >
                             {" "}
-                            {vaccine.name}
+                            {e.name}
                           </Text>
                           {/* Pour colorer la bordure du dropdown picker */}
                           <Dropdown
@@ -931,7 +901,7 @@ function ProfilScreen(props) {
                             ]}
                             placeholderStyle={styles.placeholderStyle}
                             selectedTextStyle={styles.selectedTextStyle}
-                            value={value1}
+                            value={e.status}
                             placeholder="À renseigner"
                             labelField="label"
                             valueField="value"
@@ -941,14 +911,13 @@ function ProfilScreen(props) {
                             onFocus={() => setIsFocus1(true)}
                             onBlur={() => setIsFocus1(false)}
                             onChange={(item) => {
-                              setValue1(item.value);
+                              healthCareStatus(item, index); //Pour mettre à jour le status du soin
                             }}
                           />
                           <View>
                             {/* Le bouton pour afficher le dateTimePicker */}
                             <TouchableOpacity
                               style={styles.button}
-                              // onPress={() => showDatePicker()}
                               onPress={() => dateModal()}
                             >
                               {/* Affiche la date sélectionnée par le user dans le bouton */}
@@ -965,30 +934,28 @@ function ProfilScreen(props) {
 
               {/* >>>>>>>>>>>>>>>>>>>>> Vaccins recommandés <<<<<<<<<<<<<<<<<<<<<< */}
 
-              {/* JAD N'affiche le haut du tableau et tout le tableau que si un élément dans les filtres est égal à Recommandé */}
+              {/* Affiche le haut du tableau et tout le tableau que si un élément dans les filtres est égal à Recommandé */}
               {value.find((element) => element === "Recommandé") && (
-                <View style={styles.filterView}>
+                <View>
                   <View style={styles.title}>
                     <Ionicons
                       name="ios-information-circle"
                       size={30}
                       color="#5BAA62"
-                      onPress={() => setModalVRVisible(true)}
+                      onPress={() => setModalInfosVisible(true)}
                     />
-                    <Text style={styles.textTitle} h4>
-                      Vaccins recommandés :
-                    </Text>
+                    <Text style={styles.textTitle}>Vaccins recommandés :</Text>
                   </View>
                   <View style={styles.headrow}>
-                    <Text style={styles.textHeadColumn1}>Vaccin : </Text>
+                    <Text style={styles.textHeadColumn1}>Nom : </Text>
                     <Text style={styles.textHeadColumn2}>État : </Text>
                     <Text style={styles.textHeadColumn3}>Date : </Text>
                   </View>
 
-                  {/* JAD Affiche dynamiquement la liste des vaccins qui sont recommandés uniquement */}
+                  {/* Affiche dynamiquement la liste des vaccins recommandés */}
                   {vaccines
                     .filter((element) => element.status === "Recommandé")
-                    .map((vaccine) => (
+                    .map((e, index) => (
                       <View style={{ backgroundColor: "#fff" }}>
                         <View style={styles.row}>
                           <Text
@@ -996,7 +963,7 @@ function ProfilScreen(props) {
                             onPress={() => launchModal(name, description)}
                           >
                             {" "}
-                            {vaccine.name}
+                            {e.name}
                           </Text>
                           {/* Pour colorer la bordure du dropdown picker */}
                           <Dropdown
@@ -1006,7 +973,7 @@ function ProfilScreen(props) {
                             ]}
                             placeholderStyle={styles.placeholderStyle}
                             selectedTextStyle={styles.selectedTextStyle}
-                            value={value4}
+                            value={e.status}
                             placeholder="À renseigner"
                             labelField="label"
                             valueField="value"
@@ -1016,7 +983,7 @@ function ProfilScreen(props) {
                             onFocus={() => setIsFocus4(true)}
                             onBlur={() => setIsFocus4(false)}
                             onChange={(item) => {
-                              setValue4(item.value);
+                              healthCareStatus(item, index); //Pour mettre à jour le status du soin
                             }}
                           />
                           <View>
@@ -1041,38 +1008,36 @@ function ProfilScreen(props) {
 
           {/* >>>>>>>>>>>>>>>>>>>>> Examens de santé recommandés <<<<<<<<<<<<<<<<<<<<<< */}
 
-          {/* JAD N'affiche ce qui est après '&&' que si au moins élément dans le filtre est égal à Examen de santé */}
+          {/* Affiche ce qui est après '&&' que si au moins élément dans le filtre est égal à Examen de santé */}
           {value.find((element) => element === "Examen de santé") && (
             <View style={styles.filterView}>
-              {/* JAD N'affiche le haut du tableau et tout le tableau que si un élément des filtres est égal à Obligatoire */}
+              {/* Aaffiche le haut du tableau et tout le tableau que si un élément des filtres est égal à Obligatoire */}
               {value.find((element) => element === "Obligatoire") && (
-                <View style={styles.filterView}>
+                <View>
                   <View style={styles.title}>
                     <Ionicons
                       name="ios-information-circle"
                       size={30}
                       color="#5BAA62"
-                      onPress={() => setModalVRVisible(true)}
+                      onPress={() => setModalInfosVisible(true)}
                     />
-                    <Text style={styles.textTitle} h4>
+                    <Text style={styles.textTitle}>
                       Examens de santé obligatoires :
                     </Text>
                   </View>
 
                   <View style={styles.headrow}>
-                    <Text style={styles.textHeadColumn1}>Examen : </Text>
+                    <Text style={styles.textHeadColumn1}>Nom : </Text>
                     <Text style={styles.textHeadColumn2}>État : </Text>
                     <Text style={styles.textHeadColumn3}>Date : </Text>
                   </View>
-
-                  {/* JAD Affiche dynamiquement la liste des examens qui sont obligatoires uniquement */}
+                  {/* Affiche dynamiquement la liste des examens qui sont obligatoires uniquement */}
                   {exams
                     .filter((element) => element.status === "Obligatoire")
-                    .map((exam) => (
+                    .map((e, index) => (
                       <View style={{ backgroundColor: "#fff" }}>
-
                         <View style={styles.row}>
-                          <Text style={styles.textRow}>{exam.name}</Text>
+                          <Text style={styles.textRow}>{e.name}</Text>
                           <Dropdown
                             style={[
                               styles.dropDownPickerState,
@@ -1080,7 +1045,7 @@ function ProfilScreen(props) {
                             ]}
                             placeholderStyle={styles.placeholderStyle}
                             selectedTextStyle={styles.selectedTextStyle}
-                            value={value7}
+                            value={e.status}
                             placeholder="À renseigner"
                             labelField="label"
                             valueField="value"
@@ -1090,7 +1055,7 @@ function ProfilScreen(props) {
                             onFocus={() => setIsFocus7(true)}
                             onBlur={() => setIsFocus7(false)}
                             onChange={(item) => {
-                              setValue7(item.value);
+                              healthCareStatus(item, index); //Pour mettre à jour le status du soin
                             }}
                           />
                           <View>
@@ -1111,34 +1076,33 @@ function ProfilScreen(props) {
                 </View>
               )}
 
-              {/* JAD N'affiche le tableau que si  il y a un élément des filtres égal á Recommandé*/}
+              {/* Affiche le tableau que si  il y a un élément des filtres égal á Recommandé*/}
               {value.find((element) => element === "Recommandé") && (
-                <View style={styles.filterView}>
+                <View>
                   <View style={styles.title}>
                     <Ionicons
                       name="ios-information-circle"
                       size={30}
                       color="#5BAA62"
-                      onPress={() => setModalVRVisible(true)}
+                      onPress={() => setModalInfosVisible(true)}
                     />
-                    <Text style={styles.textTitle} h4>
+                    <Text style={styles.textTitle}>
                       Examens de santé recommandés :
                     </Text>
                   </View>
 
                   <View style={styles.headrow}>
-                    <Text style={styles.textHeadColumn1}>Examen : </Text>
+                    <Text style={styles.textHeadColumn1}>Nom : </Text>
                     <Text style={styles.textHeadColumn2}>État : </Text>
                     <Text style={styles.textHeadColumn3}>Date : </Text>
                   </View>
-
-                  {/* JAD Affiche dynamiquement la liste des examens qui sont recommandés uniquement */}
+                  {/* Affiche dynamiquement la liste des examens qui sont recommandés uniquement */}
                   {exams
                     .filter((element) => element.status === "Recommandé")
-                    .map((exam) => (
+                    .map((e, index) => (
                       <View style={{ backgroundColor: "#fff" }}>
                         <View style={styles.row}>
-                          <Text style={styles.textRow}>{exam.name}</Text>
+                          <Text style={styles.textRow}>{e.name}</Text>
                           <Dropdown
                             style={[
                               styles.dropDownPickerState,
@@ -1156,7 +1120,7 @@ function ProfilScreen(props) {
                             onFocus={() => setIsFocus6(true)}
                             onBlur={() => setIsFocus6(false)}
                             onChange={(item) => {
-                              setValue5(item.value);
+                              healthCareStatus(item, index); //Pour mettre à jour le status du soin
                             }}
                           />
                           <View>
@@ -1185,7 +1149,7 @@ function ProfilScreen(props) {
               name="ios-information-circle"
               size={30}
               color="#5BAA62"
-              onPress={() => setModalVPPVisible(true)}
+              onPress={() => setModalInfosVisible(true)}
             />
             <Text style={styles.textTitle}>
               Vaccins/Examens projets personnels :
@@ -1214,11 +1178,11 @@ function ProfilScreen(props) {
           >
             {infos.map((info, i) => {
               return (
-                <ModalInfos visible={modalVOVisible}>
+                <ModalInfos visible={modalInfosVisible}>
                   <View style={{ alignItems: "center" }}>
                     <View style={styles.header}>
                       <TouchableOpacity
-                        onPress={() => setModalVOVisible(false)}
+                        onPress={() => setModalInfosVisible(false)}
                       ></TouchableOpacity>
                     </View>
                   </View>
@@ -1227,7 +1191,7 @@ function ProfilScreen(props) {
                       name="ios-information-circle"
                       size={30}
                       color="#FFFFFF"
-                      onPress={() => setModalVOVisible(true)}
+                      onPress={() => setModalInfosVisible(true)}
                     />
                     <Text
                       style={{
@@ -1235,7 +1199,6 @@ function ProfilScreen(props) {
                         color: "#FFFFFF",
                         paddingLeft: 9,
                       }}
-                      h4
                     >
                       {info.title}
                     </Text>
@@ -1256,7 +1219,7 @@ function ProfilScreen(props) {
                     <Button
                       title="OK"
                       buttonStyle={styles.buttonModal}
-                      onPress={() => setModalVOVisible(false)}
+                      onPress={() => setModalInfosVisible(false)}
                     />
                   </View>
                 </ModalInfos>
@@ -1412,12 +1375,12 @@ function ProfilScreen(props) {
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <ModalInfos visible={modalDiphVisible}>
+          <ModalInfos visible={modalDefVisible}>
             <ScrollView>
               <View style={{ alignItems: "center" }}>
                 <View style={styles.header}>
                   <TouchableOpacity
-                    onPress={() => setModalDiphVisible(false)}
+                    onPress={() => setModalDefVisible(false)}
                   ></TouchableOpacity>
                 </View>
               </View>
@@ -1426,7 +1389,7 @@ function ProfilScreen(props) {
                   name="ios-information-circle"
                   size={30}
                   color="#FFFFFF"
-                  onPress={() => setModalDiphVisible(true)}
+                  onPress={() => setModalDefVisible(true)}
                 />
                 <Text
                   style={{
@@ -1453,7 +1416,7 @@ function ProfilScreen(props) {
                 <Button
                   title="OK"
                   buttonStyle={styles.buttonModal}
-                  onPress={() => setModalDiphVisible(false)}
+                  onPress={() => setModalDefVisible(false)}
                 />
               </View>
             </ScrollView>
@@ -1466,9 +1429,9 @@ function ProfilScreen(props) {
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STYLES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 const styles = StyleSheet.create({
   button: {
-    height: 50,
-    display: "flex",
-    flexDirection: "row",
+    height: 30,
+    // display: "flex",
+    // flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -1498,7 +1461,7 @@ const styles = StyleSheet.create({
     borderRadius: 0,
   },
   dropDownPickerState: {
-    height: 50,
+    height: 30,
     width: 146,
     // width: "43%",
     borderRadius: 0,
@@ -1555,13 +1518,17 @@ const styles = StyleSheet.create({
   },
   textDatePicker: {
     alignContent: "center",
-    padding: 20,
+    height: 50,
+    width: 116,
+    paddingTop: 15,
+    padding: 10,
+    borderColor: "#EBFAD5",
   },
   textHeadColumn1: {
     flexDirection: "row",
     backgroundColor: "#5BAA62",
     borderColor: "#37663B",
-    width: "30%",
+    width: "27,9%",
     color: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#EBFAD5",
@@ -1570,7 +1537,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#5BAA62",
     borderColor: "#37663B",
-    width: "43%",
+    width: "41%",
     color: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#EBFAD5",
@@ -1579,19 +1546,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#5BAA62",
     borderColor: "#5BAA62",
-    width: "35%",
+    width: "32%",
     color: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#EBFAD5",
   },
   textRow: {
-    height: 50,
+    height: 30,
     width: 100,
-    paddingTop: 15,
-    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    // paddingTop: 15,
+    // padding: 10,
     borderWidth: 1,
     borderColor: "#EBFAD5",
-    borderRadius: 0,
   },
   textTitle: {
     fontWeight: "bold",
@@ -1603,15 +1571,17 @@ const styles = StyleSheet.create({
   title: {
     flexDirection: "row",
     alignItems: "center",
+    textAlign: "center",
+    padding: 9,
+    color: "#37663B",
+    width: 350,
+  },
+  filterView: {
+    flexDirection: "column",
+    alignItems: "center",
     padding: 9,
     color: "#37663B",
   },
-  filterView: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: 9,
-    color: "#37663B",
-  }
 });
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> REDUX <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //

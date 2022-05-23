@@ -21,11 +21,12 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DashboardScreen from "./screens/DashboardScreen";
 import LogScreen from "./screens/LogScreen";
 import ProfilScreen from "./screens/ProfilScreen";
-import SettingsScreen from "./screens/SettingsScreen";
 import MapScreen from "./screens/MapScreen";
 import FavoriteScreen from "./screens/FavoriteScreen";
 import SignUpInfosScreen from "./screens/SignUpInfosScreen";
 import AddProfileScreen from "./screens/AddProfileScreen";
+import SettingsScreen from "./screens/SettingsScreen";
+import DeleteAccountScreen from "./screens/DeleteAccountScreen";
 
 // NAVIGATION
 const Stack = createStackNavigator();
@@ -56,7 +57,7 @@ function BottomNavigator() {
           let iconName;
           if (route.name === "Dashboard") {
             iconName = "home";
-          } else if (route.name === "Profil") {
+          } else if (route.name === "ProfilScreen") {
             iconName = "user";
           } else if (route.name === "Settings") {
             iconName = "gear";
@@ -87,11 +88,19 @@ export default function App() {
           <Stack.Screen name="LogScreen" component={LogScreen} />
           <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
           <Stack.Screen name="MapScreen" component={MapScreen} />
-          <Stack.Screen name="SignUpInfosScreen" component={SignUpInfosScreen} />
+          <Stack.Screen
+            name="SignUpInfosScreen"
+            component={SignUpInfosScreen}
+          />
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
           <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
           <Stack.Screen name="FavoriteScreen" component={FavoriteScreen} />
           <Stack.Screen name="AddProfileScreen" component={AddProfileScreen} />
+          <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+          <Stack.Screen
+            name="DeleteAccountScreen"
+            component={DeleteAccountScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

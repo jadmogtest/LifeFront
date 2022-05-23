@@ -73,7 +73,6 @@ function LogScreen(props) {
   };
 
   // *<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SIGN-UP >>>>>>>>>>>>>>>>>>>>>>>>>>*
-
   const signUp = async () => {
     props.navigation.navigate("SignUpInfosScreen", {
       screen: "SignUpInfosScreen",
@@ -191,7 +190,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 40,
-    size: "md",
     backgroundColor: "#5BAA62",
     width: 300,
     height: 50,

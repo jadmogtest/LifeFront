@@ -60,8 +60,7 @@ function DashBoardScreen(props) {
   //Récupération des vaccins et tests médicaux en BDD
   useEffect(() => {
     async function takeExams() {
-      // let privateIp = "192.168.10.131"; //Remplacer privateIp par la vôtre
-      // let privateIp = "192.168.1.43"; //Remplacer privateIp par la vôtre
+
       let privateIp = "192.168.10.125"; //Remplacer privateIp par la vôtre
       console.log('test', props.token)
       let brutResponse = await fetch(
@@ -73,16 +72,12 @@ function DashBoardScreen(props) {
       let firstname = jsonResponse.firstname;
       setFirstName(firstname);
 
-      // console.log(firstname);
-
       //Création d'un tableau avec TOUS les examens (vaccins et test médicaux) sous forme d'objets {date: , name: }
       let temp = [];
       for (let i = 0; i < vaccinesList.length; i++) {
         let date = new Date(vaccinesList[i].endDate);
 
-        // console.log("date 1 !!!!!!!!!!!!!!", date)
         let dateFormated = moment(date).format("YYYY-MM-DD");
-        // console.log(moment(date).format('DD-MM-YYYY'))
 
         temp.push({
           name: vaccinesList[i].name,
@@ -92,10 +87,7 @@ function DashBoardScreen(props) {
 
       for (let i = 0; i < medicalTestsList.length; i++) {
         let date = new Date(medicalTestsList[i].endDate);
-
-        // console.log("date 2 !!!!!!!!!!!!!!!", date)
         let dateFormated = moment(date).format("YYYY-MM-DD");
-        // console.log(dateFormated)
 
         temp.push({
           name: medicalTestsList[i].name,
@@ -179,6 +171,15 @@ function DashBoardScreen(props) {
         onPress={() =>
           props.navigation.navigate("FavoriteScreen", {
             screen: "FavoriteScreen",
+          })
+        }
+      />
+      <Button
+        buttonStyle={styles.bigButton}
+        title="Ajouter un profil"
+        onPress={() =>
+          props.navigation.navigate("AddProfileScreen", {
+            screen: "AddProfileScreen",
           })
         }
       />

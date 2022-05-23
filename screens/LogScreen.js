@@ -41,7 +41,7 @@ function LogScreen(props) {
     props.navigation.navigate("BottomNavigator", {
       screen: "ProfilScreen",
     });
-    
+
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
     const rawResponse = await fetch("http://192.168.10.111:3000/sign-in", {
       method: "POST",
@@ -50,7 +50,7 @@ function LogScreen(props) {
     });
 
     let response = await rawResponse.json();
-    
+
 
     if (response.login === true) {
       //Si la bdd retrouve le user on se connecte
@@ -174,76 +174,6 @@ function LogScreen(props) {
       </View>
     );
   }
-
-  return (
-    <View style={styles.container}>
-      <Image source={Logo} style={styles.image} />
-      <Text style={styles.textSlogan}>
-        Vos rappels de santé pour une vie sereine !
-      </Text>
-      <View style={styles.inputSection}>
-        <Ionicons
-          name="mail"
-          size={24}
-          color="#5BAA62"
-          tintColors={{ true: "#5BAA62", false: "red" }}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Your email"
-          autoComplete={true}
-          underlineColorAndroid="transparent"
-          value={mail}
-          onChangeText={(value) => setMail(value)}
-        />
-      </View>
-      <View style={styles.inputSection}>
-        <Ionicons
-          name="key"
-          size={24}
-          color="#5BAA62"
-          tintColors={{ true: "#5BAA62", false: "red" }}
-        />
-        <TextInput
-          icon="key"
-          style={styles.input}
-          placeholder="Your password"
-          autoCorrect={false}
-          secureTextEntry
-          underlineColorAndroid="transparent"
-          value={password}
-          onChangeText={(value) => setPassword(value)}
-        />
-      </View>
-      <View style={styles.checkboxContainer}>
-        <CheckBox
-          value={isSelected}
-          onValueChange={setSelection}
-          style={styles.checkbox}
-          tintColors={{ true: "#5BAA62", false: "yellow" }}
-        />
-        <Text style={styles.textCheckbox}>Se souvenir de moi</Text>
-      </View>
-      <Button
-        type="solid"
-        buttonStyle={styles.button}
-        title="Se connecter"
-        onPress={() =>
-          props.navigation.navigate("BottomNavigator", { screen: "Dashboard" })
-        }
-      ></Button>
-      <Button
-        type="solid"
-        buttonStyle={styles.button}
-        title="Pas encore de compte ?"
-        onPress={() =>
-          props.navigation.navigate("SignUpInfosScreen", {
-            screen: "SignUpInfosScreen",
-          })
-        }
-      ></Button>
-    </View>
-  );
 }
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STYLES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //

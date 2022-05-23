@@ -4,6 +4,8 @@ import { StyleSheet, Text, View } from "react-native";
 import { Button, Overlay } from "react-native-elements";
 import { connect } from "react-redux";
 
+var moment = require("moment");
+
 //Pour mettre le calendrier en français
 LocaleConfig.locales["fr"] = {
   monthNames: [
@@ -53,49 +55,54 @@ function DashBoardScreen(props) {
   const [visible, setVisible] = useState(false);
   const [overlayContent, setOverlayContent] = useState([{}]);
   const [exams, setExams] = useState([]);
+  const [firstName, setFirstName] = useState("");
 
   //Récupération des vaccins et tests médicaux en BDD
   useEffect(() => {
     async function takeExams() {
-      let privateIp = "192.168.10.131"; //Remplacer privateIp par la vôtre
+      // let privateIp = "192.168.10.131"; //Remplacer privateIp par la vôtre
+      // let privateIp = "192.168.1.43"; //Remplacer privateIp par la vôtre
+      let privateIp = "192.168.10.111"; //Remplacer privateIp par la vôtre
+
       let brutResponse = await fetch(
-        `http://${privateIp}:3000/exams/${props.userId}`
+        `http://${privateIp}:3000/user/${props.userId}`
       );
       let jsonResponse = await brutResponse.json();
       let vaccinesList = jsonResponse.vaccines;
       let medicalTestsList = jsonResponse.medicalTests;
+      let firstname = jsonResponse.firstname;
+      setFirstName(firstname);
+
+      console.log(firstname);
 
       //Création d'un tableau avec TOUS les examens (vaccins et test médicaux) sous forme d'objets {date: , name: }
       let temp = [];
       for (let i = 0; i < vaccinesList.length; i++) {
         let date = new Date(vaccinesList[i].endDate);
-        let year = date.getFullYear();
-        let month = date.getMonth();
-        let day = date.getDate();
 
-        if (month < 10) month = "0" + month;
-        if (day < 10) day = "0" + day;
+        // console.log("date 1 !!!!!!!!!!!!!!", date)
+        let dateFormated = moment(date).format("YYYY-MM-DD");
+        // console.log(moment(date).format('DD-MM-YYYY'))
 
         temp.push({
           name: vaccinesList[i].name,
-          date: `${year}-${month}-${day}`,
+          date: dateFormated,
         });
       }
 
       for (let i = 0; i < medicalTestsList.length; i++) {
         let date = new Date(medicalTestsList[i].endDate);
-        let year = date.getFullYear();
-        let month = date.getMonth();
-        let day = date.getDate();
 
-        if (month < 10) month = "0" + month;
-        if (day < 10) day = "0" + day;
+        // console.log("date 2 !!!!!!!!!!!!!!!", date)
+        let dateFormated = moment(date).format("YYYY-MM-DD");
+        // console.log(dateFormated)
 
         temp.push({
           name: medicalTestsList[i].name,
-          date: `${year}-${month}-${day}`,
+          date: dateFormated,
         });
       }
+
       setExams(temp);
     }
     takeExams();
@@ -120,103 +127,197 @@ function DashBoardScreen(props) {
     } else if (delta > 32) {
       markedDates[exams[i].date] = { selected: true, selectedColor: "green" };
     }
-
-    // console.log("Premier", exams)
-
-    // console.log(exams)
-
-    return (
-      <View style={styles.container}>
-        <Overlay
-          overlayStyle={{ flex: 0.5, width: 300, borderRadius: 50 }}
-          width="5000"
-          isVisible={visible}
-          onBackdropPress={() => {
-            setVisible(false);
-          }}
-        >
-          <View
-            style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
-          >
-            <Text style={{ fontSize: 30 }}>{overlayContent[0].date}</Text>
-            <Text style={{ fontSize: 30 }}>{overlayContent[0].name}</Text>
-          </View>
-        </Overlay>
-        <Text
-          style={{
-            marginBottom: 30,
-            fontSize: 30,
-            color: "green",
-            fontStyle: "italic",
-          }}
-        >
-          Bonjour {props.firstName} !
-        </Text>
-        <Button
-          buttonStyle={styles.bigButton}
-          title="Profil santé"
-          onPress={() =>
-            props.navigation.navigate("ProfilScreen", {
-              screen: "ProfilScreen",
-            })
-          }
-        />
-        <Button
-          buttonStyle={styles.bigButton}
-          title="Rechercher un professionnel de santé"
-          onPress={() =>
-            props.navigation.navigate("MapScreen", { screen: "MapScreen" })
-          }
-        />
-        <Button buttonStyle={styles.bigButton} title="Mes lieux de santé" />
-        <Calendar
-          locale="fr"
-          onDayPress={(day) => {
-            if (visible === false) {
-              let filter = exams.filter((e) => e.date === day.dateString);
-
-              if (filter[0] !== undefined) {
-                let temp = new Date(filter[0].date);
-                let yy = temp.getFullYear();
-                let mm = temp.getMonth() + 1;
-                let dd = temp.getDate();
-
-                if (mm < 10) mm = "0" + mm;
-                if (dd < 10) dd = "0" + dd;
-
-                filter[0].date = `${dd}-${mm}-${yy}`;
-
-                setVisible(true);
-                setOverlayContent(filter);
-              } else if (filter[0] === undefined) {
-                filter.push({
-                  date: day.dateString,
-                  name: "Pas d'examen prévu",
-                });
-                let temp = new Date(filter[0].date);
-                let yy = temp.getFullYear();
-                let mm = temp.getMonth() + 1;
-                let dd = temp.getDate();
-
-                if (mm < 10) mm = "0" + mm;
-                if (dd < 10) dd = "0" + dd;
-
-                filter[0].date = `${dd}-${mm}-${yy}`;
-                setVisible(true);
-                setOverlayContent(filter);
-              }
-            } else if (visible === true) {
-              setVisible(false);
-            }
-          }}
-          style={styles.calendar}
-          markedDates={markedDates}
-        />
-      </View>
-    );
   }
-}
+  // console.log("Premier", exams)
 
+  // console.log(exams)
+
+  //   return (
+  //     <View style={styles.container}>
+  //       <Overlay
+  //         overlayStyle={{ flex: 0.5, width: 300, borderRadius: 50 }}
+  //         width="5000"
+  //         isVisible={visible}
+  //         onBackdropPress={() => {
+  //           setVisible(false);
+  //         }}
+  //       >
+  //         <View
+  //           style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
+  //         >
+  //           <Text style={{ fontSize: 30 }}>{overlayContent[0].date}</Text>
+  //           <Text style={{ fontSize: 30 }}>{overlayContent[0].name}</Text>
+  //         </View>
+  //       </Overlay>
+  //       <Text
+  //         style={{
+  //           marginBottom: 30,
+  //           fontSize: 30,
+  //           color: "green",
+  //           fontStyle: "italic",
+  //         }}
+  //       >
+  //         Bonjour Marie !
+  //       </Text>
+  //       <Button
+  //         buttonStyle={styles.bigButton}
+  //         title="Profil santé"
+  //         onPress={() =>
+  //           props.navigation.navigate("ProfilScreen", {
+  //             screen: "ProfilScreen",
+  //           })
+  //         }
+  //       />
+  //       <Button
+  //         buttonStyle={styles.bigButton}
+  //         title="Rechercher un professionnel de santé"
+  //         onPress={() =>
+  //           props.navigation.navigate("MapScreen", { screen: "MapScreen" })
+  //         }
+  //       />
+  //       <Button buttonStyle={styles.bigButton} title="Mes lieux de santé" />
+  //           <Text style={{ marginBottom: 30, fontSize: 30, color: "green", fontStyle: 'italic' }}>Bonjour Marie !</Text>
+  //           <Button
+  //               buttonStyle={styles.bigButton}
+  //               title="Profil santé"
+  //           />
+  //           <Button
+  //               buttonStyle={styles.bigButton}
+  //               title="Rechercher un professionnel de santé"
+  //               onPress={() =>
+  //                   props.navigation.navigate("MapScreen", { screen: "MapScreen" })}
+  //           />
+  //           <Button
+  //               buttonStyle={styles.bigButton}
+  //               title="Mes lieux de santé"
+
+  //           />
+  //           <Calendar
+  //               locale="fr"
+  //               onDayPress={day => {
+  //                   if (visible === false) {
+
+  //                       let filter = exams.filter(e => e.date === day.dateString)
+
+  //                       if (filter[0] !== undefined) {
+  //                           let temp = new Date(filter[0].date)
+  //                           let yy = temp.getFullYear();
+  //                           let mm = temp.getMonth() + 1;
+  //                           let dd = temp.getDate();
+
+  //                           if (mm < 10)
+  //                               mm = '0' + mm;
+  //                           if (dd < 10)
+  //                               dd = '0' + dd;
+
+  //                           filter[0].date = ${dd}-${mm}-${yy}
+
+  //                           setVisible(true)
+  //                           setOverlayContent(filter)
+
+  //                       } else if (filter[0] === undefined) {
+  //                           filter.push({ date: day.dateString, name: "Pas d'examen prévu" })
+  //                           let temp = new Date(filter[0].date)
+  //                           let yy = temp.getFullYear();
+  //                           let mm = temp.getMonth() + 1;
+  //                           let dd = temp.getDate();
+
+  //                           if (mm < 10)
+  //                               mm = '0' + mm;
+  //                           if (dd < 10)
+  //                               dd = '0' + dd;
+
+  //                           filter[0].date = ${dd}-${mm}-${yy}
+  //                           setVisible(true)
+  //                           setOverlayContent(filter)
+  //                       }
+
+  //                   } else if (visible === true) {
+  //                       setVisible(false)
+  //                   }
+
+  //               }}
+  //               style={styles.calendar}
+  //               markedDates={markedDates}
+  //           />
+
+  // }
+
+  // console.log(markedDates)
+  // console.log(props.firstName)
+  return (
+    <View style={styles.container}>
+      <Overlay
+        overlayStyle={{ flex: 0.5, width: 300, borderRadius: 50 }}
+        width="5000"
+        isVisible={visible}
+        onBackdropPress={() => {
+          setVisible(false);
+        }}
+      >
+        <View
+          style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
+        >
+          <Text style={{ fontSize: 30 }}>{overlayContent[0].date}</Text>
+          <Text style={{ fontSize: 30 }}>{overlayContent[0].name}</Text>
+        </View>
+      </Overlay>
+      <Text
+        style={{
+          marginBottom: 30,
+          fontSize: 30,
+          color: "green",
+          fontStyle: "italic",
+        }}
+      >
+        Bonjour {firstName} !
+      </Text>
+      <Button
+        buttonStyle={styles.bigButton}
+        title="Profil santé"
+        onPress={() =>
+          props.navigation.navigate("ProfilScreen", { screen: "ProfilScreen" })
+        }
+      />
+      <Button
+        buttonStyle={styles.bigButton}
+        title="Rechercher un professionnel de santé"
+        onPress={() =>
+          props.navigation.navigate("MapScreen", { screen: "MapScreen" })
+        }
+      />
+      <Button buttonStyle={styles.bigButton} title="Mes lieux de santé" />
+      <Calendar
+        locale="fr"
+        onDayPress={(day) => {
+          if (visible === false) {
+            let filter = exams.filter((e) => e.date === day.dateString);
+
+            if (filter[0] !== undefined) {
+              let temp = new Date(filter[0].date);
+              let dateFormated = moment(temp).format("DD-MM-YYYY");
+              filter[0].date = dateFormated;
+
+              setVisible(true);
+              setOverlayContent(filter);
+            } else if (filter[0] === undefined) {
+              filter.push({ date: day.dateString, name: "Pas d'examen prévu" });
+              let temp = new Date(filter[0].date);
+              let dateFormated = moment(temp).format("DD-MM-YYYY");
+              filter[0].date = dateFormated;
+              setVisible(true);
+              setOverlayContent(filter);
+            }
+          } else if (visible === true) {
+            setVisible(false);
+          }
+        }}
+        style={styles.calendar}
+        markedDates={markedDates}
+      />
+    </View>
+  );
+}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -238,7 +339,7 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
-  return { userId: state.userId, firstName: state.firstName };
+  return { userId: state.userId };
 }
 
 export default connect(mapStateToProps, null)(DashBoardScreen);

@@ -5,8 +5,7 @@ LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
 ]);
 LogBox.ignoreLogs(["Disconnected from Metro."]);
-import { ViewPropTypes } from 'deprecated-react-native-prop-types';
-
+import { ViewPropTypes } from "deprecated-react-native-prop-types";
 
 // IMPORT DES DIFFERENTES LIBRAIRIES
 import React from "react";
@@ -34,18 +33,20 @@ const Tab = createBottomTabNavigator();
 /* J'importe les reducers */
 import mail from "./reducers/mail";
 import userId from "./reducers/userId";
+import etab from "./reducers/etablissementsdesante";
+import token from "./reducers/token";
 
 /* J'importe le Provider */
 import { Provider } from "react-redux";
 /* J'importe le Store */
 import { createStore, combineReducers } from "redux";
 /* Je crée le store */
-const store = createStore(combineReducers({ mail, userId })); //J'appelle les reducers
+const store = createStore(combineReducers({ mail, etab, userId, token })); //J'appelle les reducers
 
 // FONCTION TABBAR
 function BottomNavigator() {
   return (
-    <Tab.Navigator 
+    <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }) => {
           let iconName;
@@ -83,8 +84,6 @@ export default function App() {
           <Stack.Screen name="LogScreen" component={LogScreen} />
           <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
           <Stack.Screen name="MapScreen" component={MapScreen} />
-          <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
-
           <Stack.Screen
             name="SignUpInfosScreen"
             component={SignUpInfosScreen}

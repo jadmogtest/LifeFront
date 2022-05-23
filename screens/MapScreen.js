@@ -1,6 +1,6 @@
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 import React, { useState, useEffect } from "react";
-import MapView from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import Tab from "../component/Tab";
 import {
   StyleSheet,
@@ -8,15 +8,18 @@ import {
   View,
   Dimensions,
   TextInput,
+  Modal,
+  Pressable,
   Icon,
 } from "react-native";
 import { AntDesign, Ionicons, FontAwesome5, Entypo } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import { Dropdown } from "react-native-element-dropdown";
-import { Marker } from "react-native-maps";
+//* Connexion avec redux : npm install --save redux react-redux */
+import { connect } from "react-redux";
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FONCTIONS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
-export default function MapScreen(props) {
+function MapScreen(props) {
   //Dropdown list choix lieux de santé
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState();
@@ -33,8 +36,12 @@ export default function MapScreen(props) {
   //Variable qui va stocker les types de professionnels de santé par rapport à l'API
   const [listType, setListType] = useState([]);
   const [jobs, setJobs] = useState([]);
+  // const jobs = [];
 
   const [text, onChangeText] = React.useState();
+
+  //Variable qui va rendre visible ou non le modal
+  const [modalVisible, setModalVisible] = useState(false);
 
   //Fonction qui demande l'autorisation de géolocation à l'initialisation du composant
   useEffect(() => {
@@ -45,7 +52,7 @@ export default function MapScreen(props) {
           //Fonction qui récupère la géolocalisation en temps réel tous les 2 mètres
           setCurrentLatitude(location.coords.latitude);
           setCurrentLongitude(location.coords.longitude);
-          console.log("|| Coords ||", location);
+          // console.log("|| Coords ||", location);
         });
       }
     }
@@ -53,12 +60,17 @@ export default function MapScreen(props) {
     //Fonction qui exploite les données API
     async function loadData() {
       var rawResponse = await fetch(
-        "https://data.opendatasoft.com/api/records/1.0/search/?dataset=medecins%40public&q=&rows=5"
+        "https://data.opendatasoft.com/api/records/1.0/search/?dataset=medecins%40public&q=&rows=100"
       );
       var response = await rawResponse.json();
       //Boucle pour poush les données API dans le tableau "temp"
       for (let item of response.records) {
-        if (item.fields.coordonnees) {
+        if (
+          item.fields.coordonnees &&
+          item.fields.libelle_regroupement != "none" &&
+          item.fields.libelle_regroupement != "None" &&
+          item.fields.libelle_regroupement != undefined
+        ) {
           temp.push({
             latitude: item.fields.coordonnees[0],
             longitude: item.fields.coordonnees[1],
@@ -68,9 +80,9 @@ export default function MapScreen(props) {
             tel: item.fields.column_10,
             secteur: item.fields.column_14,
           });
-          console.log("|| Prof. de santé ||", temp);
         }
       }
+      console.log("|| Prof. de santé ||", temp.length);
       setListAPI(temp);
     }
     askPermissions();
@@ -80,26 +92,25 @@ export default function MapScreen(props) {
 
   //Boucle pour push les types d'établissement de santé dans le tableau "jobs" si le type n'existe pas déjà
   function listCategory() {
+    // let copyList = [...jobs,]
     for (let i = 0; i < listAPI.length; i++) {
-      let found = jobs.find((element) => element == listAPI[i].type);
-      if (
-        !found ||
-        listAPI[i].type != "none" ||
-        listAPI[i].type != "None" ||
-        listAPI[i].type != undefined
-      ) {
-        // jobs = [...jobs, { label: listAPI[i].type, value: listAPI[i].type }];
-        setJobs((prevState) => [
-          ...prevState,
-          { label: listAPI[i].type, value: listAPI[i].type },
-        ]);
-        // jobs.push(listAPI[i].type);
-      }
+      setJobs((prevState) => [
+        ...prevState,
+        { label: listAPI[i].type, value: listAPI[i].type },
+      ]);
+      // jobs.push({ label: listAPI[i].type, value: listAPI[i].type });
+      // console.log("|| Catégories ||", jobs);
     }
   }
 
   //Fonction : map un nvx tableau à partir de celui de l'API pour créer un tableau de markers
   let markerlist = listAPI.map((marker, i) => {
+    let infos = {
+      Profession: marker.profession.toUpperCase(),
+      Adresse: marker.adresse.toLowerCase(),
+      Tel: marker.tel,
+      Secteur: marker.secteur,
+    };
     return (
       <Marker
         key={Math.random()}
@@ -108,8 +119,10 @@ export default function MapScreen(props) {
           latitude: marker.latitude,
           longitude: marker.longitude,
         }}
-        title={marker.profession}
-        description={`Adresse : ${marker.adresse}, Tel : ${marker.tel}, Type: ${marker.type}, Secteur: ${marker.secteur}`}
+        onPress={() => {
+          setModalVisible(!modalVisible);
+          props.pushInfos(infos);
+        }}
       />
     );
   });
@@ -124,7 +137,7 @@ export default function MapScreen(props) {
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
           iconStyle={styles.iconStyle}
-          // data={jobs}
+          data={jobs}
           maxHeight={300}
           labelField="label"
           valueField="value"
@@ -140,8 +153,8 @@ export default function MapScreen(props) {
         <MapView
           style={styles.map}
           initialRegion={{
-            latitude: 48.856614, // pour centrer la carte
-            longitude: 2.3522219,
+            latitude: 43.604652, // pour centrer la carte
+            longitude: 1.444209,
             latitudeDelta: 0.0922, // le rayon à afficher à partir du centre
             longitudeDelta: 0.0421,
           }}
@@ -154,12 +167,65 @@ export default function MapScreen(props) {
             // icon = {require('../assets/leaf.png') }
             // size={20}
             coordinate={{
-              latitude: currentLatitude,
-              longitude: currentLongitude,
+              latitude: 43.604652,
+              longitude: 1.444209,
             }}
+            draggable
           />
           {markerlist}
         </MapView>
+        <View style={styles.centeredView}>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={styles.modalView}>
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 13,
+                  color: "#5BAA62",
+                  marginBottom: 8,
+                }}
+              >
+                {props.dataMedecin.Profession}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: 8,
+                }}
+              >
+                <Ionicons name="add-circle" size={20} color="green" />
+                <Text style={{ fontStyle: "italic", fontSize: 12 }}>
+                  Ajouter en favori
+                </Text>
+              </View>
+              <Text style={styles.modalText}>
+                Adresse : {props.dataMedecin.Adresse}
+                {"\n"}
+                Tel : {props.dataMedecin.Tel}
+                {"\n"}
+                Secteur : {props.dataMedecin.Secteur}
+              </Text>
+              <View style={styles.align}>
+                <Pressable
+                  onPress={() => setModalVisible(!modalVisible)}
+                ></Pressable>
+                <Pressable onPress={() => setModalVisible(!modalVisible)}>
+                  <View>
+                    <Ionicons name="close" size={20} color="red" />
+                  </View>
+                </Pressable>
+              </View>
+            </View>
+          </Modal>
+        </View>
         {/* <Tab /> */}
       </View>
     </View>
@@ -175,14 +241,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   map: {
-    flex: 0.8,
+    flex: 1,
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
   },
   dropdown: {
     margin: 16,
     height: 50,
-    marginTop: 80,
+    marginTop: 170,
     width: 300,
     borderRadius: 8,
     borderLeftWidth: 4,
@@ -222,6 +288,32 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
+  modalView: {
+    margin: 5,
+    backgroundColor: "white",
+    borderBottomtWidth: 4,
+    borderColor: "#5BAA62",
+    padding: 35,
+    alignItems: "flex-start",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "justify",
+    fontSize: 12,
+  },
   // input: {
   //   height: 40,
   //   margin: 12,
@@ -230,3 +322,17 @@ const styles = StyleSheet.create({
   //   position: "absolute",
   // },
 });
+
+function mapDispatchToProps(dispatch) {
+  return {
+    pushInfos: function (infos) {
+      dispatch({ type: "AddSoin", datas: infos });
+    },
+  };
+}
+
+function mapStateToProps(state) {
+  return { dataMedecin: state.etab };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MapScreen);

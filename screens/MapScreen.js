@@ -67,6 +67,7 @@ function MapScreen(props) {
         "https://data.opendatasoft.com/api/records/1.0/search/?dataset=medecins%40public&q=&rows=150"
       );
       var response = await rawResponse.json();
+      console.log("TEST :::::", response);
       //Boucle pour poush les données API dans le tableau "temp"
       for (let item of response.records) {
         if (

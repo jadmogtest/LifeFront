@@ -45,6 +45,7 @@ function MapScreen(props) {
 
   //Variable qui va rendre visible ou non le modal
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
 
   //Fonction qui demande l'autorisation de géolocation à l'initialisation du composant
   useEffect(() => {
@@ -63,7 +64,7 @@ function MapScreen(props) {
     //Fonction qui exploite les données API
     async function loadData() {
       var rawResponse = await fetch(
-        "https://data.opendatasoft.com/api/records/1.0/search/?dataset=medecins%40public&q=&rows=100"
+        "https://data.opendatasoft.com/api/records/1.0/search/?dataset=medecins%40public&q=&rows=150"
       );
       var response = await rawResponse.json();
       //Boucle pour poush les données API dans le tableau "temp"
@@ -93,41 +94,48 @@ function MapScreen(props) {
     listCategory();
   }, []);
 
-  //Boucle pour push les types d'établissement de santé dans le tableau "jobs" si le type n'existe pas déjà
+  //Boucle pour supprimer les catégories en doublon et les push dans le tableau "jobs"
   function listCategory() {
     for (let i = 0; i < listAPI.length; i++) {
-      setJobs((prevState) => [
-        ...prevState,
-        { label: listAPI[i].type, value: listAPI[i].type },
-      ]);
-      // jobs.push({ label: listAPI[i].type, value: listAPI[i].type });
-      // console.log("|| Catégories ||", jobs);
+      //push dans le tableau ttes les catégories
+      jobs.push({ label: listAPI[i].type, value: listAPI[i].type });
+      //exploiter le tableau d'objets
+      let jsonObject = jobs.map(JSON.stringify);
+      let uniqSet = new Set(jsonObject);
+      //créé un nouveau tableau d'objets uniques !
+      let newArr = Array.from(uniqSet).map(JSON.parse);
+      setJobs(newArr.sort());
     }
+    // console.log("|| Catégories ||", jobs);
   }
 
-  //Fonction : map un nvx tableau à partir de celui de l'API pour créer un tableau de markers
-  let markerlist = listAPI.map((marker, i) => {
-    let infos = {
-      Profession: marker.profession.toUpperCase(),
-      Adresse: marker.adresse.toLowerCase(),
-      Tel: marker.tel,
-      Secteur: marker.secteur,
-    };
-    return (
-      <Marker
-        key={Math.random()}
-        pinColor="blue"
-        coordinate={{
-          latitude: marker.latitude,
-          longitude: marker.longitude,
-        }}
-        onPress={() => {
-          setModalVisible(!modalVisible);
-          props.pushInfos(infos);
-        }}
-      />
-    );
-  });
+  //Variable qui capture la valeur sélectionnée du dropdown
+  const [catMap, setcatMap] = useState("");
+  //Fonction : map un nvx tableau à partir de celui de l'API pour créer un tableau de markers et en fonction de la catégorie sélectionnée
+  let markerlist = listAPI
+    .filter((el) => el.type == catMap.label || !catMap)
+    .map((marker, i) => {
+      let infos = {
+        Profession: marker.profession.toUpperCase(),
+        Adresse: marker.adresse.toLowerCase(),
+        Tel: marker.tel,
+        Secteur: marker.secteur,
+      };
+      return (
+        <Marker
+          key={Math.random()}
+          pinColor="blue"
+          coordinate={{
+            latitude: marker.latitude,
+            longitude: marker.longitude,
+          }}
+          onPress={() => {
+            setModalVisible(!modalVisible);
+            props.pushInfos(infos);
+          }}
+        />
+      );
+    });
 
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   return (
@@ -145,7 +153,10 @@ function MapScreen(props) {
           valueField="value"
           placeholder="Rechercher un professionnel de santé"
           value={value}
-          onPress={() => {}}
+          onChange={(item) => setcatMap(item)}
+          onPress={() => {
+            mapCategory();
+          }}
           renderLeftIcon={() => (
             <Entypo style={styles.icon} color="#5BAA62" name="leaf" size={20} />
           )}
@@ -203,7 +214,14 @@ function MapScreen(props) {
                   marginBottom: 8,
                 }}
               >
-                <Ionicons name="add-circle" size={20} color="green" />
+                <Pressable
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                    setModalVisible2(!modalVisible2);
+                  }}
+                >
+                  <Ionicons name="add-circle" size={20} color="green" />
+                </Pressable>
                 <Text style={{ fontStyle: "italic", fontSize: 12 }}>
                   Ajouter en favori
                 </Text>
@@ -216,15 +234,44 @@ function MapScreen(props) {
                 Secteur : {props.dataMedecin.Secteur}
               </Text>
               <View style={styles.align}>
-                <Pressable
-                  onPress={() => setModalVisible(!modalVisible)}
-                ></Pressable>
                 <Pressable onPress={() => setModalVisible(!modalVisible)}>
                   <View>
                     <Ionicons name="close" size={20} color="red" />
                   </View>
                 </Pressable>
               </View>
+            </View>
+          </Modal>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+          }}
+        >
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible2}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+              setModalVisible(!modalVisible2);
+            }}
+          >
+            <View style={styles.modalView2}>
+              <Pressable onPress={() => setModalVisible2(!modalVisible2)}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: "#ffff",
+                    marginBottom: 2,
+                    textAlign: "center",
+                  }}
+                >
+                  Le professionnel de santé a bien été ajouté à votre carnet
+                  d'adresses !
+                </Text>
+              </Pressable>
             </View>
           </Modal>
         </View>
@@ -316,6 +363,24 @@ const styles = StyleSheet.create({
     textAlign: "justify",
     fontSize: 12,
   },
+  modalView2: {
+    backgroundColor: "#5BAA62",
+    padding: 15,
+    marginLeft: 30,
+    marginTop: 350,
+    width: 300,
+    heigth: 100,
+    borderRadius: 30,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
   // input: {
   //   height: 40,
   //   margin: 12,
@@ -336,5 +401,4 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
   return { dataMedecin: state.etab };
 }
-
 export default connect(mapStateToProps, mapDispatchToProps)(MapScreen);

@@ -286,7 +286,15 @@ function DashBoardScreen(props) {
           props.navigation.navigate("MapScreen", { screen: "MapScreen" })
         }
       />
-      <Button buttonStyle={styles.bigButton} title="Mes lieux de santé" />
+      <Button
+        buttonStyle={styles.bigButton}
+        title="Mes lieux de santé"
+        onPress={() =>
+          props.navigation.navigate("FavoriteScreen", {
+            screen: "FavoriteScreen",
+          })
+        }
+      />
       <Calendar
         locale="fr"
         onDayPress={(day) => {

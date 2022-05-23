@@ -44,7 +44,7 @@ function LogScreen(props) {
 
 
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
-    let privateIp = "192.168.10.116"; //Remplacer privateIp par la vôtre
+    let privateIp = "192.168.10.125"; //Remplacer privateIp par la vôtre
     const rawResponse = await fetch(`http://${privateIp}:3000/sign-in`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -53,12 +53,13 @@ function LogScreen(props) {
 
 
     let response = await rawResponse.json();
-    console.log("yooooooooooooooooooooooooooo", response)
+    // console.log("yooooooooooooooooooooooooooo", response.token)
 
 
     if (response.result === true) {
       //Si la bdd retrouve le user on se connecte
       setLogin(true);
+      props.tokenStore(response.token)
       props.addMail(mail);
       props.navigation.navigate("BottomNavigator", {
         screen: "ProfilScreen",
@@ -252,8 +253,14 @@ function mapDispatchToProps(dispatch) {
   return {
     addMail: function (mail, token) {
       dispatch({ type: "saveMail", mail: mail });
-      dispatch({ type: "addToken", token: token });
     },
+
+    tokenStore: function (token) {
+      dispatch({ type: "addToken", token: token })
+    },
+    // setUserId: function (userId) {
+    //   dispatch({ type: "addUserId", userId: userId });
+    // },
   };
 }
 

@@ -77,7 +77,7 @@ function SignUpInfosScreen(props) {
       //Remplacer privateIp par la vôtre
       // let privateIp = "192.168.10.131"
       // let privateIp = "192.168.1.43"
-      let privateIp = "192.168.10.120"; //Remplacer privateIp par la vôtre
+      let privateIp = "192.168.10.125"; //Remplacer privateIp par la vôtre
       let rawRecUser = await fetch(`http://${privateIp}:3000/sign-up`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -86,15 +86,19 @@ function SignUpInfosScreen(props) {
       });
       var recUser = await rawRecUser.json();
       // console.log("c'est moi!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", recUser.saveUser.firstname)
-      props.setUserId(recUser.saveUser._id);
-      props.setfirstName(recUser.saveUser.firstname);
+      // props.setfirstName(recUser.saveUser.firstname);
       if (recUser.result === true) {
         props.tokenStore(recUser.saveUser.token);
+        props.navigation.navigate("Dashboard");
+        // props.setUserId(recUser.saveUser._id);
+        // console.log(recUser.saveUser._id)
+        // console.log(recUser.saveUser.token);
+
       }
     }
     if (pwdConfirmed && check === true && check2 === true) {
       addUser();
-      props.navigation.navigate("Dashboard");
+
     }
   };
 
@@ -390,9 +394,9 @@ function mapDispatchToProps(dispatch) {
     tokenStore: function (token) {
       dispatch({ type: "addToken", token: token });
     },
-    setUserId: function (userId) {
-      dispatch({ type: "addUserId", userId: userId });
-    },
+    // setUserId: function (userId) {
+    //   dispatch({ type: "addUserId", userId: userId });
+    // },
   };
 }
 export default connect(null, mapDispatchToProps)(SignUpInfosScreen);

@@ -62,10 +62,10 @@ function DashBoardScreen(props) {
     async function takeExams() {
       // let privateIp = "192.168.10.131"; //Remplacer privateIp par la vôtre
       // let privateIp = "192.168.1.43"; //Remplacer privateIp par la vôtre
-      let privateIp = "192.168.10.120"; //Remplacer privateIp par la vôtre
-
+      let privateIp = "192.168.10.125"; //Remplacer privateIp par la vôtre
+      console.log('test', props.token)
       let brutResponse = await fetch(
-        `http://${privateIp}:3000/user/${props.userId}`
+        `http://${privateIp}:3000/user/${props.token}`
       );
       let jsonResponse = await brutResponse.json();
       let vaccinesList = jsonResponse.vaccines;
@@ -73,7 +73,7 @@ function DashBoardScreen(props) {
       let firstname = jsonResponse.firstname;
       setFirstName(firstname);
 
-      console.log(firstname);
+      // console.log(firstname);
 
       //Création d'un tableau avec TOUS les examens (vaccins et test médicaux) sous forme d'objets {date: , name: }
       let temp = [];
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
-  return { userId: state.userId };
+  return { token: state.token };
 }
 
 export default connect(mapStateToProps, null)(DashBoardScreen);

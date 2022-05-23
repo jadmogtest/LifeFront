@@ -20,7 +20,7 @@ function SignUpInfosScreen(props) {
   const [job, setJob] = useState([
     { label: "Militaire", value: "Militaire" },
     { label: "Médical", value: "Médical" },
-    { label: "Autre", value: "Autrel" },
+    { label: "Autre", value: "Autre" },
   ]);
 
   //DropDownPicker Pathos
@@ -74,33 +74,23 @@ function SignUpInfosScreen(props) {
     familyHistory
   ) => {
     async function addUser() {
-      //Remplacer privateIp par la vôtre
-      // let privateIp = "192.168.10.131"
-      // let privateIp = "192.168.1.43"
-      let privateIp = "172.20.10.3"; //Remplacer privateIp par la vôtre
+      let privateIp = "192.168.10.114"; //Remplacer privateIp par la vôtre
       let rawRecUser = await fetch(`http://${privateIp}:3000/sign-up`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        // body: `emailFromFront=${email}&passwordFromFront=${password}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}`,
         body: `emailFromFront=${email}&passwordFromFront=${password}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}`,
       });
       var recUser = await rawRecUser.json();
-      // console.log("c'est moi!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", recUser.saveUser.firstname)
-      props.setUserId(recUser.saveUser._id);
-      props.setfirstName(recUser.saveUser.firstname);
+
       if (recUser.result === true) {
         props.tokenStore(recUser.saveUser.token);
+        props.navigation.navigate("Dashboard");
       }
     }
     if (pwdConfirmed && check === true && check2 === true) {
       addUser();
-      props.navigation.navigate("Dashboard");
     }
   };
-
-  // console.log(birthdate)
-  // console.log(email)
-  // console.log(illnesses)
 
   return (
     <ScrollView>
@@ -149,7 +139,6 @@ function SignUpInfosScreen(props) {
             listMode="SCROLLVIEW"
             style={styles.dropDownPicker}
             dropDownContainerStyle={{ width: 300 }}
-            // dropDownDirection="TOP"
             open={open}
             value={value}
             items={sex}
@@ -389,9 +378,6 @@ function mapDispatchToProps(dispatch) {
   return {
     tokenStore: function (token) {
       dispatch({ type: "addToken", token: token });
-    },
-    setUserId: function (userId) {
-      dispatch({ type: "addUserId", userId: userId });
     },
   };
 }

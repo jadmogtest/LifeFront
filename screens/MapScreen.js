@@ -102,7 +102,6 @@ function MapScreen(props) {
     askPermissions();
     // loadData();
     listCategory();
-    console.log("JOBS::::", jobs);
   }, []);
 
   //Boucle pour supprimer les catégories en doublon et les push dans le tableau "jobs"
@@ -127,7 +126,6 @@ function MapScreen(props) {
   const [catMap, setcatMap] = useState("");
   //Fonction : map un nvx tableau à partir de celui de l'API pour créer un tableau de markers et en fonction de la catégorie sélectionnée
   let tab = props.route.params.listAPI;
-  console.log("TEST ::::", tab[0]);
   let markerlist = tab
     .filter((el) => el.categorie == catMap.label || !catMap)
     .map((marker, i) => {
@@ -149,32 +147,32 @@ function MapScreen(props) {
           onPress={() => {
             setModalVisible(!modalVisible);
             props.pushInfos(infos);
-            // setProfession(marker.profession);
-            // setAdresse(marker.adresse);
-            // setVille(marker.ville);
-            // setTel(marker.tel);
-            // setSecteur(marker.secteur);
-            // setCategory(listAPI.categorie);
-            // console.log("TEST :::", );
+            setProfession(marker.profession);
+            setAdresse(marker.adresse);
+            setVille(marker.ville);
+            setTel(marker.tel);
+            setSecteur(marker.secteur);
+            setCategory(listAPI.categorie);
+            console.log("TEST :::");
           }}
         />
       );
     });
 
-  // let newHCPro = (profession, adresse, ville, tel, category, secteur) => {
-  //   async function addHCPro() {
-  //     //Remplacer privateIp par la vôtre
-  //     let privateIp = "172.20.10.3"; //Remplacer privateIp par la vôtre
-  //     let fetchRouteAddhcpro = await fetch(
-  //       `http://${privateIp}:3000/addhcpro`,
-  //       {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-  //         body: `professionFromFront=${profession}&adresseFromFront=${adresse}&villeFromFront=${ville}&telFromFront=${tel}&categoryFromFront=${category}&secteurFromFront=${secteur}`,
-  //       }
-  //     );
-  //   }
-  // };
+  let newHCPro = (profession, adresse, ville, tel, category, secteur) => {
+    async function addHCPro() {
+      //Remplacer privateIp par la vôtre
+      let privateIp = "172.20.10.3"; //Remplacer privateIp par la vôtre
+      let fetchRouteAddhcpro = await fetch(
+        `http://${privateIp}:3000/addhcpro`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: `professionFromFront=${profession}&adresseFromFront=${adresse}&villeFromFront=${ville}&telFromFront=${tel}&categoryFromFront=${category}&secteurFromFront=${secteur}`,
+        }
+      );
+    }
+  };
 
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   return (

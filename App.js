@@ -25,6 +25,7 @@ import SettingsScreen from "./screens/SettingsScreen";
 import MapScreen from "./screens/MapScreen";
 import FavoriteScreen from "./screens/FavoriteScreen";
 import SignUpInfosScreen from "./screens/SignUpInfosScreen";
+import AddProfileScreen from "./screens/AddProfileScreen";
 
 // NAVIGATION
 const Stack = createStackNavigator();
@@ -36,13 +37,14 @@ import mail from "./reducers/mail";
 import userId from "./reducers/userId";
 import etab from "./reducers/healthcarepro";
 import token from "./reducers/token";
+import list from "./reducers/list";
 
 /* J'importe le Provider */
 import { Provider } from "react-redux";
 /* J'importe le Store */
 import { createStore, combineReducers } from "redux";
 /* Je crée le store */
-const store = createStore(combineReducers({ mail, etab, userId, token })); //J'appelle les reducers
+const store = createStore(combineReducers({ etab, list, mail, userId, token })); //J'appelle les reducers
 
 // FONCTION TABBAR
 function BottomNavigator() {
@@ -51,7 +53,6 @@ function BottomNavigator() {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }) => {
           let iconName;
-
           if (route.name === "Dashboard") {
             iconName = "home";
           } else if (route.name === "Profil") {
@@ -70,7 +71,7 @@ function BottomNavigator() {
       }}
     >
       <Tab.Screen name="Dashboard" component={DashboardScreen} />
-      <Tab.Screen name="Profil" component={ProfilScreen} />
+      <Tab.Screen name="ProfilScreen" component={ProfilScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
@@ -85,13 +86,14 @@ export default function App() {
           <Stack.Screen name="LogScreen" component={LogScreen} />
           <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
           <Stack.Screen name="MapScreen" component={MapScreen} />
-          <Stack.Screen name="FavoriteScreen" component={FavoriteScreen} />
-          <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
-          <Stack.Screen name="Dashboard" component={DashboardScreen} />
           <Stack.Screen
             name="SignUpInfosScreen"
             component={SignUpInfosScreen}
           />
+          <Stack.Screen name="Dashboard" component={DashboardScreen} />
+          <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
+          <Stack.Screen name="FavoriteScreen" component={FavoriteScreen} />
+          <Stack.Screen name="AddProfileScreen" component={AddProfileScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

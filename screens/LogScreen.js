@@ -9,9 +9,6 @@ import {
   Platform,
 } from "react-native";
 
-import DashBoard from "./DashboardScreen";
-import ProfilScreen from "./ProfilScreen";
-
 import { Button, CheckBox } from "react-native-elements";
 // import { TextInput } from "react-native-paper"; // npm install react-native-paper
 import Icon from "react-native-vector-icons/Ionicons";
@@ -54,10 +51,13 @@ function LogScreen(props) {
     });
 
     let response = await rawResponse.json();
+    // console.log("yooooooooooooooooooooooooooo", response.token)
 
     if (response.result === true) {
       //Si la bdd retrouve le user on se connecte
       setLogin(true);
+      console.log("coucoucoucouc", response);
+      props.tokenStore(response.token);
       props.addMail(mail);
     } else {
       setErrorSignIn(
@@ -244,8 +244,14 @@ function mapDispatchToProps(dispatch) {
   return {
     addMail: function (mail, token) {
       dispatch({ type: "saveMail", mail: mail });
+    },
+
+    tokenStore: function (token) {
       dispatch({ type: "addToken", token: token });
     },
+    // setUserId: function (userId) {
+    //   dispatch({ type: "addUserId", userId: userId });
+    // },
   };
 }
 

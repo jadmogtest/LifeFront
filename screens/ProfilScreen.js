@@ -116,25 +116,25 @@ function ProfilScreen(props) {
   ]);
   const [items, setItems] = useState([
     //Profil
-    { label: "Profil", value: "Profil" },
+    { label: "Profil", value: "Profil", disabled: true }, //disabled: true => le user ne peux pas le sélectionner
     { label: "Claire", value: "Claire", parent: "Profil" },
     { label: "Mandy", value: "Mandy", parent: "Profil" },
     { label: "Jad", value: "Jad", parent: "Profil" },
     { label: "Nicolas", value: "Nicolas", parent: "Profil" },
 
     //Catégorie
-    { label: "Catégorie", value: "Catégorie" },
+    { label: "Catégorie", value: "Catégorie", disabled: true },
     { label: "Vaccin", value: "Vaccin", parent: "Catégorie" },
     { label: "Examen de santé", value: "Examen de santé", parent: "Catégorie" },
 
     //Priorité
-    { label: "Priorité", value: "Priorité" },
+    { label: "Priorité", value: "Priorité", disabled: true },
     { label: "Obligatoire", value: "Obligatoire", parent: "Priorité" },
     { label: "Recommandé", value: "Recommandé", parent: "Priorité" },
     { label: "Personnel", value: "Personnel", parent: "Priorité" },
 
     //Priorité
-    { label: "Priorité", value: "Échéancé" },
+    { label: "Priorité", value: "Échéancé", disabled: true },
     { label: "Mois prochain", value: "Mois prochain", parent: "Échéancé" },
     {
       label: "6 prochains mois",
@@ -144,7 +144,7 @@ function ProfilScreen(props) {
     { label: "Annuelle", value: "Annuelle", parent: "Échéancé" },
 
     //État
-    { label: "État", value: "État" },
+    { label: "État", value: "État", disabled: true },
     { label: "À programmer", value: "À programmer", parent: "État" },
     { label: "Fait", value: "Fait", parent: "État" },
     { label: "Prévus", value: "Prévus", parent: "État" },
@@ -364,6 +364,7 @@ function ProfilScreen(props) {
   const [modalDate5, setModalDate5] = useState(false);
   const [modalDate6, setModalDate6] = useState(false);
   const [modalDate7, setModalDate7] = useState(false);
+  const [modalDate8, setModalDate8] = useState(false);
 
   /*
   TODO :
@@ -381,6 +382,7 @@ function ProfilScreen(props) {
   const [date5, setDate5] = useState(new Date(Date.now()));
   const [date6, setDate6] = useState(new Date(Date.now()));
   const [date7, setDate7] = useState(new Date(Date.now()));
+  const [date8, setDate8] = useState(new Date(Date.now()));
 
   const handleDatePicker = () => {
     setVisible(false);
@@ -438,6 +440,13 @@ function ProfilScreen(props) {
 
   const onChange7 = (event, value) => {
     setDate7(value7);
+    if (Platform.OS === "android") {
+      setIsPickerShow(false);
+    }
+  };
+
+  const onChange8 = (event, value) => {
+    setDate8(value8);
     if (Platform.OS === "android") {
       setIsPickerShow(false);
     }
@@ -548,6 +557,20 @@ function ProfilScreen(props) {
     />;
   };
 
+  const dateModal8 = () => {
+    setModalDate8(true);
+    <DateTimePicker
+      mode="date"
+      display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+      value={date8}
+      minimumDate={new Date(Date.now())}
+      // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+      onChange={onChange8}
+      onConfirm={handleDatePicker}
+      onCancel={hideDatePicker}
+    />;
+  };
+
   //Modal des infos des vaccins obligatoires
   const infosModal = (title, infos) => {
     setName(title);
@@ -556,7 +579,7 @@ function ProfilScreen(props) {
   };
 
   /* >>>>>>>>>> Ajout d'une ligne de vaccin au clic sur l'icône + <<<<<<<<<<<<<< */
-  const [vaccinesList, setVaccinesList] = useState([]); //Pour garder afficher les vaccins déja ajoutés lorsque le user reclic sur l'icône +
+  const [healthCare, setHealthCare] = useState([]); //Pour garder afficher les vaccins déja ajoutés lorsque le user reclic sur l'icône +
   const [valueVaccine, setValueVaccine] = useState(null); //Pour afficher les valeurs dans le dropDown
 
   //Valeurs DropDownPicker vaccins
@@ -575,12 +598,41 @@ function ProfilScreen(props) {
   ]);
 
   const list = []; //Je crée un tableau vide dans lequel je vais pusher les vaccins que le user va ajouter au clic sur l'icône +
-
-  const addVaccines = () => {
-    setVaccinesList([...vaccinesList, {}]); //Copie de la liste des vaccins ajoutés
+  const addHealthCare = () => {
+    let val = healthCare.length;
+    console.log("added to tab", val);
+    setHealthCare([...healthCare, { pos: val }]); //Copie de la liste des vaccins ajoutés
   };
 
-  //Pour supprimer une ligne de vaccin/examen ajouté si le user change d'avis
+  /* Fonction status pour le dropDown d'ajout de soin */
+  const healthCareStatus = (item, index) => {
+    let status = "A jour";
+    let type = "name";
+    let position = 0;
+    let healthCareCopy = [...healthCare];
+    healthCareCopy[index].status = item.value;
+    console.log(healthCareCopy);
+  };
+
+  /* Fonction name pour le dropDown d'ajout de soin */
+  const healthCareName = (item, index) => {
+    let name = "Tétanos";
+    let type = "name";
+    let position = 0;
+    let healthCareCopy = [...healthCare];
+    healthCareCopy[index].name = item.value;
+    // console.log(healthCareCopy);
+  };
+
+  /* Fonction date pour le dropDown d'ajout de soin */
+  const healthCareDate = (item, index) => {
+    let date = "05/05/2022";
+    let type = "date";
+    let position = 0;
+    let healthCareCopy = [...healthCare];
+    healthCareCopy[index].date = item.value;
+    // console.log(healthCareCopy);
+  };
 
   //Pour colorer la bordure du dropDown en vert lorsque le user l'ouvre pour sélectionner son choix
   const [isFocus, setIsFocus] = useState(false);
@@ -592,17 +644,35 @@ function ProfilScreen(props) {
   const [isFocus6, setIsFocus6] = useState(false);
   const [isFocus7, setIsFocus7] = useState(false);
 
+  /* Je supprime un soin de la liste en cliquant sur l'icône poubelle */
+  var deleteHealthCare = (element) => {
+    console.log(state5);
+    let tempo = [...healthCare];
+    console.log(tempo);
+
+    for (let i = 0; i < tempo.length; i++) {
+      tempo[i].pos = i;
+    }
+
+    // tempo = tempo.splice(element, 1);
+    tempo = tempo.filter((e) => e.pos != element); // Je fais une copie de mon tableau
+    console.log(tempo);
+    setHealthCare(tempo);
+
+    props.deleteToProfil(element);
+  };
+
   //Je map sur vaccinesList pour ajouter une nouvelle ligne de vaccin
-  var healthCarePerso = vaccinesList.map((i, element) => {
+  var healthCarePerso = healthCare.map((e, index) => {
     return (
-      // Pour supprimer une ligne de soin quand on clique sur la ligne onPress={() => props.deleteHealthCare(i)}
+      // Pour supprimer une ligne de soin quand on clique sur la ligne onPress={() => props.deleteHealthCare(element)}
       <View style={{ backgroundColor: "#fff" }}>
-        <View style={styles.row} key={i}>
+        <View style={styles.row} key={e}>
           <Dropdown
             style={styles.dropDownPickerVaccines}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
-            value={valueVaccine}
+            value={e.name}
             search //Permet au user de chercher le nom du vaccin sans avoir besoin de scroller sur la liste de nom proposée
             placeholder="À renseigner"
             labelField="label"
@@ -610,14 +680,14 @@ function ProfilScreen(props) {
             items={vaccinesName}
             multiple={false} //Permet de sélectionner une seule option
             onChange={(item) => {
-              setValueVaccine(item.value);
+              healthCareName(item, index); //Pour mettre à jour le nom du soin
             }}
           />
           <Dropdown
             style={styles.dropDownPickerState}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
-            value={list[i]}
+            value={e.status}
             placeholder="À renseigner"
             labelField="label"
             valueField="value"
@@ -625,49 +695,36 @@ function ProfilScreen(props) {
             data={state5}
             multiple={false} //Permet de sélectionner une seule option
             onChange={(item) => {
-              setValue6(item.value);
-              list.push(item.value); //Pour pusher la valeur du dropdown au tableau
+              healthCareStatus(item, index); //Pour mettre à jour le status du soin
             }}
           />
           <View>
             {/* Le bouton pour afficher le dateTimePicker */}
             <TouchableOpacity
+              key={index}
               style={styles.button}
-              onPress={() => showDatePicker()}
+              // onPress={() => showDatePicker()}
+              onPress={() => dateModal8()}
             >
               {/* Affiche la date sélectionnée par le user dans le bouton */}
               <Text style={styles.textDatePicker}>
-                {new Date(date).toLocaleDateString("fr-FR")}
+                {new Date(date8).toLocaleDateString("fr-FR")}
               </Text>
               <Icon
-                name="trash"
+                name="close-circle"
                 color="#5BAA62"
-                size={30}
-                onPress={() => props.deleteHealthCare(i)}
+                size={20}
+                style={{
+                  height: 60,
+                }}
+                onPress={() => deleteHealthCare(index)}
               />
             </TouchableOpacity>
-            {/* Le dateTimePicker */}
-            {visible && (
-              <DateTimePicker
-                mode="date"
-                display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-                value={date}
-                // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-                onChange={onChange}
-                // onConfirm={handleDatePicker}
-                // onCancel={hideDatePicker}
-              />
-            )}
           </View>
         </View>
       </View>
     );
   });
-
-  //Click sur les icônes +
-  let addHealthCare = (e) => {};
-
-  let addTrip = (e) => {};
 
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   return (
@@ -1217,7 +1274,7 @@ function ProfilScreen(props) {
               size={24}
               color="#5BAA62"
               onPress={() => {
-                addVaccines();
+                addHealthCare();
               }}
             />
             <Text style={styles.text}>Ajouter un vaccin </Text>
@@ -1403,6 +1460,26 @@ function ProfilScreen(props) {
             />
           </ModalInfos>
         </View>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ModalInfos visible={modalDate8}>
+            <Text onPress={() => setModalDate8(false)}>fermer</Text>
+            <DateTimePicker
+              mode="date"
+              style={{
+                backgroundColor: "#FFF",
+              }}
+              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+              value={date8}
+              minimumDate={new Date(Date.now())}
+              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+              onChange={onChange8}
+              onConfirm={handleDatePicker}
+              onCancel={hideDatePicker}
+            />
+          </ModalInfos>
+        </View>
 
         {/* Je map sur definitionList pour dynamiser les modals de définition */}
         <View
@@ -1496,6 +1573,7 @@ const styles = StyleSheet.create({
   dropDownPickerState: {
     height: 50,
     width: 146,
+    // width: "43%",
     borderRadius: 0,
     borderColor: "#EBFAD5",
     borderWidth: 0.5,
@@ -1503,7 +1581,7 @@ const styles = StyleSheet.create({
   },
   dropDownPickerVaccines: {
     height: 50,
-    width: 100,
+    width: 50,
     borderRadius: 0,
     borderColor: "#EBFAD5",
     paddingRight: 0,
@@ -1606,10 +1684,10 @@ const styles = StyleSheet.create({
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> REDUX <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 function mapDispatchToProps(dispatch) {
   return {
-    addHealthCare: function (newHealthCare) {
+    addToProfil: function (newHealthCare) {
       dispatch({ type: "addHealthCare", healthCare: newHealthCare });
     },
-    deleteHealthCare: function (newHealthCare) {
+    deleteToProfil: function (newHealthCare) {
       dispatch({
         type: "deleteHealthCare",
         healthCare: newHealthCare,

@@ -20,7 +20,7 @@ function SignUpInfosScreen(props) {
   const [job, setJob] = useState([
     { label: "Militaire", value: "Militaire" },
     { label: "Médical", value: "Médical" },
-    { label: "Autre", value: "Autrel" },
+    { label: "Autre", value: "Autre" },
   ]);
 
   //DropDownPicker Pathos

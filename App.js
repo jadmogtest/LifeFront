@@ -35,13 +35,15 @@ import mail from "./reducers/mail";
 import userId from "./reducers/userId";
 import etab from "./reducers/etablissementsdesante";
 import token from "./reducers/token";
+import list from "./reducers/list";
+
 
 /* J'importe le Provider */
 import { Provider } from "react-redux";
 /* J'importe le Store */
 import { createStore, combineReducers } from "redux";
 /* Je crée le store */
-const store = createStore(combineReducers({ mail, etab, userId, token })); //J'appelle les reducers
+const store = createStore(combineReducers({ etab, list, mail, userId, token })); //J'appelle les reducers
 
 // FONCTION TABBAR
 function BottomNavigator() {
@@ -50,7 +52,6 @@ function BottomNavigator() {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }) => {
           let iconName;
-
           if (route.name === "Dashboard") {
             iconName = "home";
           } else if (route.name === "Profil") {
@@ -69,7 +70,7 @@ function BottomNavigator() {
       }}
     >
       <Tab.Screen name="Dashboard" component={DashboardScreen} />
-      <Tab.Screen name="Profil" component={ProfilScreen} />
+      <Tab.Screen name="ProfilScreen" component={ProfilScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );

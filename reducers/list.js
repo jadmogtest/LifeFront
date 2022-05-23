@@ -1,14 +1,25 @@
 export default function (listHealthCare = [], action) {
   if (action.type == "addHealthCare") {
-    var listHealthCareCopy = [...listHealthCare];
-    listHealthCareCopy.push(action.healthCare);
-    return listHealthCareCopy;
-  } else if (action.type == "deleteHealthCare") {
-    console.log(action);
-    var tempo = listHealthCare.filter(
-      (element) => element.healthCare !== action.healthCare.newHealthCare
+    //J'ajoute un soin dans le profil
+    let isExist = listHealthCare.find(
+      //Je recherche avec find
+      (element) => element.name === action.healthCare.name //Si le soin choisi est même que celui déjà dans la liste
     );
-    return tempo;
+    if (!isExist) {
+      //Si le soin n'existe pas dans la liste alors on l'ajoute
+      let listHealthCareCopy = [...listHealthCare]; //Je fais une copie de mon tableau
+      listHealthCareCopy.push(action.healthCare); //J'ajoute le soin dans la liste
+      return listHealthCareCopy;
+    } else {
+      return listHealthCare;
+    }
+  } else if (
+    //Je supprime un soin dans la liste
+    action.type === "deleteHealthCare"
+  ) {
+    let listHealthCareCopy = [...listHealthCare]; // Je fais une copie de mon tableau
+    listHealthCareCopy.splice(action.index, 1); //Je supprime un soin dans la liste
+    return listHealthCareCopy;
   } else {
     return listHealthCare;
   }

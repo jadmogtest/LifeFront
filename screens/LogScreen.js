@@ -9,9 +9,6 @@ import {
   Platform,
 } from "react-native";
 
-import DashBoard from "./DashboardScreen";
-import ProfilScreen from "./ProfilScreen";
-
 import { Button, CheckBox } from "react-native-elements";
 // import { TextInput } from "react-native-paper"; // npm install react-native-paper
 import Icon from "react-native-vector-icons/Ionicons";
@@ -42,6 +39,9 @@ function LogScreen(props) {
 
   //Sign-in
   const signIn = async (mail, password) => {
+    props.navigation.navigate("BottomNavigator", {
+      screen: "Profilscreen",
+    });
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
     let privateIp = "172.20.10.3"; //Remplacer privateIp par la vôtre
     const rawResponse = await fetch(`http://${privateIp}:3000/sign-in`, {
@@ -56,9 +56,7 @@ function LogScreen(props) {
       //Si la bdd retrouve le user on se connecte
       setLogin(true);
       props.addMail(mail);
-      props.navigation.navigate("ProfilScreen", {
-        screen: "ProfilScreen",
-      });
+      
     } else {
       setErrorSignIn(
         //J'affiche un message d'erreur si l'utilisateur n'existe pas ou champs de saisies vide

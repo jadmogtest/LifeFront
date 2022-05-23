@@ -60,9 +60,12 @@ function LogScreen(props) {
       console.log("coucoucoucouc", response)
       props.tokenStore(response.token)
       props.addMail(mail);
-      props.navigation.navigate("ProfilScreen", {
-        screen: "ProfilScreen",
-      });
+      if (response.token) {
+        props.navigation.navigate("Dashboard", {
+          screen: "DashboardScreen",
+        });
+      }
+
     } else {
       setErrorSignIn(
         //J'affiche un message d'erreur si l'utilisateur n'existe pas ou champs de saisies vide

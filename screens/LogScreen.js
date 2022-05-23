@@ -1,8 +1,19 @@
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Image, Platform } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Image,
+  Platform,
+} from "react-native";
+
+import DashBoard from "./DashboardScreen"
+
 import { Button, CheckBox } from "react-native-elements";
-import { TextInput } from "react-native-paper"; // npm install react-native-paper
+// import { TextInput } from "react-native-paper"; // npm install react-native-paper
+import Icon from "react-native-vector-icons/Ionicons";
 
 //* Connexion avec redux : npm install --save redux react-redux */
 import { connect } from "react-redux";
@@ -23,44 +34,54 @@ function LogScreen(props) {
   //Logo
   const Logo = require("../assets/Logo-Life.png");
 
-  var connect = () => {
-    props.addMail(mail);
-    props.navigation.navigate("BottomNavigator", { screen: "Dashboard" });
-    AsyncStorage.setItem("mail", mail);
-    setMail(""); //Vide le champ mail après connexion
-    setPassword(""); //Vide le champ password après connexion
-    // console.log('test connect')
-  };
-
   // *<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SIGN-IN >>>>>>>>>>>>>>>>>>>>>>>>>>*
   // J'initialise l'état pour la redirection
   const [login, setLogin] = useState(false);
   const [errorSignIn, setErrorSignIn] = useState("");
-  var connect = async () => {
-    // console.log(signInEmail);
+
+  //Sign-in
+  const signIn = async (mail, password) => {
+
+
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
-    const rawResponse = await fetch("/sign-in", {
+    let privateIp = "192.168.10.116"; //Remplacer privateIp par la vôtre
+    const rawResponse = await fetch(`http://${privateIp}:3000/sign-in`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `passwordFromFront=${password}&emailFromFront=${mail}`,
     });
 
-    let response = await rawResponse.json();
 
-    if (response.login === true) {
+    let response = await rawResponse.json();
+    console.log("yooooooooooooooooooooooooooo", response)
+
+
+    if (response.result === true) {
       //Si la bdd retrouve le user on se connecte
       setLogin(true);
-      props.addToken(response.user.token); //Je récupére la valeur du token reçu
+      props.addMail(mail);
+      props.navigation.navigate("BottomNavigator", {
+        screen: "ProfilScreen",
+      });
     } else {
       setErrorSignIn(
         //J'affiche un message d'erreur si l'utilisateur n'existe pas ou champs de saisies vide
         "Les champs n'ont pas été remplit correctement ou votre compte n'existe pas encore !"
       );
-    }
-    setPassword(""); //Je vide le champ mail si error
-    setMail(""); //Je vide le champ password si error
+
+      setPassword(""); //Je vide le champ mail si error
+      setMail(""); //Je vide le champ password si error
+    };
+
+    // // *<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SIGN-UP >>>>>>>>>>>>>>>>>>>>>>>>>>*
+
   };
 
+  const signUp = async () => {
+    props.navigation.navigate("SignUpInfosScreen", {
+      screen: "SignUpInfosScreen",
+    })
+  };
   // useEffect(() => {
   //   AsyncStorage.getItem("mail", function (error, data) {
   //     if (data) {
@@ -72,7 +93,7 @@ function LogScreen(props) {
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   if (login) {
     // Si le mail et le password sont reconnus
-    return <ProfilScreen />;
+    return <DashBoard />;
   } else {
     // Si le mail et le password ne sont pas reconnus
     return (
@@ -82,8 +103,11 @@ function LogScreen(props) {
           Vos rappels de santé pour une vie sereine !
         </Text>
         <View style={styles.inputContainer}>
+          <View>
+            <Icon name="mail" color="#5BAA62" size={30} />
+          </View>
           <TextInput
-            label="Your email"
+            placeholder="Email"
             style={styles.input}
             // placeholder="Your email"
             // autoComplete={true}
@@ -91,13 +115,16 @@ function LogScreen(props) {
             theme={{ colors: { primary: "#5BAA62" } }}
             value={mail}
             onChangeText={(value) => setMail(value)}
-            left={<TextInput.Icon name="email" color="#5BAA62" size={30} />}
+            leftIcon={<Icon name="mail" color="#5BAA62" size={30} />}
           />
         </View>
 
         <View style={styles.inputContainer}>
+          <View>
+            <Icon name="key" color="#5BAA62" size={30} />
+          </View>
           <TextInput
-            label="Your password"
+            placeholder="Mot de passe"
             style={styles.input}
             // placeholder="Your password"
             autoCorrect={false}
@@ -106,9 +133,9 @@ function LogScreen(props) {
             theme={{ colors: { primary: "#5BAA62" } }}
             value={password}
             onChangeText={(value) => setPassword(value)}
-            left={<TextInput.Icon name="key" color="#5BAA62" size={30} />}
-            right={
-              <TextInput.Icon
+            leftIcon={<Icon name="key" color="#5BAA62" size={30} />}
+            rightIcon={
+              <Icon
                 name={passwordVisible ? "eye" : "eye-off"}
                 color="#5BAA62"
                 size={30}
@@ -116,6 +143,14 @@ function LogScreen(props) {
               />
             }
           />
+          <View>
+            <Icon
+              name={passwordVisible ? "eye" : "eye-off"}
+              color="#5BAA62"
+              size={30}
+              onPress={() => setPasswordVisible(!passwordVisible)}
+            />
+          </View>
         </View>
         <View style={styles.checkboxContainer}>
           <CheckBox
@@ -135,21 +170,13 @@ function LogScreen(props) {
           type="solid"
           buttonStyle={styles.button}
           title="Se connecter"
-          onPress={() =>
-            props.navigation.navigate("BottomNavigator", {
-              screen: "ProfilScreen",
-            })
-          }
+          onPress={() => signIn(mail, password)}
         ></Button>
         <Button
           type="solid"
           buttonStyle={styles.button}
           title="Pas encore de compte ?"
-          onPress={() =>
-            props.navigation.navigate("SignUpInfosScreen", {
-              screen: "SignUpInfosScreen",
-            })
-          }
+          onPress={() => signUp()}
         ></Button>
         <Text>{errorSignIn}</Text>
       </View>
@@ -172,10 +199,11 @@ const styles = StyleSheet.create({
     size: "md",
     backgroundColor: "#5BAA62",
     width: 300,
-    height: 60,
+    height: 50,
     margin: 15,
   },
   checkboxContainer: {
+    display: "flex",
     flexDirection: "row",
     alignItems: "center",
   },
@@ -188,18 +216,24 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   input: {
-    height: 40,
-    width: 300,
     margin: 12,
     padding: 10,
-    backgroundColor: "white",
     borderRadius: 5,
-    // alignSelf: "center",
+    width: 190,
+    height: 50,
   },
   inputContainer: {
-    // flexDirection: "row",
-    // alignItems: "center",
-    // alignSelf: "center",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "center",
+    backgroundColor: "white",
+    marginTop: 20,
+    paddingLeft: 10,
+    paddingRight: 20,
+    borderRadius: 8,
+    height: 50,
+    width: 300,
   },
   textSlogan: {
     color: "#37663B",

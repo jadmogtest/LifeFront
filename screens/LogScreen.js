@@ -43,7 +43,8 @@ function LogScreen(props) {
       screen: "Profilscreen",
     });
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
-    let privateIp = "172.20.10.3"; //Remplacer privateIp par la vôtre
+    let privateIp = "192.168.10.155"; //Remplacer privateIp par la vôtre
+    // let privateIp = "172.20.10.3"; //Remplacer privateIp par la vôtre
     const rawResponse = await fetch(`http://${privateIp}:3000/sign-in`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -51,12 +52,15 @@ function LogScreen(props) {
     });
 
     let response = await rawResponse.json();
+    // console.log("yooooooooooooooooooooooooooo", response.token)
+
 
     if (response.result === true) {
       //Si la bdd retrouve le user on se connecte
       setLogin(true);
+      console.log("coucoucoucouc", response)
+      props.tokenStore(response.token)
       props.addMail(mail);
-      
     } else {
       setErrorSignIn(
         //J'affiche un message d'erreur si l'utilisateur n'existe pas ou champs de saisies vide
@@ -242,8 +246,14 @@ function mapDispatchToProps(dispatch) {
   return {
     addMail: function (mail, token) {
       dispatch({ type: "saveMail", mail: mail });
-      dispatch({ type: "addToken", token: token });
     },
+
+    tokenStore: function (token) {
+      dispatch({ type: "addToken", token: token })
+    },
+    // setUserId: function (userId) {
+    //   dispatch({ type: "addUserId", userId: userId });
+    // },
   };
 }
 

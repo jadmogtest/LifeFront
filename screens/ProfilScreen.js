@@ -1,5 +1,5 @@
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Animated,
   Dimensions,
@@ -107,13 +107,35 @@ function ProfilScreen(props) {
   // const dim = Dimensions.get("screen").width
   //Dropdown list filtre
   const [open, setOpen] = useState(false);
+  // const [value, setValue] = useState([
+  //   {
+  //     label: "Vaccin",
+  //     parent: "Catégorie",
+  //     value: "Vaccin",
+  //   },
+  //   {
+  //     label: "Examen de santé",
+  //     parent: "Catégorie",
+  //     value: "Examen de santé",
+  //   },
+  //   {
+  //     label: "Obligatoire",
+  //     parent: "Priorité",
+  //     value: "Obligatoire",
+  //   },
+  //   {
+  //     label: "Recommandé",
+  //     parent: "Priorité",
+  //     value: "Recommandé",
+  //   }]);
   const [value, setValue] = useState([
-    "Profil",
-    "Catégorie",
-    "Priorité",
-    "Échéancé",
-    "État",
+    "Examen de santé",
+    "Vaccin",
+    "Obligatoire",
+    "Recommandé"
   ]);
+
+  console.log('value', value);
   const [items, setItems] = useState([
     //Profil
     { label: "Profil", value: "Profil", disabled: true }, //disabled: true => le user ne peux pas le sélectionner
@@ -134,7 +156,7 @@ function ProfilScreen(props) {
     { label: "Personnel", value: "Personnel", parent: "Priorité" },
 
     //Priorité
-    { label: "Priorité", value: "Échéancé", disabled: true },
+    { label: "Échéancé", value: "Échéancé", disabled: true },
     { label: "Mois prochain", value: "Mois prochain", parent: "Échéancé" },
     {
       label: "6 prochains mois",
@@ -264,6 +286,29 @@ function ProfilScreen(props) {
   // const [open2, setOpen2] = useState(false);
   // const [open3, setOpen3] = useState(false);
   // const [open4, setOpen4] = useState(false);
+  let names = ['Claire', 'Mandy', 'Nicolas', 'Jad']
+  let tempArray = items;
+  let vaccines = [{ name: 'Diphtérie', status: 'Obligatoire' },
+  { name: 'Rougeole', status: 'Obligatoire' },
+  { name: 'Rhume', status: 'Recommandé' },
+  { name: 'Varicelle', status: 'Obligatoire' },
+  // { name: 'Choléra', status: 'Obligatoire' },
+  // { name: 'Coqueluche', status: 'Obligatoire' },
+  { name: 'Mal de tête', status: 'Recommandé' },
+  { name: 'Mal de ventre', status: 'Recommandé' }]
+
+  let exams = [{ name: 'examen1', status: 'Obligatoire' },
+  { name: 'examen2', status: 'Obligatoire' },
+  { name: 'examen3', status: 'Recommandé' },
+  { name: 'examen4', status: 'Obligatoire' },
+  // { name: 'Choléra', status: 'Obligatoire' },
+  // { name: 'Coqueluche', status: 'Obligatoire' },
+  { name: 'Mal de tête', status: 'Recommandé' },
+  { name: 'Mal de ventre', status: 'Recommandé' }]
+
+  /* DropDownPicker État */
+  // 5 ouvertures individuelles pour les 6 dropdown
+  const [open1, setOpen1] = useState(false);
 
   // 5  valeurs individuelles pour les 6 dropdown
   /* 
@@ -318,6 +363,26 @@ function ProfilScreen(props) {
     { label: "Programmé le :", value: "Programmé le :" },
   ]);
 
+  const [filters, setFilters] = useState([
+    {
+      label: "Vaccin",
+      parent: "Catégorie",
+      value: "Vaccin",
+    }, {
+      label: "Examen de santé",
+      parent: "Catégorie",
+      value: "Examen de santé",
+    }, {
+      label: "Obligatoire",
+      parent: "Priorité",
+      value: "Obligatoire",
+    }, {
+      label: "Recommandé",
+      parent: "Priorité",
+      value: "Recommandé",
+    }])
+
+  let tempDropDownArray = [...filters];
   /* Pour ouvrir un seul dropDownPicker à la fois dans le table */
   // const mySetOpenState = (i) => {
   //   let temp = [...openState]; // création copie
@@ -369,6 +434,11 @@ function ProfilScreen(props) {
   /*
   TODO :
   // Click sur les icônes +
+  const [rowVisible, setRowVisible] = useState(false);
+
+  const addHealthCare = (e) => { };
+
+  const addTrip = (e) => { };
   // const addHealthCare = (e) => {};
 
   // const addTrip = (e) => {};
@@ -578,6 +648,60 @@ function ProfilScreen(props) {
     setModalVRVisible(true);
   };
 
+  //liste dynamique filtre profils
+  const itemSetter = () => {
+    for (let i = 0; i < names.length; i++) {
+      tempArray.unshift({
+        label: names[i],
+        value: names[i],
+        parent: 'Profil'
+      })
+    }
+    tempArray.unshift({ label: "Profil", value: "Profil" });
+    setItems(tempArray);
+  };
+
+  //selection tout filtres
+  const setFilterCriteria = (item) => {
+    if (item.length > 0) {
+      let tempDropDownValuesArray = [...value];
+      console.log('tempDropDown', tempDropDownValuesArray)
+      console.log('selectedItems', item);
+      // if (!tempDropDownArray.find(element => element === item[item.length - 1])) {
+      //   tempDropDownArray.push(item[item.length - 1]);
+      // }
+      if (!tempDropDownValuesArray.find(element => element === item[item.length - 1].value)) {
+        tempDropDownValuesArray.push(item[item.length - 1].value)
+      }
+
+      console.log('tempDrop after', tempDropDownValuesArray)
+      // setFilters(tempDropDownArray);
+      setValue(tempDropDownValuesArray);
+    }
+    //  else {
+    //   setFilters(arr);
+    // }
+  }
+
+  // const removeFilterCriteria = () => {
+  //   return filters;
+  // }
+
+  // const testFunc = () => {
+  //   setOpen(!open);
+  // }
+  // const testFunc = useCallback(() => {
+  //   setOpen(false);
+  // }, []);
+
+  useEffect(() => {
+    console.log('value useeffect', value)
+  }, [value]);
+
+
+  useEffect(() => {
+    itemSetter();
+  }, [items]);
   /* >>>>>>>>>> Ajout d'une ligne de vaccin au clic sur l'icône + <<<<<<<<<<<<<< */
   const [healthCare, setHealthCare] = useState([]); //Pour garder afficher les vaccins déja ajoutés lorsque le user reclic sur l'icône +
   const [valueVaccine, setValueVaccine] = useState(null); //Pour afficher les valeurs dans le dropDown
@@ -745,6 +869,8 @@ function ProfilScreen(props) {
           theme="LIGHT"
           multiple={true} //Permet de sélectionner plusieurs options
           min={0} //Possible de ne rien sélectionner
+          // onSelectItem={(item) => setFilterCriteria(item)}
+          max={10}
           mode="BADGE"
           valueStyle={{
             fontWeight: "bold",
@@ -785,7 +911,7 @@ function ProfilScreen(props) {
                   </View>
 
                   {/* JAD Affiche dynamiquement la liste des vaccins qui sont obligatoires uniquement */}
-                  {mandatoryVaccines
+                  {vaccines
                     .filter((element) => element.status === "Obligatoire")
                     .map((vaccine) => (
                       <View style={{ backgroundColor: "#fff" }}>
@@ -795,7 +921,7 @@ function ProfilScreen(props) {
                             onPress={() => launchModal(name, description)}
                           >
                             {" "}
-                            {vaccine.name[0]}
+                            {vaccine.name}
                           </Text>
                           {/* Pour colorer la bordure du dropdown picker */}
                           <Dropdown
@@ -832,94 +958,6 @@ function ProfilScreen(props) {
                             </TouchableOpacity>
                           </View>
                         </View>
-
-                        <View style={styles.row}>
-                          <Text
-                            style={styles.textRow}
-                            onPress={() => launchModal(name, description)}
-                          >
-                            {vaccine.name[1]}
-                            {/* {vaccine.name} */}
-                          </Text>
-
-                          {/* Pour colorer la bordure du dropdown picker */}
-                          <Dropdown
-                            style={[
-                              styles.dropDownPickerState,
-                              isFocus2 && { borderColor: "#5BAA62" },
-                            ]}
-                            placeholderStyle={styles.placeholderStyle}
-                            selectedTextStyle={styles.selectedTextStyle}
-                            value={value2}
-                            placeholder="À renseigner"
-                            labelField="label"
-                            valueField="value"
-                            maxHeight={165}
-                            data={state2}
-                            multiple={false} //Permet de sélectionner une seule option
-                            onFocus={() => setIsFocus2(true)}
-                            onBlur={() => setIsFocus2(false)}
-                            onChange={(item) => {
-                              setValue2(item.value);
-                            }}
-                          />
-                          <View>
-                            {/* Le bouton pour afficher le dateTimePicker */}
-                            <TouchableOpacity
-                              style={styles.button}
-                              onPress={() => dateModal2()}
-                            >
-                              {/* Affiche la date sélectionnée par le user dans le bouton */}
-                              <Text style={styles.textDatePicker}>
-                                {new Date(date2).toLocaleDateString("fr-FR")}
-                              </Text>
-                            </TouchableOpacity>
-                          </View>
-                        </View>
-
-                        <View style={styles.row}>
-                          <Text
-                            style={styles.textRow}
-                            onPress={() => launchModal(name, description)}
-                          >
-                            {vaccine.name[2]}
-                            {/* {vaccine.name} */}
-                          </Text>
-
-                          {/* Pour colorer la bordure du dropdown picker */}
-                          <Dropdown
-                            style={[
-                              styles.dropDownPickerState,
-                              isFocus3 && { borderColor: "#5BAA62" },
-                            ]}
-                            placeholderStyle={styles.placeholderStyle}
-                            selectedTextStyle={styles.selectedTextStyle}
-                            value={value3}
-                            placeholder="À renseigner"
-                            labelField="label"
-                            valueField="value"
-                            maxHeight={165}
-                            data={state3}
-                            multiple={false} //Permet de sélectionner une seule option
-                            onFocus={() => setIsFocus3(true)}
-                            onBlur={() => setIsFocus3(false)}
-                            onChange={(item) => {
-                              setValue3(item.value);
-                            }}
-                          />
-                          <View>
-                            {/* Le bouton pour afficher le dateTimePicker */}
-                            <TouchableOpacity
-                              style={styles.button}
-                              onPress={() => dateModal3()}
-                            >
-                              {/* Affiche la date sélectionnée par le user dans le bouton */}
-                              <Text style={styles.textDatePicker}>
-                                {new Date(date3).toLocaleDateString("fr-FR")}
-                              </Text>
-                            </TouchableOpacity>
-                          </View>
-                        </View>
                       </View>
                     ))}
                 </View>
@@ -948,7 +986,7 @@ function ProfilScreen(props) {
                   </View>
 
                   {/* JAD Affiche dynamiquement la liste des vaccins qui sont recommandés uniquement */}
-                  {recommendedVaccines
+                  {vaccines
                     .filter((element) => element.status === "Recommandé")
                     .map((vaccine) => (
                       <View style={{ backgroundColor: "#fff" }}>
@@ -958,8 +996,8 @@ function ProfilScreen(props) {
                             onPress={() => launchModal(name, description)}
                           >
                             {" "}
-                            {vaccine.name[0]}
-                          </Text>{" "}
+                            {vaccine.name}
+                          </Text>
                           {/* Pour colorer la bordure du dropdown picker */}
                           <Dropdown
                             style={[
@@ -990,48 +1028,6 @@ function ProfilScreen(props) {
                               {/* Affiche la date sélectionnée par le user dans le bouton */}
                               <Text style={styles.textDatePicker}>
                                 {new Date(date4).toLocaleDateString("fr-FR")}
-                              </Text>
-                            </TouchableOpacity>
-                          </View>
-                        </View>
-                        <View style={styles.row}>
-                          <Text
-                            style={styles.textRow}
-                            onPress={() => launchModal(name, description)}
-                          >
-                            {" "}
-                            {vaccine.name[1]}
-                          </Text>{" "}
-                          {/* Pour colorer la bordure du dropdown picker */}
-                          <Dropdown
-                            style={[
-                              styles.dropDownPickerState,
-                              isFocus5 && { borderColor: "#5BAA62" },
-                            ]}
-                            placeholderStyle={styles.placeholderStyle}
-                            selectedTextStyle={styles.selectedTextStyle}
-                            value={value5}
-                            placeholder="À renseigner"
-                            labelField="label"
-                            valueField="value"
-                            maxHeight={165}
-                            data={state5}
-                            multiple={false} //Permet de sélectionner une seule option
-                            onFocus={() => setIsFocus5(true)}
-                            onBlur={() => setIsFocus5(false)}
-                            onChange={(item) => {
-                              setValue5(item.value);
-                            }}
-                          />
-                          <View>
-                            {/* Le bouton pour afficher le dateTimePicker */}
-                            <TouchableOpacity
-                              style={styles.button}
-                              onPress={() => dateModal5()}
-                            >
-                              {/* Affiche la date sélectionnée par le user dans le bouton */}
-                              <Text style={styles.textDatePicker}>
-                                {new Date(date5).toLocaleDateString("fr-FR")}
                               </Text>
                             </TouchableOpacity>
                           </View>
@@ -1070,47 +1066,13 @@ function ProfilScreen(props) {
                   </View>
 
                   {/* JAD Affiche dynamiquement la liste des examens qui sont obligatoires uniquement */}
-                  {recommendedHealthExams
+                  {exams
                     .filter((element) => element.status === "Obligatoire")
                     .map((exam) => (
                       <View style={{ backgroundColor: "#fff" }}>
+
                         <View style={styles.row}>
-                          <Text style={styles.textRow}>{exam.name[0]}</Text>
-                          <Dropdown
-                            style={[
-                              styles.dropDownPickerState,
-                              isFocus6 && { borderColor: "#5BAA62" },
-                            ]}
-                            placeholderStyle={styles.placeholderStyle}
-                            selectedTextStyle={styles.selectedTextStyle}
-                            value={value6}
-                            placeholder="À renseigner"
-                            labelField="label"
-                            valueField="value"
-                            maxHeight={165}
-                            data={state6}
-                            multiple={false} //Permet de sélectionner une seule option
-                            onFocus={() => setIsFocus6(true)}
-                            onBlur={() => setIsFocus6(false)}
-                            onChange={(item) => {
-                              setValue5(item.value);
-                            }}
-                          />
-                          <View>
-                            {/* Le bouton pour afficher le dateTimePicker */}
-                            <TouchableOpacity
-                              style={styles.button}
-                              onPress={() => dateModal6()}
-                            >
-                              {/* Affiche la date sélectionnée par le user dans le bouton */}
-                              <Text style={styles.textDatePicker}>
-                                {new Date(date6).toLocaleDateString("fr-FR")}
-                              </Text>
-                            </TouchableOpacity>
-                          </View>
-                        </View>
-                        <View style={styles.row}>
-                          <Text style={styles.textRow}>{exam.name[1]}</Text>
+                          <Text style={styles.textRow}>{exam.name}</Text>
                           <Dropdown
                             style={[
                               styles.dropDownPickerState,
@@ -1171,12 +1133,12 @@ function ProfilScreen(props) {
                   </View>
 
                   {/* JAD Affiche dynamiquement la liste des examens qui sont recommandés uniquement */}
-                  {recommendedHealthExams
+                  {exams
                     .filter((element) => element.status === "Recommandé")
                     .map((exam) => (
                       <View style={{ backgroundColor: "#fff" }}>
                         <View style={styles.row}>
-                          <Text style={styles.textRow}> Bilan sanguin</Text>
+                          <Text style={styles.textRow}>{exam.name}</Text>
                           <Dropdown
                             style={[
                               styles.dropDownPickerState,
@@ -1206,41 +1168,6 @@ function ProfilScreen(props) {
                               {/* Affiche la date sélectionnée par le user dans le bouton */}
                               <Text style={styles.textDatePicker}>
                                 {new Date(date6).toLocaleDateString("fr-FR")}
-                              </Text>
-                            </TouchableOpacity>
-                          </View>
-                        </View>
-                        <View style={styles.row}>
-                          <Text style={styles.textRow}> Bilan urinaire</Text>
-                          <Dropdown
-                            style={[
-                              styles.dropDownPickerState,
-                              isFocus7 && { borderColor: "#5BAA62" },
-                            ]}
-                            placeholderStyle={styles.placeholderStyle}
-                            selectedTextStyle={styles.selectedTextStyle}
-                            value={value7}
-                            placeholder="À renseigner"
-                            labelField="label"
-                            valueField="value"
-                            maxHeight={165}
-                            data={state7}
-                            multiple={false} //Permet de sélectionner une seule option
-                            onFocus={() => setIsFocus7(true)}
-                            onBlur={() => setIsFocus7(false)}
-                            onChange={(item) => {
-                              setValue7(item.value);
-                            }}
-                          />
-                          <View>
-                            {/* Le bouton pour afficher le dateTimePicker */}
-                            <TouchableOpacity
-                              style={styles.button}
-                              onPress={() => dateModal7()}
-                            >
-                              {/* Affiche la date sélectionnée par le user dans le bouton */}
-                              <Text style={styles.textDatePicker}>
-                                {new Date(date7).toLocaleDateString("fr-FR")}
                               </Text>
                             </TouchableOpacity>
                           </View>
@@ -1679,6 +1606,12 @@ const styles = StyleSheet.create({
     padding: 9,
     color: "#37663B",
   },
+  filterView: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: 9,
+    color: "#37663B",
+  }
 });
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> REDUX <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //

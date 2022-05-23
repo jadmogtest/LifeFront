@@ -9,7 +9,8 @@ import {
   Platform,
 } from "react-native";
 
-import DashBoard from "./DashboardScreen"
+import DashBoard from "./DashboardScreen";
+import ProfilScreen from "./ProfilScreen";
 
 import { Button, CheckBox } from "react-native-elements";
 // import { TextInput } from "react-native-paper"; // npm install react-native-paper
@@ -41,26 +42,22 @@ function LogScreen(props) {
 
   //Sign-in
   const signIn = async (mail, password) => {
-
-
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
-    let privateIp = "192.168.10.116"; //Remplacer privateIp par la vôtre
+    let privateIp = "192.168.10.155"; //Remplacer privateIp par la vôtre
+    // let privateIp = "172.20.10.3"; //Remplacer privateIp par la vôtre
     const rawResponse = await fetch(`http://${privateIp}:3000/sign-in`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `passwordFromFront=${password}&emailFromFront=${mail}`,
     });
 
-
     let response = await rawResponse.json();
-    console.log("yooooooooooooooooooooooooooo", response)
-
 
     if (response.result === true) {
       //Si la bdd retrouve le user on se connecte
       setLogin(true);
       props.addMail(mail);
-      props.navigation.navigate("BottomNavigator", {
+      props.navigation.navigate("ProfilScreen", {
         screen: "ProfilScreen",
       });
     } else {
@@ -71,16 +68,15 @@ function LogScreen(props) {
 
       setPassword(""); //Je vide le champ mail si error
       setMail(""); //Je vide le champ password si error
-    };
-
-    // // *<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SIGN-UP >>>>>>>>>>>>>>>>>>>>>>>>>>*
-
+    }
   };
+
+  // *<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SIGN-UP >>>>>>>>>>>>>>>>>>>>>>>>>>*
 
   const signUp = async () => {
     props.navigation.navigate("SignUpInfosScreen", {
       screen: "SignUpInfosScreen",
-    })
+    });
   };
   // useEffect(() => {
   //   AsyncStorage.getItem("mail", function (error, data) {
@@ -109,7 +105,6 @@ function LogScreen(props) {
           <TextInput
             placeholder="Email"
             style={styles.input}
-            // placeholder="Your email"
             // autoComplete={true}
             underlineColor="transparent"
             theme={{ colors: { primary: "#5BAA62" } }}
@@ -126,7 +121,6 @@ function LogScreen(props) {
           <TextInput
             placeholder="Mot de passe"
             style={styles.input}
-            // placeholder="Your password"
             autoCorrect={false}
             secureTextEntry={passwordVisible}
             underlineColor="transparent"

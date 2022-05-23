@@ -9,7 +9,8 @@ import {
   Platform,
 } from "react-native";
 
-import DashBoard from "./DashboardScreen"
+import DashBoard from "./DashboardScreen";
+import ProfilScreen from "./ProfilScreen";
 
 import { Button, CheckBox } from "react-native-elements";
 // import { TextInput } from "react-native-paper"; // npm install react-native-paper
@@ -41,8 +42,6 @@ function LogScreen(props) {
 
   //Sign-in
   const signIn = async (mail, password) => {
-
-
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
     let privateIp = "192.168.10.125"; //Remplacer privateIp par la vôtre
     const rawResponse = await fetch(`http://${privateIp}:3000/sign-in`, {
@@ -50,7 +49,6 @@ function LogScreen(props) {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `passwordFromFront=${password}&emailFromFront=${mail}`,
     });
-
 
     let response = await rawResponse.json();
     // console.log("yooooooooooooooooooooooooooo", response.token)
@@ -62,12 +60,9 @@ function LogScreen(props) {
       console.log("coucoucoucouc", response)
       props.tokenStore(response.token)
       props.addMail(mail);
-      if (response.token) {
-        props.navigation.navigate("BottomNavigator", {
-          screen: "ProfilScreen",
-        });
-      }
-
+      props.navigation.navigate("ProfilScreen", {
+        screen: "ProfilScreen",
+      });
     } else {
       setErrorSignIn(
         //J'affiche un message d'erreur si l'utilisateur n'existe pas ou champs de saisies vide
@@ -76,16 +71,15 @@ function LogScreen(props) {
 
       setPassword(""); //Je vide le champ mail si error
       setMail(""); //Je vide le champ password si error
-    };
-
-    // // *<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SIGN-UP >>>>>>>>>>>>>>>>>>>>>>>>>>*
-
+    }
   };
+
+  // *<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SIGN-UP >>>>>>>>>>>>>>>>>>>>>>>>>>*
 
   const signUp = async () => {
     props.navigation.navigate("SignUpInfosScreen", {
       screen: "SignUpInfosScreen",
-    })
+    });
   };
   // useEffect(() => {
   //   AsyncStorage.getItem("mail", function (error, data) {
@@ -96,7 +90,6 @@ function LogScreen(props) {
   // });
 
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
-
   if (login) {
     // Si le mail et le password sont reconnus
     return <DashBoard />;
@@ -115,7 +108,6 @@ function LogScreen(props) {
           <TextInput
             placeholder="Email"
             style={styles.input}
-            // placeholder="Your email"
             // autoComplete={true}
             underlineColor="transparent"
             theme={{ colors: { primary: "#5BAA62" } }}
@@ -132,7 +124,6 @@ function LogScreen(props) {
           <TextInput
             placeholder="Mot de passe"
             style={styles.input}
-            // placeholder="Your password"
             autoCorrect={false}
             secureTextEntry={passwordVisible}
             underlineColor="transparent"

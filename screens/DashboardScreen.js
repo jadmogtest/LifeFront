@@ -105,7 +105,10 @@ function DashBoardScreen(props) {
 
       setExams(temp);
     }
-    takeExams();
+    if (props.token) {
+      takeExams();
+    }
+
   }, [overlayContent]);
 
   let markedDates = {};

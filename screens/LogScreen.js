@@ -59,11 +59,15 @@ function LogScreen(props) {
     if (response.result === true) {
       //Si la bdd retrouve le user on se connecte
       setLogin(true);
+      console.log("coucoucoucouc", response)
       props.tokenStore(response.token)
       props.addMail(mail);
-      props.navigation.navigate("BottomNavigator", {
-        screen: "ProfilScreen",
-      });
+      if (response.token) {
+        props.navigation.navigate("BottomNavigator", {
+          screen: "ProfilScreen",
+        });
+      }
+
     } else {
       setErrorSignIn(
         //J'affiche un message d'erreur si l'utilisateur n'existe pas ou champs de saisies vide

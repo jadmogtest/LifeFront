@@ -42,8 +42,11 @@ function LogScreen(props) {
 
   //Sign-in
   const signIn = async (mail, password) => {
+    props.navigation.navigate("Dashboard", {
+      screen: "DashboardScreen",
+    });
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
-    let privateIp = "172.20.10.3"; //Remplacer privateIp par la vôtre
+    let privateIp = "192.168.10.114"; //Remplacer privateIp par la vôtre
     const rawResponse = await fetch(`http://${privateIp}:3000/sign-in`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -56,9 +59,6 @@ function LogScreen(props) {
       //Si la bdd retrouve le user on se connecte
       setLogin(true);
       props.addMail(mail);
-      props.navigation.navigate("ProfilScreen", {
-        screen: "ProfilScreen",
-      });
     } else {
       setErrorSignIn(
         //J'affiche un message d'erreur si l'utilisateur n'existe pas ou champs de saisies vide

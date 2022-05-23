@@ -34,7 +34,7 @@ const Tab = createBottomTabNavigator();
 /* J'importe les reducers */
 import mail from "./reducers/mail";
 import userId from "./reducers/userId";
-import etab from "./reducers/etablissementsdesante";
+import etab from "./reducers/healthcarepro";
 import token from "./reducers/token";
 
 /* J'importe le Provider */
@@ -87,6 +87,7 @@ export default function App() {
           <Stack.Screen name="MapScreen" component={MapScreen} />
           <Stack.Screen name="FavoriteScreen" component={FavoriteScreen} />
           <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
+          <Stack.Screen name="Dashboard" component={DashboardScreen} />
           <Stack.Screen
             name="SignUpInfosScreen"
             component={SignUpInfosScreen}

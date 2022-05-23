@@ -52,14 +52,21 @@ function LogScreen(props) {
     });
 
     let response = await rawResponse.json();
+    // console.log("yooooooooooooooooooooooooooo", response.token)
+
 
     if (response.result === true) {
       //Si la bdd retrouve le user on se connecte
       setLogin(true);
+      console.log("coucoucoucouc", response)
+      props.tokenStore(response.token)
       props.addMail(mail);
-      props.navigation.navigate("ProfilScreen", {
-        screen: "ProfilScreen",
-      });
+      if (response.token) {
+        props.navigation.navigate("Dashboard", {
+          screen: "DashboardScreen",
+        });
+      }
+
     } else {
       setErrorSignIn(
         //J'affiche un message d'erreur si l'utilisateur n'existe pas ou champs de saisies vide
@@ -245,8 +252,14 @@ function mapDispatchToProps(dispatch) {
   return {
     addMail: function (mail, token) {
       dispatch({ type: "saveMail", mail: mail });
-      dispatch({ type: "addToken", token: token });
     },
+
+    tokenStore: function (token) {
+      dispatch({ type: "addToken", token: token })
+    },
+    // setUserId: function (userId) {
+    //   dispatch({ type: "addUserId", userId: userId });
+    // },
   };
 }
 

@@ -66,7 +66,7 @@ function DashBoardScreen(props) {
       // let privateIp = "172.20.10.3"; //Remplacer privateIp par la vôtre
 
       let brutResponse = await fetch(
-        `http://${privateIp}:3000/user/${props.userId}`
+        `http://${privateIp}:3000/user/${props.token}`
       );
       let jsonResponse = await brutResponse.json();
       let vaccinesList = jsonResponse.vaccines;
@@ -74,7 +74,7 @@ function DashBoardScreen(props) {
       let firstname = jsonResponse.firstname;
       setFirstName(firstname);
 
-      console.log(firstname);
+      // console.log(firstname);
 
       //Création d'un tableau avec TOUS les examens (vaccins et test médicaux) sous forme d'objets {date: , name: }
       let temp = [];
@@ -106,7 +106,10 @@ function DashBoardScreen(props) {
 
       setExams(temp);
     }
-    takeExams();
+    if (props.token) {
+      takeExams();
+    }
+
   }, [overlayContent]);
 
   let markedDates = {};
@@ -171,7 +174,15 @@ function DashBoardScreen(props) {
           props.navigation.navigate("MapScreen", { screen: "MapScreen" })
         }
       />
-      <Button buttonStyle={styles.bigButton} title="Mes lieux de santé" />
+      <Button
+        buttonStyle={styles.bigButton}
+        title="Mes lieux de santé"
+        onPress={() =>
+          props.navigation.navigate("FavoriteScreen", {
+            screen: "FavoriteScreen",
+          })
+        }
+      />
       <Calendar
         locale="fr"
         onDayPress={(day) => {
@@ -224,7 +235,7 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
-  return { userId: state.userId };
+  return { token: state.token };
 }
 
 export default connect(mapStateToProps, null)(DashBoardScreen);

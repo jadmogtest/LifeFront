@@ -62,7 +62,7 @@ function LogScreen(props) {
       props.tokenStore(response.token)
       props.addMail(mail);
       if (response.token) {
-        props.navigation.navigate("Dashboard", {
+        props.navigation.navigate("BottomNavigator", {
           screen: "DashboardScreen",
         });
       }

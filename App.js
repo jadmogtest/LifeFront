@@ -56,7 +56,7 @@ function BottomNavigator() {
           let iconName;
           if (route.name === "Dashboard") {
             iconName = "home";
-          } else if (route.name === "Profil") {
+          } else if (route.name === "ProfilScreen") {
             iconName = "user";
           } else if (route.name === "Settings") {
             iconName = "gear";

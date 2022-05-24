@@ -1,10 +1,6 @@
 // CODES DÉSACTIVATION WARNING SUR MOBILE
 import { LogBox } from "react-native";
-LogBox.ignoreLogs(["Warning: ..."]);
-LogBox.ignoreLogs([
-  "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
-]);
-LogBox.ignoreLogs(["Disconnected from Metro."]);
+LogBox.ignoreAllLogs();
 import { ViewPropTypes } from "deprecated-react-native-prop-types";
 
 // IMPORT DES DIFFERENTES LIBRAIRIES
@@ -35,10 +31,9 @@ const Tab = createBottomTabNavigator();
 /* J'importe les reducers */
 import mail from "./reducers/mail";
 import userId from "./reducers/userId";
-import etab from "./reducers/etablissementsdesante";
+import etab from "./reducers/healthcarepro";
 import token from "./reducers/token";
 import list from "./reducers/list";
-
 
 /* J'importe le Provider */
 import { Provider } from "react-redux";
@@ -87,7 +82,10 @@ export default function App() {
           <Stack.Screen name="LogScreen" component={LogScreen} />
           <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
           <Stack.Screen name="MapScreen" component={MapScreen} />
-          <Stack.Screen name="SignUpInfosScreen" component={SignUpInfosScreen} />
+          <Stack.Screen
+            name="SignUpInfosScreen"
+            component={SignUpInfosScreen}
+          />
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
           <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
           <Stack.Screen name="FavoriteScreen" component={FavoriteScreen} />

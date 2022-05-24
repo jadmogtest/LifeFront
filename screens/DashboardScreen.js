@@ -61,7 +61,7 @@ function DashBoardScreen(props) {
   useEffect(() => {
     async function takeExams() {
 
-      let privateIp = "192.168.10.115"; //Remplacer privateIp par la vôtre
+      let privateIp = "192.168.10.109"; //Remplacer privateIp par la vôtre
       console.log('test', props.token)
       let brutResponse = await fetch(
         `http://${privateIp}:3000/user/${props.token}`
@@ -100,7 +100,6 @@ function DashBoardScreen(props) {
     if (props.token) {
       takeExams();
     }
-
   }, [overlayContent]);
 
   let markedDates = {};
@@ -122,6 +121,41 @@ function DashBoardScreen(props) {
     } else if (delta > 32) {
       markedDates[exams[i].date] = { selected: true, selectedColor: "green" };
     }
+  }
+
+  //Variable qui va stocker les données API
+  const temp = [];
+  //Fonction qui exploite les données API
+  async function loadData() {
+    var rawResponse = await fetch(
+      "https://data.opendatasoft.com/api/records/1.0/search/?dataset=medecins%40public&q=&rows=150"
+    );
+    var response = await rawResponse.json();
+    //Boucle pour poush les données API dans le tableau "temp"
+    for (let item of response.records) {
+      if (
+        item.fields.coordonnees &&
+        item.fields.libelle_regroupement != "none" &&
+        item.fields.libelle_regroupement != "None" &&
+        item.fields.libelle_regroupement != undefined
+      ) {
+        temp.push({
+          latitude: item.fields.coordonnees[0],
+          longitude: item.fields.coordonnees[1],
+          profession: item.fields.libelle_profession,
+          categorie: item.fields.libelle_regroupement,
+          adresse: item.fields.adresse,
+          ville: item.fields.commune,
+          tel: item.fields.column_10,
+          secteur: item.fields.column_14,
+        });
+      }
+    }
+    // console.log("|| Prof. de santé ||", temp.length);
+    props.navigation.navigate("MapScreen", {
+      screen: "MapScreen",
+      listAPI: temp,
+    });
   }
 
   return (
@@ -161,9 +195,7 @@ function DashBoardScreen(props) {
       <Button
         buttonStyle={styles.bigButton}
         title="Rechercher un professionnel de santé"
-        onPress={() =>
-          props.navigation.navigate("MapScreen", { screen: "MapScreen" })
-        }
+        onPress={() => loadData()}
       />
       <Button
         buttonStyle={styles.bigButton}

@@ -74,7 +74,7 @@ function SignUpInfosScreen(props) {
     familyHistory
   ) => {
     async function addUser() {
-      let privateIp = "192.168.10.115"; //Remplacer privateIp par la vôtre
+      let privateIp = "192.168.10.109"; //Remplacer privateIp par la vôtre
       let rawRecUser = await fetch(`http://${privateIp}:3000/sign-up`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -85,17 +85,12 @@ function SignUpInfosScreen(props) {
       if (recUser.result === true) {
         props.tokenStore(recUser.saveUser.token);
         props.navigation.navigate("Dashboard");
-
-
       }
     }
     if (pwdConfirmed && check === true && check2 === true) {
       addUser();
-
     }
   };
-
-
 
   return (
     <ScrollView>
@@ -384,7 +379,6 @@ function mapDispatchToProps(dispatch) {
     tokenStore: function (token) {
       dispatch({ type: "addToken", token: token });
     },
-
   };
 }
 export default connect(null, mapDispatchToProps)(SignUpInfosScreen);

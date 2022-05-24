@@ -43,8 +43,8 @@ function LogScreen(props) {
   //Sign-in
   const signIn = async (mail, password) => {
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
-    let privateIp = "192.168.10.115"; //Remplacer privateIp par la vôtre
-
+    let privateIp = "192.168.10.109"; //Remplacer privateIp par la vôtre
+    // let privateIp = "172.20.10.3"; //Remplacer privateIp par la vôtre
     const rawResponse = await fetch(`http://${privateIp}:3000/sign-in`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -52,13 +52,10 @@ function LogScreen(props) {
     });
 
     let response = await rawResponse.json();
-    // console.log("yooooooooooooooooooooooooooo", response.token)
-
 
     if (response.result === true) {
       //Si la bdd retrouve le user on se connecte
       setLogin(true);
-      console.log("coucoucoucouc", response)
       props.tokenStore(response.token)
       props.addMail(mail);
       if (response.token) {
@@ -66,7 +63,6 @@ function LogScreen(props) {
           screen: "DashboardScreen",
         });
       }
-
     } else {
       setErrorSignIn(
         //J'affiche un message d'erreur si l'utilisateur n'existe pas ou champs de saisies vide
@@ -255,7 +251,7 @@ function mapDispatchToProps(dispatch) {
     },
 
     tokenStore: function (token) {
-      dispatch({ type: "addToken", token: token })
+      dispatch({ type: "addToken", token: token });
     },
     // setUserId: function (userId) {
     //   dispatch({ type: "addUserId", userId: userId });

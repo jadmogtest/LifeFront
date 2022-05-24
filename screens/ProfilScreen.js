@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import {
   Animated,
   Dimensions,
+  Linking,
   Modal,
   ScrollView,
   StyleSheet,
@@ -11,7 +12,7 @@ import {
 } from "react-native";
 import { Button, Text } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker"; //npm install react-native-dropdown-picker
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Entypo, Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker"; //npm install @react-native-community/datetimepicker --save
 import DateTimePickerModal from "react-native-modal-datetime-picker"; //expo install react-native-modal-datetime-picker @react-native-community/datetimepicker
 //Librairie avec laquelle pas besoin de gérer le zIndex
@@ -132,31 +133,30 @@ function ProfilScreen(props) {
     "Examen de santé",
     "Vaccin",
     "Obligatoire",
-    "Recommandé"
+    "Recommandé",
   ]);
 
-  console.log('value', value);
   const [items, setItems] = useState([
     //Profil
-    // { label: "Profil", value: "Profil" },
-    // { label: "Claire", value: "Claire", parent: "Profil" },
-    // { label: "Mandy", value: "Mandy", parent: "Profil" },
-    // { label: "Jad", value: "Jad", parent: "Profil" },
-    // { label: "Nicolas", value: "Nicolas", parent: "Profil" },
+    { label: "Profil", value: "Profil", disabled: true }, //disabled: true => le user ne peux pas le sélectionner
+    { label: "Claire", value: "Claire", parent: "Profil" },
+    { label: "Mandy", value: "Mandy", parent: "Profil" },
+    { label: "Jad", value: "Jad", parent: "Profil" },
+    { label: "Nicolas", value: "Nicolas", parent: "Profil" },
 
     //Catégorie
-    { label: "Catégorie", value: "Catégorie" },
+    { label: "Catégorie", value: "Catégorie", disabled: true },
     { label: "Vaccin", value: "Vaccin", parent: "Catégorie" },
     { label: "Examen de santé", value: "Examen de santé", parent: "Catégorie" },
 
     //Priorité
-    { label: "Priorité", value: "Priorité" },
+    { label: "Priorité", value: "Priorité", disabled: true },
     { label: "Obligatoire", value: "Obligatoire", parent: "Priorité" },
     { label: "Recommandé", value: "Recommandé", parent: "Priorité" },
     { label: "Personnel", value: "Personnel", parent: "Priorité" },
 
     //Priorité
-    { label: "Échéancé", value: "Échéancé" },
+    { label: "Échéancé", value: "Échéancé", disabled: true },
     { label: "Mois prochain", value: "Mois prochain", parent: "Échéancé" },
     {
       label: "6 prochains mois",
@@ -166,7 +166,7 @@ function ProfilScreen(props) {
     { label: "Annuelle", value: "Annuelle", parent: "Échéancé" },
 
     //État
-    { label: "État", value: "État" },
+    { label: "État", value: "État", disabled: true },
     { label: "À programmer", value: "À programmer", parent: "État" },
     { label: "Fait", value: "Fait", parent: "État" },
     { label: "Prévus", value: "Prévus", parent: "État" },
@@ -261,50 +261,69 @@ function ProfilScreen(props) {
     },
   ];
 
-  //Tableau des données infos
-  const infos = [
-    {
-      title: "Vaccins obligatoires :",
-      infos:
-        "11 vaccins sont obligatoires chez les nourrissons nés après le 1er janvier 2018. Trois vaccins restent obligatoires chez les enfants nés avant cette date. Le vaccin contre la fièvre jaune l'est aussi pour les résidents de Guyane française. En milieu professionnel, selon l’activité exercée, certaines vaccinations sont exigées.",
-    },
-    {
-      title: "Vaccins recommandés :",
-      infos:
-        "Des vaccins existent contre diverses maladies graves telles que la tuberculose, l'hépatite A... S’ils ne sont pas obligatoires, ils restent la meilleure façon d’éviter ces maladies et de protéger les personnes fragiles (nourrissons, femmes enceintes, personnes âgées…). ",
-    },
-    {
-      title: "Vaccins projets personnels :",
-      infos:
-        "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la liste des vaccins obligatoires et des vaccins recommandés vous pouvez en ajouter dans la section 'Vaccins projets personnels' en cliquant sur",
-    },
-  ];
-
   // /* DropDown État */
   // // Pour l'ouverture individuelle des dropdown d'état
   // const [open1, setOpen1] = useState(false);
   // const [open2, setOpen2] = useState(false);
   // const [open3, setOpen3] = useState(false);
   // const [open4, setOpen4] = useState(false);
-  let names = ['Claire', 'Mandy', 'Nicolas', 'Jad']
+  let names = ["Claire", "Mandy", "Nicolas", "Jad"];
   let tempArray = items;
-  let vaccines = [{ name: 'Diphtérie', status: 'Obligatoire' },
-  { name: 'Rougeole', status: 'Obligatoire' },
-  { name: 'Rhume', status: 'Recommandé' },
-  { name: 'Varicelle', status: 'Obligatoire' },
-  // { name: 'Choléra', status: 'Obligatoire' },
-  // { name: 'Coqueluche', status: 'Obligatoire' },
-  { name: 'Mal de tête', status: 'Recommandé' },
-  { name: 'Mal de ventre', status: 'Recommandé' }]
+  let vaccines = [
+    //Vaccins obligatoires
+    {
+      name: "Diphtérie",
+      status: "Obligatoire",
+      description:
+        "La vaccination antidiphtérique est le seul moyen de contrôler cette infection grave. Le vaccin est composé de la toxine diphtérique purifiée et inactivée. La vaccination est obligatoire pour tous les enfants et les professionnels de santé. La primo-vaccination est maintenant obligatoire chez l’enfant à 2 et 4 mois. Le premier rappel se fait à l’âge de 11 mois et les autres rappels se font à 6 ans, 11/13 ans, 25 ans, 45 ans, 65 ans et puis tous les 10 ans. Les études de séroprévalence montrent qu’une haute proportion de sujets âgés de 50 ans et plus en France ont un titre d’anticorps non détectable ou inférieur au seuil considéré comme protecteur. Ces données soulignent l’importance de suivre les recommandations vaccinales, notamment les rappels tous les 10 ans chez les adultes âgés de plus de 65 ans.",
+    },
+    {
+      name: "Rougeole",
+      status: "Obligatoire",
+      description:
+        "Tous les enfants et adultes jeunes doivent être vaccinés contre la rougeole. C’est une vaccination très efficace qui protège de la maladie dans près de 100% des cas après 2 doses de vaccin. La généralisation de la vaccination contre la rougeole a pour objectif l’élimination de la maladie. Celle-ci est possible si 95% des enfants se font vacciner avec 2 doses. Le taux de couverture vaccinale reste insuffisant en France chez les 15-35 ans et chez les nourrissons, ce qui explique que le virus continue à circuler dans le pays.",
+    },
+    {
+      name: "Tétanos",
+      status: "Obligatoire",
+      description:
+        "N’importe qui peut contracter un tétanos ; tout le monde est donc concerné par cette vaccination tout au long de la vie. Cette maladie n’étant pas contagieuse, la protection par la vaccination est individuelle et dure au moins vingt ans jusqu’à 65 ans, moins longtemps au-delà. Il est donc indispensable de faire des injections de rappel tout au long de la vie (même si le vaccin n’est obligatoire que pour les nourrissons). La maladie n’est pas immunisante c'est-à-dire que le fait de l’avoir eue ne permet pas au système immunitaire de développer des anticorps garantissant une protection contre cette maladie si le corps y était à nouveau exposé. La protection n’est réalisée que par la vaccination. Le vaccin a également un intérêt en présence d’une blessure à haut risque de tétanos : chez les personnes non à jour de leur vaccination, une injection de vaccin et parfois d’immunoglobulines peuvent être réalisées. Les personnes les moins bien vaccinées en France contre le tétanos sont les personnes âgées (en particulier les femmes qui ont moins bénéficié dans leur vie adulte de rappels, ne serait-ce qu’à l’occasion du service militaire) alors que les activités de jardinage sont très fréquentes dans cette population.",
+    },
+    //Vaccins recommandés
+    {
+      name: "COVID-19",
+      status: "Recommandé",
+      description:
+        "En France, la vaccination contre la Covid-19 est recommandée pour tous à partir de 5 ans avec 2 doses. Un rappel vaccinal est ensuite recommandé pour toutes les personnes de 12 ans et plus. La vaccination est obligatoire pour les personnes travaillant dans les secteurs sanitaire, social et médico-social avec, depuis le 30 janvier 2022, un rappel exigé. Depuis le 14 mars 2022, il est recommandé aux personnes de 80 ans et plus, aux résidents des EHPAD et USLD et aux personnes immunodéprimées d'effectuer un deuxième rappel (4e dose le plus souvent). Celle-ci peut être faite dès 3 mois après la première dose de rappel ou une infection à la Covid-19. Depuis le 7 avril 2022, les personnes de 60 à 79 ans peuvent recevoir une seconde dose de rappel à partir de 6 mois après le dernier rappel ou une infection à la Covid-19. En France, près de 155 millions d’injections de vaccins ont été réalisées au total au 5 avril 2022 depuis le début de la campagne et actuellement aucun des effets indésirables ne remettent en cause le rapport bénéfice risque des vaccins utilisés. Le variant Omicron est retrouvé dans près de 100% des cas en France. Avec le variant Omicron, les vaccins existants restent efficaces sur les formes graves à condition que la vaccination soit complète avec un rappel. Le ministère de la santé a de nouveau souligné l’importance de la vaccination des femmes enceintes, qui, non-vaccinées, sont particulièrement à risque en cas de Covid-19, les risques concernant à la fois les femmes elles-mêmes et leurs nouveau-nés. De nouvelles études confirment que la vaccination des femmes enceintes est sûre et efficace pour les protéger, elles et leur bébé.",
+    },
+    {
+      name: "Hépatite B",
+      status: "Recommandé",
+      description:
+        "La vaccination permet de se protéger très efficacement de cette infection et de diminuer la transmission. La vaccination contre l’hépatite B est obligatoire, en France, pour tous les nourrissons nés à partir du 1er janvier 2018, et recommandée chez les enfants et les adolescents jusqu’à l’âge de 15 ans : les vacciner quand ils sont petits, c’est les protéger pour plus tard lorsqu’ils rencontreront le virus. Comparée à la plupart des pays d’Afrique ou d’Asie, la France est un pays de faible incidence de l'hépatite B par an et le risque d’infection est très faible durant l’enfance. Ce sont les adolescents et surtout les jeunes adultes qui sont les plus exposés au risque d’acquisition du virus de l’hépatite B (relations sexuelles avec partenaires multiples, usage de drogues par voie intraveineuse, voyage dans les pays à risque, professions exposées au sang, etc.) Il est important de veiller à ce que les enfants soient vaccinés avant l’âge d’apparition du risque, c’est-à-dire avant 16 ans.",
+    },
+  ];
 
-  let exams = [{ name: 'examen1', status: 'Obligatoire' },
-  { name: 'examen2', status: 'Obligatoire' },
-  { name: 'examen3', status: 'Recommandé' },
-  { name: 'examen4', status: 'Obligatoire' },
-  // { name: 'Choléra', status: 'Obligatoire' },
-  // { name: 'Coqueluche', status: 'Obligatoire' },
-  { name: 'Mal de tête', status: 'Recommandé' },
-  { name: 'Mal de ventre', status: 'Recommandé' }]
+  let exams = [
+    //Examens obligatoires
+    { name: "examen1", status: "Obligatoire" },
+    { name: "examen2", status: "Obligatoire" },
+    { name: "examen3", status: "Obligatoire" },
+    { name: "examen4", status: "Obligatoire" },
+    //Examens recommandés
+    {
+      name: "Bilan sanguin",
+      status: "Recommandé",
+      description:
+        "Un bilan sanguin regroupe un ensemble d’analyses réalisées à partir d’un prélèvement sanguin. Les paramètres à étudier sont sélectionnés par le médecin en fonction du diagnostic envisagé ou des organes suspectés. Un bilan sanguin permet de mesurer, selon les besoins, la concentration sanguine de divers éléments, tels que les globules rouges ou blancs, certaines hormones, des protéines, un agent infectieux, etc.",
+    },
+    {
+      name: "ECBU",
+      status: "Recommandé",
+      description:
+        "L'ECBU, examen cytobactériologique des urines (ou cytologie urinaire), est notamment pratiqué lorsqu'une infection urinaire est suspectée. Il consiste à recueillir et à analyser les urines, pour détecter une concentration anormalement élevée de leucocytes, signe d'une infection. De nombreuses substances peuvent être analysées et détectées dans les urines. Les analyses d'urines permettent d'aider au diagnostic de certaines pathologies, mais aussi de mieux définir leur traitement. Mais elles permettent aussi de savoir si une femme est enceinte par exemple.",
+    },
+  ];
 
   /* DropDownPicker État */
   // 5 ouvertures individuelles pour les 6 dropdown
@@ -368,58 +387,68 @@ function ProfilScreen(props) {
       label: "Vaccin",
       parent: "Catégorie",
       value: "Vaccin",
-    }, {
+    },
+    {
       label: "Examen de santé",
       parent: "Catégorie",
       value: "Examen de santé",
-    }, {
+    },
+    {
       label: "Obligatoire",
       parent: "Priorité",
       value: "Obligatoire",
-    }, {
+    },
+    {
       label: "Recommandé",
       parent: "Priorité",
       value: "Recommandé",
-    }])
-
-  let tempDropDownArray = [...filters];
-  /* Pour ouvrir un seul dropDownPicker à la fois dans le table */
-  // const mySetOpenState = (i) => {
-  //   let temp = [...openState]; // création copie
-  //   temp = [...temp.slice(0, i), !temp[i], ...temp.slice(i + 1)];
-  //   setOpenState(temp); //MAJ de l'état
-  // };
+    },
+  ]);
 
   /* ________________ LES DIFFÉRENTS MODALS ________________ */
   /* Les différents modals  apparaissent au clic sur les icones info */
-  const modal = [
+  //Tableau des données infos
+  const infos = [
     {
-      title: "Vaccins obligatoires",
-      description:
-        "11 vaccins sont obligatoires chez les nourrissons nés après le 1er  ",
+      title: "Vaccins obligatoires :",
+      infos:
+        "11 vaccins sont obligatoires chez les nourrissons nés après le 1er janvier 2018. Trois vaccins restent obligatoires chez les enfants nés avant cette date. Le vaccin contre la fièvre jaune l'est aussi pour les résidents de Guyane française. En milieu professionnel, selon l’activité exercée, certaines vaccinations sont exigées.",
     },
     {
-      title: "Vaccins recommandés",
-      description:
-        "Des vaccins existent contre diverses maladies graves telles que la  ",
+      title: "Vaccins recommandés :",
+      infos:
+        "Des vaccins existent contre diverses maladies graves telles que la tuberculose, l'hépatite A... S’ils ne sont pas obligatoires, ils restent la meilleure façon d’éviter ces maladies et de protéger les personnes fragiles (nourrissons, femmes enceintes, personnes âgées…). ",
     },
     {
-      title: "Vaccins projets personnels",
-      description:
-        "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la  ",
+      title: "Vaccins projets personnels :",
+      infos:
+        "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la liste des vaccins obligatoires et des vaccins recommandés vous pouvez en ajouter dans la section 'Vaccins projets personnels' en cliquant sur",
+    },
+    {
+      title: "Examens de santé obligatoires :",
+      infos:
+        "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la liste des vaccins obligatoires et des vaccins recommandés vous pouvez en ajouter dans la section 'Vaccins projets personnels' en cliquant sur",
+    },
+    {
+      title: "Examens de santé recommandés :",
+      infos:
+        "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la liste des vaccins obligatoires et des vaccins recommandés vous pouvez en ajouter dans la section 'Vaccins projets personnels' en cliquant sur",
+    },
+    {
+      title: "Vaccins/Examens projets personnels :",
+      infos:
+        "Si vous souhaitez réaliser un vaccin ou un examen qui n'apparait pas dans la liste des vaccins/examens obligatoires et des vaccins/examens recommandés vous pouvez en ajouter dans la section 'Vaccins/examens projets personnels' en cliquant sur",
     },
   ];
-  // Modal Vaccins obligatoires (VO)
-  const [modalVOVisible, setModalVOVisible] = useState(false);
 
-  // Modal Vaccins recommandés (VR)
-  const [modalVRVisible, setModalVRVisible] = useState(false);
+  // Modal Infos Vaccins qui apparait au clic sur l'icône info
+  const [modalInfosVisible, setModalInfosVisible] = useState(false);
 
-  // Modal Vaccins projets personnels (VPP)
-  const [modalVPPVisible, setModalVPPVisible] = useState(false);
+  // // Modal Vaccins projets personnels (VPP)
+  // const [modalVPPVisible, setModalVPPVisible] = useState(false);
 
-  // Modal défition diphtérie (Diph)
-  const [modalDiphVisible, setModalDiphVisible] = useState(false);
+  // // Modal défition diphtérie (Diph)
+  const [modalDefVisible, setModalDefVisible] = useState(false);
 
   // Modal date
   const [modalDate, setModalDate] = useState(false);
@@ -429,18 +458,7 @@ function ProfilScreen(props) {
   const [modalDate5, setModalDate5] = useState(false);
   const [modalDate6, setModalDate6] = useState(false);
   const [modalDate7, setModalDate7] = useState(false);
-
-  /*
-  TODO :
-  // Click sur les icônes +
-  const [rowVisible, setRowVisible] = useState(false);
-
-  const addHealthCare = (e) => { };
-
-  const addTrip = (e) => { };
-  // const addHealthCare = (e) => {};
-
-  // const addTrip = (e) => {};
+  const [modalDate8, setModalDate8] = useState(false);
 
   /* DateTimePicker */
   const [visible, setVisible] = useState(false);
@@ -451,6 +469,7 @@ function ProfilScreen(props) {
   const [date5, setDate5] = useState(new Date(Date.now()));
   const [date6, setDate6] = useState(new Date(Date.now()));
   const [date7, setDate7] = useState(new Date(Date.now()));
+  const [date8, setDate8] = useState(new Date(Date.now()));
 
   const handleDatePicker = () => {
     setVisible(false);
@@ -513,11 +532,18 @@ function ProfilScreen(props) {
     }
   };
 
+  const onChange8 = (event, value) => {
+    setDate8(value8);
+    if (Platform.OS === "android") {
+      setIsPickerShow(false);
+    }
+  };
+
   //Modal de définition des vaccins obligatoires
   const launchModal = (name, description) => {
     setName(name);
     setDescription(description);
-    setModalDiphVisible(true);
+    setModalDefVisible(true);
   };
 
   const dateModal = () => {
@@ -618,11 +644,30 @@ function ProfilScreen(props) {
     />;
   };
 
+  const dateModal8 = () => {
+    setModalDate8(true);
+    <DateTimePicker
+      mode="date"
+      display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+      value={date8}
+      minimumDate={new Date(Date.now())}
+      // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+      onChange={onChange8}
+      onConfirm={handleDatePicker}
+      onCancel={hideDatePicker}
+    />;
+  };
+
   //Modal des infos des vaccins obligatoires
-  const infosModal = (title, infos) => {
-    setName(title);
-    setDescription(infos);
-    setModalVRVisible(true);
+  const infosModal = (text) => {
+    for (let item of infos) {
+      console.log(item);
+      if (item.title === text) {
+        setName(item.title);
+        setDescription(item.infos);
+      }
+    }
+    setModalInfosVisible(true);
   };
 
   //liste dynamique filtre profils
@@ -631,8 +676,8 @@ function ProfilScreen(props) {
       tempArray.unshift({
         label: names[i],
         value: names[i],
-        parent: 'Profil'
-      })
+        parent: "Profil",
+      });
     }
     tempArray.unshift({ label: "Profil", value: "Profil" });
     setItems(tempArray);
@@ -642,45 +687,27 @@ function ProfilScreen(props) {
   const setFilterCriteria = (item) => {
     if (item.length > 0) {
       let tempDropDownValuesArray = [...value];
-      console.log('tempDropDown', tempDropDownValuesArray)
-      console.log('selectedItems', item);
-      // if (!tempDropDownArray.find(element => element === item[item.length - 1])) {
-      //   tempDropDownArray.push(item[item.length - 1]);
-      // }
-      if (!tempDropDownValuesArray.find(element => element === item[item.length - 1].value)) {
-        tempDropDownValuesArray.push(item[item.length - 1].value)
+      if (
+        !tempDropDownValuesArray.find(
+          (element) => element === item[item.length - 1].value
+        )
+      ) {
+        tempDropDownValuesArray.push(item[item.length - 1].value);
       }
-
-      console.log('tempDrop after', tempDropDownValuesArray)
-      // setFilters(tempDropDownArray);
       setValue(tempDropDownValuesArray);
     }
-    //  else {
-    //   setFilters(arr);
-    // }
-  }
-
-  // const removeFilterCriteria = () => {
-  //   return filters;
-  // }
-
-  // const testFunc = () => {
-  //   setOpen(!open);
-  // }
-  // const testFunc = useCallback(() => {
-  //   setOpen(false);
-  // }, []);
+  };
 
   useEffect(() => {
-    console.log('value useeffect', value)
+    // console.log("value useeffect", value);
   }, [value]);
-
 
   useEffect(() => {
     itemSetter();
   }, [items]);
+
   /* >>>>>>>>>> Ajout d'une ligne de vaccin au clic sur l'icône + <<<<<<<<<<<<<< */
-  const [vaccinesList, setVaccinesList] = useState([]); //Pour garder afficher les vaccins déja ajoutés lorsque le user reclic sur l'icône +
+  const [healthCare, setHealthCare] = useState([]); //Pour garder afficher les vaccins déja ajoutés lorsque le user reclic sur l'icône +
   const [valueVaccine, setValueVaccine] = useState(null); //Pour afficher les valeurs dans le dropDown
 
   //Valeurs DropDownPicker vaccins
@@ -699,12 +726,41 @@ function ProfilScreen(props) {
   ]);
 
   const list = []; //Je crée un tableau vide dans lequel je vais pusher les vaccins que le user va ajouter au clic sur l'icône +
-
-  const addVaccines = () => {
-    setVaccinesList([...vaccinesList, {}]); //Copie de la liste des vaccins ajoutés
+  const addHealthCare = () => {
+    let val = healthCare.length;
+    // console.log("added to tab", val);
+    setHealthCare([...healthCare, { pos: val }]); //Copie de la liste des vaccins ajoutés
   };
 
-  //Pour supprimer une ligne de vaccin/examen ajouté si le user change d'avis
+  /* Fonction status pour le dropDown d'ajout de soin */
+  const healthCareStatus = (item, index) => {
+    let status = "A jour";
+    let type = "name";
+    let position = 0;
+    let healthCareCopy = [...healthCare];
+    healthCareCopy[index].status = item.value;
+    // console.log(healthCareCopy);
+  };
+
+  /* Fonction name pour le dropDown d'ajout de soin */
+  const healthCareName = (item, index) => {
+    let name = "Tétanos";
+    let type = "name";
+    let position = 0;
+    let healthCareCopy = [...healthCare];
+    healthCareCopy[index].name = item.value;
+    // console.log(healthCareCopy);
+  };
+
+  /* Fonction date pour le dropDown d'ajout de soin */
+  const healthCareDate = (item, index) => {
+    let date = "05/05/2022";
+    let type = "date";
+    let position = 0;
+    let healthCareCopy = [...healthCare];
+    healthCareCopy[index].date = item.value;
+    // console.log(healthCareCopy);
+  };
 
   //Pour colorer la bordure du dropDown en vert lorsque le user l'ouvre pour sélectionner son choix
   const [isFocus, setIsFocus] = useState(false);
@@ -716,90 +772,99 @@ function ProfilScreen(props) {
   const [isFocus6, setIsFocus6] = useState(false);
   const [isFocus7, setIsFocus7] = useState(false);
 
+  /* Je supprime un soin de la liste en cliquant sur l'icône poubelle */
+  var deleteHealthCare = (element) => {
+    // console.log(state5);
+    let tempo = [...healthCare];
+    // console.log(tempo);
+    for (let i = 0; i < tempo.length; i++) {
+      tempo[i].pos = i;
+    }
+    tempo = tempo.filter((e) => e.pos != element); // Je fais une copie de mon tableau
+    // console.log(tempo);
+    setHealthCare(tempo);
+    props.deleteToProfil(element);
+  };
+
   //Je map sur vaccinesList pour ajouter une nouvelle ligne de vaccin
-  var healthCarePerso = vaccinesList.map((i, element) => {
+  var healthCarePerso = healthCare.map((e, index) => {
     return (
-      // Pour supprimer une ligne de soin quand on clique sur la ligne onPress={() => props.deleteHealthCare(i)}
-      <View style={{ backgroundColor: "#fff" }}>
-        <View style={styles.row} key={i}>
-          <Dropdown
-            style={styles.dropDownPickerVaccines}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            value={valueVaccine}
-            search //Permet au user de chercher le nom du vaccin sans avoir besoin de scroller sur la liste de nom proposée
-            placeholder="À renseigner"
-            labelField="label"
-            valueField="value"
-            items={vaccinesName}
-            multiple={false} //Permet de sélectionner une seule option
-            onChange={(item) => {
-              setValueVaccine(item.value);
-            }}
+      // Pour supprimer une ligne de soin quand on clique sur la ligne onPress={() => props.deleteHealthCare(element)}
+
+      <View
+        style={{
+          flexDirection: "row",
+          minWidth: 360,
+          backgroundColor: "white",
+        }}
+        key={e}
+      >
+        <Dropdown
+          style={styles.dropDownPickerVaccines}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          value={e.name}
+          search //Permet au user de chercher le nom du vaccin sans avoir besoin de scroller sur la liste de nom proposée
+          placeholder="À renseigner"
+          labelField="label"
+          valueField="value"
+          items={vaccinesName}
+          multiple={false} //Permet de sélectionner une seule option
+          onChange={(item) => {
+            healthCareName(item, index); //Pour mettre à jour le nom du soin
+          }}
+        />
+        <Dropdown
+          style={styles.dropDownPickerState}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          value={e.status}
+          placeholder="À renseigner"
+          labelField="label"
+          valueField="value"
+          maxHeight={165}
+          data={state5}
+          multiple={false} //Permet de sélectionner une seule option
+          onChange={(item) => {
+            healthCareStatus(item, index); //Pour mettre à jour le status du soin
+          }}
+        />
+
+        <View
+          key={index}
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            minWidth: 100,
+            paddingHorizontal: 5,
+          }}
+        >
+          {/* Le bouton pour afficher le dateTimePicker */}
+          <TouchableOpacity
+            key={index}
+            // onPress={() => showDatePicker()}
+            onPress={() => dateModal8()}
+          >
+            {/* Affiche la date sélectionnée par le user dans le bouton */}
+            <Text>{new Date(date8).toLocaleDateString("fr-FR")}</Text>
+          </TouchableOpacity>
+          <Icon
+            key={index}
+            style={{ top: -5 }}
+            name="close-circle"
+            color="#5BAA62"
+            size={20}
+            onPress={() => deleteHealthCare(index)}
           />
-          <Dropdown
-            style={styles.dropDownPickerState}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            value={list[i]}
-            placeholder="À renseigner"
-            labelField="label"
-            valueField="value"
-            maxHeight={165}
-            data={state5}
-            multiple={false} //Permet de sélectionner une seule option
-            onChange={(item) => {
-              setValue6(item.value);
-              list.push(item.value); //Pour pusher la valeur du dropdown au tableau
-            }}
-          />
-          <View>
-            {/* Le bouton pour afficher le dateTimePicker */}
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => showDatePicker()}
-            >
-              {/* Affiche la date sélectionnée par le user dans le bouton */}
-              <Text style={styles.textDatePicker}>
-                {new Date(date).toLocaleDateString("fr-FR")}
-              </Text>
-              <Icon
-                name="trash"
-                color="#5BAA62"
-                size={30}
-                onPress={() => props.deleteHealthCare(i)}
-              />
-            </TouchableOpacity>
-            {/* Le dateTimePicker */}
-            {visible && (
-              <DateTimePicker
-                mode="date"
-                display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-                value={date}
-                // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-                onChange={onChange}
-              // onConfirm={handleDatePicker}
-              // onCancel={hideDatePicker}
-              />
-            )}
-          </View>
         </View>
       </View>
     );
   });
 
-  //Click sur les icônes +
-  let addHealthCare = (e) => { };
-
-  let addTrip = (e) => { };
-
-  const testValue = val => {
-    console.log('val', val)
-    setValue(val)
-  }
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   return (
-    <ScrollView style={styles.scroll}>
+    <ScrollView>
       <View style={styles.container}>
         <DropDownPicker
           style={styles.DropDownPicker}
@@ -836,18 +901,18 @@ function ProfilScreen(props) {
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          {/* JAD N'affiche ce qui est après le '&&' que si au moins un élément des filtres est égal à Vaccin*/}
+          {/* Affiche ce qui est après le '&&' que si au moins un élément des filtres est égal à Vaccin*/}
           {value.find((element) => element === "Vaccin") && (
             <View style={styles.filterView}>
-              {/* JAD N'affiche ce qui est après le '&&' que si au moins un élément des filtres est égal à Obligatoire*/}
+              {/* Affiche ce qui est après le '&&' que si au moins un élément des filtres est égal à Obligatoire*/}
               {value.find((element) => element === "Obligatoire") && (
-                <View style={styles.filterView}>
+                <View>
                   <View style={styles.title}>
                     <Ionicons
                       name="ios-information-circle"
                       size={30}
                       color="#5BAA62"
-                      onPress={() => infosModal()}
+                      onPress={() => infosModal("Vaccins obligatoires :")}
                     />
                     <Text style={styles.textTitle}>Vaccins obligatoires :</Text>
                   </View>
@@ -857,18 +922,18 @@ function ProfilScreen(props) {
                     <Text style={styles.textHeadColumn3}>Date : </Text>
                   </View>
 
-                  {/* JAD Affiche dynamiquement la liste des vaccins qui sont obligatoires uniquement */}
+                  {/* Affiche dynamiquement la liste des vaccins obligatoires  */}
                   {vaccines
                     .filter((element) => element.status === "Obligatoire")
-                    .map((vaccine) => (
+                    .map((e, index) => (
                       <View style={{ backgroundColor: "#fff" }}>
-                        <View style={styles.row}>
+                        <View style={styles.row} key={e}>
                           <Text
                             style={styles.textRow}
-                            onPress={() => launchModal(name, description)}
+                            onPress={() => launchModal(e.name, e.description)}
                           >
                             {" "}
-                            {vaccine.name}
+                            {e.name}
                           </Text>
                           {/* Pour colorer la bordure du dropdown picker */}
                           <Dropdown
@@ -878,7 +943,7 @@ function ProfilScreen(props) {
                             ]}
                             placeholderStyle={styles.placeholderStyle}
                             selectedTextStyle={styles.selectedTextStyle}
-                            value={value1}
+                            value={e.status}
                             placeholder="À renseigner"
                             labelField="label"
                             valueField="value"
@@ -888,14 +953,13 @@ function ProfilScreen(props) {
                             onFocus={() => setIsFocus1(true)}
                             onBlur={() => setIsFocus1(false)}
                             onChange={(item) => {
-                              setValue1(item.value);
+                              healthCareStatus(item, index); //Pour mettre à jour le status du soin
                             }}
                           />
-                          <View>
+                          <View style={{ minWidth: "32%" }}>
                             {/* Le bouton pour afficher le dateTimePicker */}
                             <TouchableOpacity
                               style={styles.button}
-                              // onPress={() => showDatePicker()}
                               onPress={() => dateModal()}
                             >
                               {/* Affiche la date sélectionnée par le user dans le bouton */}
@@ -912,38 +976,36 @@ function ProfilScreen(props) {
 
               {/* >>>>>>>>>>>>>>>>>>>>> Vaccins recommandés <<<<<<<<<<<<<<<<<<<<<< */}
 
-              {/* JAD N'affiche le haut du tableau et tout le tableau que si un élément dans les filtres est égal à Recommandé */}
+              {/* Affiche le haut du tableau et tout le tableau que si un élément dans les filtres est égal à Recommandé */}
               {value.find((element) => element === "Recommandé") && (
-                <View style={styles.filterView}>
+                <View>
                   <View style={styles.title}>
                     <Ionicons
                       name="ios-information-circle"
                       size={30}
                       color="#5BAA62"
-                      onPress={() => setModalVRVisible(true)}
+                      onPress={() => infosModal("Vaccins recommandés :")}
                     />
-                    <Text style={styles.textTitle} h4>
-                      Vaccins recommandés :
-                    </Text>
+                    <Text style={styles.textTitle}>Vaccins recommandés :</Text>
                   </View>
                   <View style={styles.headrow}>
-                    <Text style={styles.textHeadColumn1}>Vaccin : </Text>
+                    <Text style={styles.textHeadColumn1}>Nom : </Text>
                     <Text style={styles.textHeadColumn2}>État : </Text>
                     <Text style={styles.textHeadColumn3}>Date : </Text>
                   </View>
 
-                  {/* JAD Affiche dynamiquement la liste des vaccins qui sont recommandés uniquement */}
+                  {/* Affiche dynamiquement la liste des vaccins recommandés */}
                   {vaccines
                     .filter((element) => element.status === "Recommandé")
-                    .map((vaccine) => (
+                    .map((e, index) => (
                       <View style={{ backgroundColor: "#fff" }}>
                         <View style={styles.row}>
                           <Text
                             style={styles.textRow}
-                            onPress={() => launchModal(name, description)}
+                            onPress={() => launchModal(e.name, e.description)}
                           >
                             {" "}
-                            {vaccine.name}
+                            {e.name}
                           </Text>
                           {/* Pour colorer la bordure du dropdown picker */}
                           <Dropdown
@@ -953,7 +1015,7 @@ function ProfilScreen(props) {
                             ]}
                             placeholderStyle={styles.placeholderStyle}
                             selectedTextStyle={styles.selectedTextStyle}
-                            value={value4}
+                            value={e.status}
                             placeholder="À renseigner"
                             labelField="label"
                             valueField="value"
@@ -963,10 +1025,10 @@ function ProfilScreen(props) {
                             onFocus={() => setIsFocus4(true)}
                             onBlur={() => setIsFocus4(false)}
                             onChange={(item) => {
-                              setValue4(item.value);
+                              healthCareStatus(item, index); //Pour mettre à jour le status du soin
                             }}
                           />
-                          <View>
+                          <View style={{ minWidth: "32%" }}>
                             {/* Le bouton pour afficher le dateTimePicker */}
                             <TouchableOpacity
                               style={styles.button}
@@ -988,38 +1050,43 @@ function ProfilScreen(props) {
 
           {/* >>>>>>>>>>>>>>>>>>>>> Examens de santé recommandés <<<<<<<<<<<<<<<<<<<<<< */}
 
-          {/* JAD N'affiche ce qui est après '&&' que si au moins élément dans le filtre est égal à Examen de santé */}
+          {/* Affiche ce qui est après '&&' que si au moins élément dans le filtre est égal à Examen de santé */}
           {value.find((element) => element === "Examen de santé") && (
             <View style={styles.filterView}>
-              {/* JAD N'affiche le haut du tableau et tout le tableau que si un élément des filtres est égal à Obligatoire */}
+              {/* Aaffiche le haut du tableau et tout le tableau que si un élément des filtres est égal à Obligatoire */}
               {value.find((element) => element === "Obligatoire") && (
-                <View style={styles.filterView}>
+                <View>
                   <View style={styles.title}>
                     <Ionicons
                       name="ios-information-circle"
                       size={30}
                       color="#5BAA62"
-                      onPress={() => setModalVRVisible(true)}
+                      onPress={() =>
+                        infosModal("Examens de santé obligatoires :")
+                      }
                     />
-                    <Text style={styles.textTitle} h4>
+                    <Text style={styles.textTitle}>
                       Examens de santé obligatoires :
                     </Text>
                   </View>
 
                   <View style={styles.headrow}>
-                    <Text style={styles.textHeadColumn1}>Examen : </Text>
+                    <Text style={styles.textHeadColumn1}>Nom : </Text>
                     <Text style={styles.textHeadColumn2}>État : </Text>
                     <Text style={styles.textHeadColumn3}>Date : </Text>
                   </View>
-
-                  {/* JAD Affiche dynamiquement la liste des examens qui sont obligatoires uniquement */}
+                  {/* Affiche dynamiquement la liste des examens qui sont obligatoires uniquement */}
                   {exams
                     .filter((element) => element.status === "Obligatoire")
-                    .map((exam) => (
+                    .map((e, index) => (
                       <View style={{ backgroundColor: "#fff" }}>
-
                         <View style={styles.row}>
-                          <Text style={styles.textRow}>{exam.name}</Text>
+                          <Text
+                            style={styles.textRow}
+                            onPress={() => launchModal(e.name, e.description)}
+                          >
+                            {e.name}
+                          </Text>
                           <Dropdown
                             style={[
                               styles.dropDownPickerState,
@@ -1027,7 +1094,7 @@ function ProfilScreen(props) {
                             ]}
                             placeholderStyle={styles.placeholderStyle}
                             selectedTextStyle={styles.selectedTextStyle}
-                            value={value7}
+                            value={e.status}
                             placeholder="À renseigner"
                             labelField="label"
                             valueField="value"
@@ -1037,10 +1104,10 @@ function ProfilScreen(props) {
                             onFocus={() => setIsFocus7(true)}
                             onBlur={() => setIsFocus7(false)}
                             onChange={(item) => {
-                              setValue7(item.value);
+                              healthCareStatus(item, index); //Pour mettre à jour le status du soin
                             }}
                           />
-                          <View>
+                          <View style={{ minWidth: "32%" }}>
                             {/* Le bouton pour afficher le dateTimePicker */}
                             <TouchableOpacity
                               style={styles.button}
@@ -1058,34 +1125,40 @@ function ProfilScreen(props) {
                 </View>
               )}
 
-              {/* JAD N'affiche le tableau que si  il y a un élément des filtres égal á Recommandé*/}
+              {/* Affiche le tableau que si  il y a un élément des filtres égal á Recommandé*/}
               {value.find((element) => element === "Recommandé") && (
-                <View style={styles.filterView}>
+                <View>
                   <View style={styles.title}>
                     <Ionicons
                       name="ios-information-circle"
                       size={30}
                       color="#5BAA62"
-                      onPress={() => setModalVRVisible(true)}
+                      onPress={() =>
+                        infosModal("Examens de santé recommandés :")
+                      }
                     />
-                    <Text style={styles.textTitle} h4>
+                    <Text style={styles.textTitle}>
                       Examens de santé recommandés :
                     </Text>
                   </View>
 
                   <View style={styles.headrow}>
-                    <Text style={styles.textHeadColumn1}>Examen : </Text>
+                    <Text style={styles.textHeadColumn1}>Nom : </Text>
                     <Text style={styles.textHeadColumn2}>État : </Text>
                     <Text style={styles.textHeadColumn3}>Date : </Text>
                   </View>
-
-                  {/* JAD Affiche dynamiquement la liste des examens qui sont recommandés uniquement */}
+                  {/* Affiche dynamiquement la liste des examens qui sont recommandés uniquement */}
                   {exams
                     .filter((element) => element.status === "Recommandé")
-                    .map((exam) => (
+                    .map((e, index) => (
                       <View style={{ backgroundColor: "#fff" }}>
                         <View style={styles.row}>
-                          <Text style={styles.textRow}>{exam.name}</Text>
+                          <Text
+                            style={styles.textRow}
+                            onPress={() => launchModal(e.name, e.description)}
+                          >
+                            {e.name}
+                          </Text>
                           <Dropdown
                             style={[
                               styles.dropDownPickerState,
@@ -1103,10 +1176,10 @@ function ProfilScreen(props) {
                             onFocus={() => setIsFocus6(true)}
                             onBlur={() => setIsFocus6(false)}
                             onChange={(item) => {
-                              setValue5(item.value);
+                              healthCareStatus(item, index); //Pour mettre à jour le status du soin
                             }}
                           />
-                          <View>
+                          <View style={{ minWidth: "32%" }}>
                             {/* Le bouton pour afficher le dateTimePicker */}
                             <TouchableOpacity
                               style={styles.button}
@@ -1132,7 +1205,7 @@ function ProfilScreen(props) {
               name="ios-information-circle"
               size={30}
               color="#5BAA62"
-              onPress={() => setModalVPPVisible(true)}
+              onPress={() => infosModal("Vaccins/Examens projets personnels :")}
             />
             <Text style={styles.textTitle}>
               Vaccins/Examens projets personnels :
@@ -1141,31 +1214,48 @@ function ProfilScreen(props) {
 
           {/*>>>>>>>>>>>>>>>>>>>>> Ajouter un vaccin/un examen <<<<<<<<<<<<<<<<<<<<<< */}
           {/* Ajout d'une ligne quand le user clic sur l'icône + */}
-          {healthCarePerso}
+          <View>{healthCarePerso}</View>
           <View style={styles.title}>
             <AntDesign
               name="pluscircle"
               size={24}
               color="#5BAA62"
               onPress={() => {
-                addVaccines();
+                addHealthCare();
               }}
             />
             <Text style={styles.text}>Ajouter un vaccin </Text>
           </View>
 
+          {/*>>>>>>>>>>>>>>>>>>>>> Préparer un voyage <<<<<<<<<<<<<<<<<<<<<< */}
+          {/* Redirecttion vers site Pasteur au clic sur globe */}
+          <View style={styles.title}>
+            <Entypo
+              name="globe"
+              size={24}
+              color="#5BAA62"
+              onPress={() => {
+                Linking.openURL(
+                  "https://www.pasteur.fr/fr/centre-medical/preparer-son-voyage?emkfid=EMF-22701181460-k--77618669180--s&gclid=EAIaIQobChMIzcO_oLvS9wIVRajVCh2S5ANiEAAYASAAEgLNrvD_BwE"
+                );
+              }}
+            />
+            <Text style={styles.text}>Préparer un voyage </Text>
+          </View>
+
           {/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> LES MODALS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */}
           {/*>>>>>>>>>>>>>>>>>>>>> Modal d'infos de vaccin et d'examen <<<<<<<<<<<<<<<<<<<<<< */}
+
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
             {infos.map((info, i) => {
               return (
-                <ModalInfos visible={modalVOVisible}>
+                <ModalInfos visible={modalInfosVisible} key={i}>
                   <View style={{ alignItems: "center" }}>
                     <View style={styles.header}>
                       <TouchableOpacity
-                        onPress={() => setModalVOVisible(false)}
+                        onPress={() => setModalInfosVisible(false)}
                       ></TouchableOpacity>
                     </View>
                   </View>
@@ -1174,7 +1264,7 @@ function ProfilScreen(props) {
                       name="ios-information-circle"
                       size={30}
                       color="#FFFFFF"
-                      onPress={() => setModalVOVisible(true)}
+                      onPress={() => setModalInfosVisible(true)}
                     />
                     <Text
                       style={{
@@ -1182,9 +1272,8 @@ function ProfilScreen(props) {
                         color: "#FFFFFF",
                         paddingLeft: 9,
                       }}
-                      h4
                     >
-                      {info.title}
+                      {name}
                     </Text>
                   </View>
                   <View
@@ -1198,12 +1287,12 @@ function ProfilScreen(props) {
                         color: "#FFFFFF",
                       }}
                     >
-                      {info.infos}
+                      {description}
                     </Text>
                     <Button
                       title="OK"
                       buttonStyle={styles.buttonModal}
-                      onPress={() => setModalVOVisible(false)}
+                      onPress={() => setModalInfosVisible(false)}
                     />
                   </View>
                 </ModalInfos>
@@ -1334,17 +1423,37 @@ function ProfilScreen(props) {
             />
           </ModalInfos>
         </View>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ModalInfos visible={modalDate8}>
+            <Text onPress={() => setModalDate8(false)}>fermer</Text>
+            <DateTimePicker
+              mode="date"
+              style={{
+                backgroundColor: "#FFF",
+              }}
+              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+              value={date8}
+              minimumDate={new Date(Date.now())}
+              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+              onChange={onChange8}
+              onConfirm={handleDatePicker}
+              onCancel={hideDatePicker}
+            />
+          </ModalInfos>
+        </View>
 
         {/* Je map sur definitionList pour dynamiser les modals de définition */}
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <ModalInfos visible={modalDiphVisible}>
+          <ModalInfos visible={modalDefVisible}>
             <ScrollView>
               <View style={{ alignItems: "center" }}>
                 <View style={styles.header}>
                   <TouchableOpacity
-                    onPress={() => setModalDiphVisible(false)}
+                    onPress={() => setModalDefVisible(false)}
                   ></TouchableOpacity>
                 </View>
               </View>
@@ -1353,7 +1462,7 @@ function ProfilScreen(props) {
                   name="ios-information-circle"
                   size={30}
                   color="#FFFFFF"
-                  onPress={() => setModalDiphVisible(true)}
+                  onPress={() => setModalDefVisible(true)}
                 />
                 <Text
                   style={{
@@ -1380,7 +1489,7 @@ function ProfilScreen(props) {
                 <Button
                   title="OK"
                   buttonStyle={styles.buttonModal}
-                  onPress={() => setModalDiphVisible(false)}
+                  onPress={() => setModalDefVisible(false)}
                 />
               </View>
             </ScrollView>
@@ -1393,8 +1502,15 @@ function ProfilScreen(props) {
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STYLES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 const styles = StyleSheet.create({
   button: {
-    height: 50,
-    display: "flex",
+    height: 30,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#EBFAD5",
+  },
+  buttonPerso: {
+    height: 30,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -1418,26 +1534,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: "#EBFAD5",
   },
-  DropDownPicker: { borderColor: "#37663B", marginTop: 45 },
-  dropDownPickerDate: {
-    height: 50,
-    width: 100,
-    borderRadius: 0,
+  DropDownPicker: {
+    borderColor: "#37663B",
+    marginTop: 45,
   },
   dropDownPickerState: {
-    height: 50,
-    width: 146,
+    height: 30,
+    minWidth: "41%",
     borderRadius: 0,
     borderColor: "#EBFAD5",
     borderWidth: 0.5,
     paddingHorizontal: 10,
   },
   dropDownPickerVaccines: {
-    height: 50,
-    width: 100,
+    height: 30,
+    minWidth: "28%",
     borderRadius: 0,
     borderColor: "#EBFAD5",
-    paddingRight: 0,
+    paddingLeft: 5,
     borderWidth: 0.5,
   },
   header: {
@@ -1469,8 +1583,10 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    display: "flex",
     alignItems: "center",
+  },
+  rowPerso: {
+    flexDirection: "row",
   },
   selectedTextStyle: {
     fontSize: 13,
@@ -1481,43 +1597,50 @@ const styles = StyleSheet.create({
   },
   textDatePicker: {
     alignContent: "center",
-    padding: 20,
+    height: 50,
+    width: 116,
+    paddingTop: 15,
+    padding: 10,
+    borderColor: "#EBFAD5",
   },
   textHeadColumn1: {
     flexDirection: "row",
     backgroundColor: "#5BAA62",
     borderColor: "#37663B",
-    width: "30%",
+    width: "28%",
     color: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#EBFAD5",
+    paddingLeft: 5,
   },
   textHeadColumn2: {
     flexDirection: "row",
     backgroundColor: "#5BAA62",
     borderColor: "#37663B",
-    width: "43%",
+    width: "41%",
     color: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#EBFAD5",
+    paddingLeft: 5,
   },
   textHeadColumn3: {
     flexDirection: "row",
     backgroundColor: "#5BAA62",
     borderColor: "#5BAA62",
-    width: "35%",
+    width: "31%",
     color: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#EBFAD5",
+    paddingLeft: 5,
   },
   textRow: {
-    height: 50,
-    width: 100,
-    paddingTop: 15,
-    padding: 10,
+    height: 30,
+    width: "28%",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingLeft: 5,
     borderWidth: 1,
     borderColor: "#EBFAD5",
-    borderRadius: 0,
   },
   textTitle: {
     fontWeight: "bold",
@@ -1529,24 +1652,26 @@ const styles = StyleSheet.create({
   title: {
     flexDirection: "row",
     alignItems: "center",
+    textAlign: "center",
+    padding: 9,
+    color: "#37663B",
+    width: 350,
+  },
+  filterView: {
+    flexDirection: "column",
+    alignItems: "center",
     padding: 9,
     color: "#37663B",
   },
-  filterView: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: 9,
-    color: "#37663B",
-  }
 });
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> REDUX <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 function mapDispatchToProps(dispatch) {
   return {
-    addHealthCare: function (newHealthCare) {
+    addToProfil: function (newHealthCare) {
       dispatch({ type: "addHealthCare", healthCare: newHealthCare });
     },
-    deleteHealthCare: function (newHealthCare) {
+    deleteToProfil: function (newHealthCare) {
       dispatch({
         type: "deleteHealthCare",
         healthCare: newHealthCare,

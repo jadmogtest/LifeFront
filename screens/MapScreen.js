@@ -20,18 +20,22 @@ import { Dropdown } from "react-native-element-dropdown";
 import { connect } from "react-redux";
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FONCTIONS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 function MapScreen(props) {
-  //Dropdown list choix lieux de santé
+  //Variables pour la liste Dropdown
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState();
   const [items, setItems] = useState();
 
+  //Variables qui vont stocker les données du modèle HCProfessionnal afin de les enregistrer en BDD
+  const [profession, setProfession] = useState("");
+  const [adresse, setAdresse] = useState("");
+  const [ville, setVille] = useState("");
+  const [tel, setTel] = useState("");
+  const [category, setCategory] = useState("");
+  const [secteur, setSecteur] = useState("");
+
   //Variable qui va stocker les coordonnées en temps réel
   const [currentLatitude, setCurrentLatitude] = useState(0);
   const [currentLongitude, setCurrentLongitude] = useState(0);
-
-  //Variable qui va stocker les données API
-  const [listAPI, setListAPI] = useState([]);
-  const temp = [];
 
   //Variable qui va stocker les types de professionnels de santé par rapport à l'API
   const [listType, setListType] = useState([]);
@@ -49,6 +53,7 @@ function MapScreen(props) {
 
   //Fonction qui demande l'autorisation de géolocation à l'initialisation du composant
   useEffect(() => {
+    // console.log("CHRISTIAN:::", props.route.params);
     async function askPermissions() {
       var { status } = await Location.requestForegroundPermissionsAsync();
       if (status === "granted") {
@@ -61,44 +66,19 @@ function MapScreen(props) {
       }
     }
 
-    //Fonction qui exploite les données API
-    async function loadData() {
-      var rawResponse = await fetch(
-        "https://data.opendatasoft.com/api/records/1.0/search/?dataset=medecins%40public&q=&rows=150"
-      );
-      var response = await rawResponse.json();
-      //Boucle pour poush les données API dans le tableau "temp"
-      for (let item of response.records) {
-        if (
-          item.fields.coordonnees &&
-          item.fields.libelle_regroupement != "none" &&
-          item.fields.libelle_regroupement != "None" &&
-          item.fields.libelle_regroupement != undefined
-        ) {
-          temp.push({
-            latitude: item.fields.coordonnees[0],
-            longitude: item.fields.coordonnees[1],
-            profession: item.fields.libelle_profession,
-            type: item.fields.libelle_regroupement,
-            adresse: item.fields.adresse,
-            tel: item.fields.column_10,
-            secteur: item.fields.column_14,
-          });
-        }
-      }
-      console.log("|| Prof. de santé ||", temp.length);
-      setListAPI(temp);
-    }
     askPermissions();
-    loadData();
+    // loadData();
     listCategory();
   }, []);
 
   //Boucle pour supprimer les catégories en doublon et les push dans le tableau "jobs"
   function listCategory() {
-    for (let i = 0; i < listAPI.length; i++) {
+    for (let i = 0; i < props.route.params.listAPI.length; i++) {
       //push dans le tableau ttes les catégories
-      jobs.push({ label: listAPI[i].type, value: listAPI[i].type });
+      jobs.push({
+        label: props.route.params.listAPI[i].categorie,
+        value: props.route.params.listAPI[i].categorie,
+      });
       //exploiter le tableau d'objets
       let jsonObject = jobs.map(JSON.stringify);
       let uniqSet = new Set(jsonObject);
@@ -112,14 +92,17 @@ function MapScreen(props) {
   //Variable qui capture la valeur sélectionnée du dropdown
   const [catMap, setcatMap] = useState("");
   //Fonction : map un nvx tableau à partir de celui de l'API pour créer un tableau de markers et en fonction de la catégorie sélectionnée
-  let markerlist = listAPI
-    .filter((el) => el.type == catMap.label || !catMap)
+  let tab = props.route.params.listAPI;
+  let markerlist = tab
+    .filter((el) => el.categorie == catMap.label || !catMap)
     .map((marker, i) => {
       let infos = {
         Profession: marker.profession.toUpperCase(),
         Adresse: marker.adresse.toLowerCase(),
+        Ville: marker.ville,
         Tel: marker.tel,
         Secteur: marker.secteur,
+        Categorie: marker.categorie,
       };
       return (
         <Marker
@@ -132,10 +115,34 @@ function MapScreen(props) {
           onPress={() => {
             setModalVisible(!modalVisible);
             props.pushInfos(infos);
+            setProfession(marker.profession);
+            setAdresse(marker.adresse);
+            setVille(marker.ville);
+            setTel(marker.tel);
+            setSecteur(marker.secteur);
+            setCategory(marker.categorie);
+            // console.log("TEST :::", category);
           }}
         />
       );
     });
+
+  let addHCPro = (profession, adresse, ville, tel, category, secteur) => {
+    async function HCPro() {
+      //Remplacer privateIp par la vôtre
+      let privateIp = "192.168.10.128"; //Remplacer privateIp par la vôtre
+      let fetchRouteAddhcpro = await fetch(
+        `http://${privateIp}:3000/addhcpro`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: `professionFromFront=${profession}&adresseFromFront=${adresse}&villeFromFront=${ville}&telFromFront=${tel}&categoryFromFront=${category}&secteurFromFront=${secteur}`,
+        }
+      );
+      let saveHCPro = await fetchRouteAddhcpro.json();
+    }
+    HCPro();
+  };
 
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   return (
@@ -218,6 +225,14 @@ function MapScreen(props) {
                   onPress={() => {
                     setModalVisible(!modalVisible);
                     setModalVisible2(!modalVisible2);
+                    addHCPro(
+                      profession,
+                      adresse,
+                      ville,
+                      tel,
+                      category,
+                      secteur
+                    );
                   }}
                 >
                   <Ionicons name="add-circle" size={20} color="green" />
@@ -228,6 +243,8 @@ function MapScreen(props) {
               </View>
               <Text style={styles.modalText}>
                 Adresse : {props.dataMedecin.Adresse}
+                {"\n"}
+                Ville : {props.dataMedecin.Ville}
                 {"\n"}
                 Tel : {props.dataMedecin.Tel}
                 {"\n"}

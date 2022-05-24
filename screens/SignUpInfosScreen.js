@@ -85,17 +85,12 @@ function SignUpInfosScreen(props) {
       if (recUser.result === true) {
         props.tokenStore(recUser.saveUser.token);
         props.navigation.navigate("Dashboard");
-
-
       }
     }
     if (pwdConfirmed && check === true && check2 === true) {
       addUser();
-
     }
   };
-
-
 
   return (
     <ScrollView>
@@ -384,7 +379,6 @@ function mapDispatchToProps(dispatch) {
     tokenStore: function (token) {
       dispatch({ type: "addToken", token: token });
     },
-
   };
 }
 export default connect(null, mapDispatchToProps)(SignUpInfosScreen);

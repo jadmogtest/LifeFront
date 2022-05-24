@@ -52,8 +52,6 @@ function LogScreen(props) {
     });
 
     let response = await rawResponse.json();
-    // console.log("yooooooooooooooooooooooooooo", response.token)
-
 
     if (response.result === true) {
       //Si la bdd retrouve le user on se connecte
@@ -65,7 +63,6 @@ function LogScreen(props) {
           screen: "DashboardScreen",
         });
       }
-
     } else {
       setErrorSignIn(
         //J'affiche un message d'erreur si l'utilisateur n'existe pas ou champs de saisies vide
@@ -254,7 +251,7 @@ function mapDispatchToProps(dispatch) {
     },
 
     tokenStore: function (token) {
-      dispatch({ type: "addToken", token: token })
+      dispatch({ type: "addToken", token: token });
     },
     // setUserId: function (userId) {
     //   dispatch({ type: "addUserId", userId: userId });

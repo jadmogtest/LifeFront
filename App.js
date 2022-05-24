@@ -31,7 +31,7 @@ const Tab = createBottomTabNavigator();
 /* J'importe les reducers */
 import mail from "./reducers/mail";
 import userId from "./reducers/userId";
-import etab from "./reducers/etablissementsdesante";
+import etab from "./reducers/healthcarepro";
 import token from "./reducers/token";
 import list from "./reducers/list";
 

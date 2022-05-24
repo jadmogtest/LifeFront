@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import {
   Animated,
   Dimensions,
+  Linking,
   Modal,
   ScrollView,
   StyleSheet,
@@ -11,7 +12,7 @@ import {
 } from "react-native";
 import { Button, Text } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker"; //npm install react-native-dropdown-picker
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Entypo, Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker"; //npm install @react-native-community/datetimepicker --save
 import DateTimePickerModal from "react-native-modal-datetime-picker"; //expo install react-native-modal-datetime-picker @react-native-community/datetimepicker
 //Librairie avec laquelle pas besoin de gérer le zIndex
@@ -1224,6 +1225,22 @@ function ProfilScreen(props) {
               }}
             />
             <Text style={styles.text}>Ajouter un vaccin </Text>
+          </View>
+
+          {/*>>>>>>>>>>>>>>>>>>>>> Préparer un voyage <<<<<<<<<<<<<<<<<<<<<< */}
+          {/* Redirecttion vers site Pasteur au clic sur globe */}
+          <View style={styles.title}>
+            <Entypo
+              name="globe"
+              size={24}
+              color="#5BAA62"
+              onPress={() => {
+                Linking.openURL(
+                  "https://www.pasteur.fr/fr/centre-medical/preparer-son-voyage?emkfid=EMF-22701181460-k--77618669180--s&gclid=EAIaIQobChMIzcO_oLvS9wIVRajVCh2S5ANiEAAYASAAEgLNrvD_BwE"
+                );
+              }}
+            />
+            <Text style={styles.text}>Préparer un voyage </Text>
           </View>
 
           {/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> LES MODALS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */}

@@ -1563,7 +1563,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#5BAA62",
     borderColor: "#37663B",
-    width: "27,9%",
+    width: "27.9%",
     color: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#EBFAD5",

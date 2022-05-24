@@ -115,11 +115,11 @@ function SettingScreen(props) {
 
   //Bouton déconnection
   const deconnectAccount = () => {
-    setLogout(true);
-    //Le user est redirigé ver le LogScreen s'il choisi de se déconnecter
     props.navigation.navigate("LogScreen", {
       screen: "LogScreen",
     });
+    setLogout(true);
+    //Le user est redirigé ver le LogScreen s'il choisi de se déconnecter
   };
 
   //Bouton suppression
@@ -130,10 +130,10 @@ function SettingScreen(props) {
 
   //Bouton valider dans modal de suppression de compte
   const deleteAccount = () => {
-    setModalDeleteVisible(false);
     props.navigation.navigate("DeleteAccountScreen", {
       screen: "DeleteAccountScreen",
     });
+    setModalDeleteVisible(false);
   };
 
   //CheckBox

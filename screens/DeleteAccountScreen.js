@@ -17,11 +17,11 @@ function DeleteAccountScreen(props) {
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Votre compte a bien ÃŠtÃŠ supprimÃŠ.</Text>
+      <Text style={styles.text}>Votre compte a bien été supprimé.</Text>
       <Button
         type="solid"
         buttonStyle={styles.button}
-        title="RecrÃŠer un compte parce que je suis un vrai casse-couilles et que je ne sais pas ce que je veux !!!! "
+        title="Recréer un compte parce que je suis un vrai casse-couilles et que je ne sais pas ce que je veux !!!! "
         onPress={() => signUp()}
       ></Button>
     </View>

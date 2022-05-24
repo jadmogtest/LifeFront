@@ -22,6 +22,7 @@ import MapScreen from "./screens/MapScreen";
 import FavoriteScreen from "./screens/FavoriteScreen";
 import SignUpInfosScreen from "./screens/SignUpInfosScreen";
 import AddProfileScreen from "./screens/AddProfileScreen";
+import DeleteAccountScreen from "./screens/DeleteAccountScreen";
 
 // NAVIGATION
 const Stack = createStackNavigator();
@@ -86,10 +87,15 @@ export default function App() {
             name="SignUpInfosScreen"
             component={SignUpInfosScreen}
           />
-          <Stack.Screen name="Dashboard" component={DashboardScreen} />
+          {/* <Stack.Screen name="Dashboard" component={DashboardScreen} /> */}
           <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
           <Stack.Screen name="FavoriteScreen" component={FavoriteScreen} />
           <Stack.Screen name="AddProfileScreen" component={AddProfileScreen} />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
+          <Stack.Screen
+            name="DeleteAccountScreen"
+            component={DeleteAccountScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

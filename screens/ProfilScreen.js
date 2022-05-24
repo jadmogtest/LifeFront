@@ -314,13 +314,13 @@ function ProfilScreen(props) {
       name: "Bilan sanguin",
       status: "Recommandé",
       description:
-        "En France, la vaccination contre la Covid-19 est recommandée pour tous à partir de 5 ans avec 2 doses. Un rappel vaccinal est ensuite recommandé pour toutes les personnes de 12 ans et plus. La vaccination est obligatoire pour les personnes travaillant dans les secteurs sanitaire, social et médico-social avec, depuis le 30 janvier 2022, un rappel exigé. Depuis le 14 mars 2022, il est recommandé aux personnes de 80 ans et plus, aux résidents des EHPAD et USLD et aux personnes immunodéprimées d'effectuer un deuxième rappel (4e dose le plus souvent). Celle-ci peut être faite dès 3 mois après la première dose de rappel ou une infection à la Covid-19. Depuis le 7 avril 2022, les personnes de 60 à 79 ans peuvent recevoir une seconde dose de rappel à partir de 6 mois après le dernier rappel ou une infection à la Covid-19. En France, près de 155 millions d’injections de vaccins ont été réalisées au total au 5 avril 2022 depuis le début de la campagne et actuellement aucun des effets indésirables ne remettent en cause le rapport bénéfice risque des vaccins utilisés. Le variant Omicron est retrouvé dans près de 100% des cas en France. Avec le variant Omicron, les vaccins existants restent efficaces sur les formes graves à condition que la vaccination soit complète avec un rappel. Le ministère de la santé a de nouveau souligné l’importance de la vaccination des femmes enceintes, qui, non-vaccinées, sont particulièrement à risque en cas de Covid-19, les risques concernant à la fois les femmes elles-mêmes et leurs nouveau-nés. De nouvelles études confirment que la vaccination des femmes enceintes est sûre et efficace pour les protéger, elles et leur bébé.",
+        "Un bilan sanguin regroupe un ensemble d’analyses réalisées à partir d’un prélèvement sanguin. Les paramètres à étudier sont sélectionnés par le médecin en fonction du diagnostic envisagé ou des organes suspectés. Un bilan sanguin permet de mesurer, selon les besoins, la concentration sanguine de divers éléments, tels que les globules rouges ou blancs, certaines hormones, des protéines, un agent infectieux, etc.",
     },
     {
-      name: "Bilan urinaire",
+      name: "ECBU",
       status: "Recommandé",
       description:
-        "La vaccination permet de se protéger très efficacement de cette infection et de diminuer la transmission. La vaccination contre l’hépatite B est obligatoire, en France, pour tous les nourrissons nés à partir du 1er janvier 2018, et recommandée chez les enfants et les adolescents jusqu’à l’âge de 15 ans : les vacciner quand ils sont petits, c’est les protéger pour plus tard lorsqu’ils rencontreront le virus. Comparée à la plupart des pays d’Afrique ou d’Asie, la France est un pays de faible incidence de l'hépatite B par an et le risque d’infection est très faible durant l’enfance. Ce sont les adolescents et surtout les jeunes adultes qui sont les plus exposés au risque d’acquisition du virus de l’hépatite B (relations sexuelles avec partenaires multiples, usage de drogues par voie intraveineuse, voyage dans les pays à risque, professions exposées au sang, etc.) Il est important de veiller à ce que les enfants soient vaccinés avant l’âge d’apparition du risque, c’est-à-dire avant 16 ans.",
+        "L'ECBU, examen cytobactériologique des urines (ou cytologie urinaire), est notamment pratiqué lorsqu'une infection urinaire est suspectée. Il consiste à recueillir et à analyser les urines, pour détecter une concentration anormalement élevée de leucocytes, signe d'une infection. De nombreuses substances peuvent être analysées et détectées dans les urines. Les analyses d'urines permettent d'aider au diagnostic de certaines pathologies, mais aussi de mieux définir leur traitement. Mais elles permettent aussi de savoir si une femme est enceinte par exemple.",
     },
   ];
 
@@ -422,6 +422,21 @@ function ProfilScreen(props) {
       title: "Vaccins projets personnels :",
       infos:
         "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la liste des vaccins obligatoires et des vaccins recommandés vous pouvez en ajouter dans la section 'Vaccins projets personnels' en cliquant sur",
+    },
+    {
+      title: "Examens de santé obligatoires :",
+      infos:
+        "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la liste des vaccins obligatoires et des vaccins recommandés vous pouvez en ajouter dans la section 'Vaccins projets personnels' en cliquant sur",
+    },
+    {
+      title: "Examens de santé recommandés :",
+      infos:
+        "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la liste des vaccins obligatoires et des vaccins recommandés vous pouvez en ajouter dans la section 'Vaccins projets personnels' en cliquant sur",
+    },
+    {
+      title: "Vaccins/Examens projets personnels :",
+      infos:
+        "Si vous souhaitez réaliser un vaccin ou un examen qui n'apparait pas dans la liste des vaccins/examens obligatoires et des vaccins/examens recommandés vous pouvez en ajouter dans la section 'Vaccins/examens projets personnels' en cliquant sur",
     },
   ];
 
@@ -643,9 +658,14 @@ function ProfilScreen(props) {
   };
 
   //Modal des infos des vaccins obligatoires
-  const infosModal = (title, infos) => {
-    setName(title);
-    setDescription(infos);
+  const infosModal = (text) => {
+    for (let item of infos) {
+      console.log(item);
+      if (item.title === text) {
+        setName(item.title);
+        setDescription(item.infos);
+      }
+    }
     setModalInfosVisible(true);
   };
 
@@ -666,11 +686,6 @@ function ProfilScreen(props) {
   const setFilterCriteria = (item) => {
     if (item.length > 0) {
       let tempDropDownValuesArray = [...value];
-      // console.log('tempDropDown', tempDropDownValuesArray)
-      // console.log('selectedItems', item);
-      // if (!tempDropDownArray.find(element => element === item[item.length - 1])) {
-      //   tempDropDownArray.push(item[item.length - 1]);
-      // }
       if (
         !tempDropDownValuesArray.find(
           (element) => element === item[item.length - 1].value
@@ -678,26 +693,9 @@ function ProfilScreen(props) {
       ) {
         tempDropDownValuesArray.push(item[item.length - 1].value);
       }
-
-      // console.log('tempDrop after', tempDropDownValuesArray)
-      // setFilters(tempDropDownArray);
       setValue(tempDropDownValuesArray);
     }
-    //  else {
-    //   setFilters(arr);
-    // }
   };
-
-  // const removeFilterCriteria = () => {
-  //   return filters;
-  // }
-
-  // const testFunc = () => {
-  //   setOpen(!open);
-  // }
-  // const testFunc = useCallback(() => {
-  //   setOpen(false);
-  // }, []);
 
   useEffect(() => {
     // console.log("value useeffect", value);
@@ -778,16 +776,12 @@ function ProfilScreen(props) {
     // console.log(state5);
     let tempo = [...healthCare];
     // console.log(tempo);
-
     for (let i = 0; i < tempo.length; i++) {
       tempo[i].pos = i;
     }
-
-    // tempo = tempo.splice(element, 1);
     tempo = tempo.filter((e) => e.pos != element); // Je fais une copie de mon tableau
     // console.log(tempo);
     setHealthCare(tempo);
-
     props.deleteToProfil(element);
   };
 
@@ -795,61 +789,73 @@ function ProfilScreen(props) {
   var healthCarePerso = healthCare.map((e, index) => {
     return (
       // Pour supprimer une ligne de soin quand on clique sur la ligne onPress={() => props.deleteHealthCare(element)}
-      <View style={{ backgroundColor: "#fff" }}>
-        <View style={styles.row} key={e}>
-          <Dropdown
-            style={styles.dropDownPickerVaccines}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            value={e.name}
-            search //Permet au user de chercher le nom du vaccin sans avoir besoin de scroller sur la liste de nom proposée
-            placeholder="À renseigner"
-            labelField="label"
-            valueField="value"
-            items={vaccinesName}
-            multiple={false} //Permet de sélectionner une seule option
-            onChange={(item) => {
-              healthCareName(item, index); //Pour mettre à jour le nom du soin
-            }}
+
+      <View
+        style={{
+          flexDirection: "row",
+          minWidth: 360,
+          backgroundColor: "white",
+        }}
+        key={e}
+      >
+        <Dropdown
+          style={styles.dropDownPickerVaccines}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          value={e.name}
+          search //Permet au user de chercher le nom du vaccin sans avoir besoin de scroller sur la liste de nom proposée
+          placeholder="À renseigner"
+          labelField="label"
+          valueField="value"
+          items={vaccinesName}
+          multiple={false} //Permet de sélectionner une seule option
+          onChange={(item) => {
+            healthCareName(item, index); //Pour mettre à jour le nom du soin
+          }}
+        />
+        <Dropdown
+          style={styles.dropDownPickerState}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          value={e.status}
+          placeholder="À renseigner"
+          labelField="label"
+          valueField="value"
+          maxHeight={165}
+          data={state5}
+          multiple={false} //Permet de sélectionner une seule option
+          onChange={(item) => {
+            healthCareStatus(item, index); //Pour mettre à jour le status du soin
+          }}
+        />
+
+        <View
+          key={index}
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            minWidth: 100,
+            paddingHorizontal: 5,
+          }}
+        >
+          {/* Le bouton pour afficher le dateTimePicker */}
+          <TouchableOpacity
+            key={index}
+            // onPress={() => showDatePicker()}
+            onPress={() => dateModal8()}
+          >
+            {/* Affiche la date sélectionnée par le user dans le bouton */}
+            <Text>{new Date(date8).toLocaleDateString("fr-FR")}</Text>
+          </TouchableOpacity>
+          <Icon
+            key={index}
+            style={{ top: -5 }}
+            name="close-circle"
+            color="#5BAA62"
+            size={20}
+            onPress={() => deleteHealthCare(index)}
           />
-          <Dropdown
-            style={styles.dropDownPickerState}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            value={e.status}
-            placeholder="À renseigner"
-            labelField="label"
-            valueField="value"
-            maxHeight={165}
-            data={state5}
-            multiple={false} //Permet de sélectionner une seule option
-            onChange={(item) => {
-              healthCareStatus(item, index); //Pour mettre à jour le status du soin
-            }}
-          />
-          <View>
-            {/* Le bouton pour afficher le dateTimePicker */}
-            <TouchableOpacity
-              key={index}
-              style={styles.button}
-              // onPress={() => showDatePicker()}
-              onPress={() => dateModal8()}
-            >
-              {/* Affiche la date sélectionnée par le user dans le bouton */}
-              <Text style={styles.textDatePicker}>
-                {new Date(date8).toLocaleDateString("fr-FR")}
-              </Text>
-              <Icon
-                name="close-circle"
-                color="#5BAA62"
-                size={20}
-                style={{
-                  height: 60,
-                }}
-                onPress={() => deleteHealthCare(index)}
-              />
-            </TouchableOpacity>
-          </View>
         </View>
       </View>
     );
@@ -905,7 +911,7 @@ function ProfilScreen(props) {
                       name="ios-information-circle"
                       size={30}
                       color="#5BAA62"
-                      onPress={() => infosModal()}
+                      onPress={() => infosModal("Vaccins obligatoires :")}
                     />
                     <Text style={styles.textTitle}>Vaccins obligatoires :</Text>
                   </View>
@@ -923,7 +929,7 @@ function ProfilScreen(props) {
                         <View style={styles.row} key={e}>
                           <Text
                             style={styles.textRow}
-                            onPress={() => launchModal(name, description)}
+                            onPress={() => launchModal(e.name, e.description)}
                           >
                             {" "}
                             {e.name}
@@ -949,7 +955,7 @@ function ProfilScreen(props) {
                               healthCareStatus(item, index); //Pour mettre à jour le status du soin
                             }}
                           />
-                          <View>
+                          <View style={{ minWidth: "32%" }}>
                             {/* Le bouton pour afficher le dateTimePicker */}
                             <TouchableOpacity
                               style={styles.button}
@@ -977,7 +983,7 @@ function ProfilScreen(props) {
                       name="ios-information-circle"
                       size={30}
                       color="#5BAA62"
-                      onPress={() => setModalInfosVisible(true)}
+                      onPress={() => infosModal("Vaccins recommandés :")}
                     />
                     <Text style={styles.textTitle}>Vaccins recommandés :</Text>
                   </View>
@@ -995,7 +1001,7 @@ function ProfilScreen(props) {
                         <View style={styles.row}>
                           <Text
                             style={styles.textRow}
-                            onPress={() => launchModal(name, description)}
+                            onPress={() => launchModal(e.name, e.description)}
                           >
                             {" "}
                             {e.name}
@@ -1021,7 +1027,7 @@ function ProfilScreen(props) {
                               healthCareStatus(item, index); //Pour mettre à jour le status du soin
                             }}
                           />
-                          <View>
+                          <View style={{ minWidth: "32%" }}>
                             {/* Le bouton pour afficher le dateTimePicker */}
                             <TouchableOpacity
                               style={styles.button}
@@ -1054,7 +1060,9 @@ function ProfilScreen(props) {
                       name="ios-information-circle"
                       size={30}
                       color="#5BAA62"
-                      onPress={() => setModalInfosVisible(true)}
+                      onPress={() =>
+                        infosModal("Examens de santé obligatoires :")
+                      }
                     />
                     <Text style={styles.textTitle}>
                       Examens de santé obligatoires :
@@ -1072,7 +1080,12 @@ function ProfilScreen(props) {
                     .map((e, index) => (
                       <View style={{ backgroundColor: "#fff" }}>
                         <View style={styles.row}>
-                          <Text style={styles.textRow}>{e.name}</Text>
+                          <Text
+                            style={styles.textRow}
+                            onPress={() => launchModal(e.name, e.description)}
+                          >
+                            {e.name}
+                          </Text>
                           <Dropdown
                             style={[
                               styles.dropDownPickerState,
@@ -1093,7 +1106,7 @@ function ProfilScreen(props) {
                               healthCareStatus(item, index); //Pour mettre à jour le status du soin
                             }}
                           />
-                          <View>
+                          <View style={{ minWidth: "32%" }}>
                             {/* Le bouton pour afficher le dateTimePicker */}
                             <TouchableOpacity
                               style={styles.button}
@@ -1119,7 +1132,9 @@ function ProfilScreen(props) {
                       name="ios-information-circle"
                       size={30}
                       color="#5BAA62"
-                      onPress={() => setModalInfosVisible(true)}
+                      onPress={() =>
+                        infosModal("Examens de santé recommandés :")
+                      }
                     />
                     <Text style={styles.textTitle}>
                       Examens de santé recommandés :
@@ -1137,7 +1152,12 @@ function ProfilScreen(props) {
                     .map((e, index) => (
                       <View style={{ backgroundColor: "#fff" }}>
                         <View style={styles.row}>
-                          <Text style={styles.textRow}>{e.name}</Text>
+                          <Text
+                            style={styles.textRow}
+                            onPress={() => launchModal(e.name, e.description)}
+                          >
+                            {e.name}
+                          </Text>
                           <Dropdown
                             style={[
                               styles.dropDownPickerState,
@@ -1158,7 +1178,7 @@ function ProfilScreen(props) {
                               healthCareStatus(item, index); //Pour mettre à jour le status du soin
                             }}
                           />
-                          <View>
+                          <View style={{ minWidth: "32%" }}>
                             {/* Le bouton pour afficher le dateTimePicker */}
                             <TouchableOpacity
                               style={styles.button}
@@ -1184,7 +1204,7 @@ function ProfilScreen(props) {
               name="ios-information-circle"
               size={30}
               color="#5BAA62"
-              onPress={() => setModalInfosVisible(true)}
+              onPress={() => infosModal("Vaccins/Examens projets personnels :")}
             />
             <Text style={styles.textTitle}>
               Vaccins/Examens projets personnels :
@@ -1193,7 +1213,7 @@ function ProfilScreen(props) {
 
           {/*>>>>>>>>>>>>>>>>>>>>> Ajouter un vaccin/un examen <<<<<<<<<<<<<<<<<<<<<< */}
           {/* Ajout d'une ligne quand le user clic sur l'icône + */}
-          {healthCarePerso}
+          <View>{healthCarePerso}</View>
           <View style={styles.title}>
             <AntDesign
               name="pluscircle"
@@ -1208,12 +1228,13 @@ function ProfilScreen(props) {
 
           {/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> LES MODALS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */}
           {/*>>>>>>>>>>>>>>>>>>>>> Modal d'infos de vaccin et d'examen <<<<<<<<<<<<<<<<<<<<<< */}
+
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
             {infos.map((info, i) => {
               return (
-                <ModalInfos visible={modalInfosVisible}>
+                <ModalInfos visible={modalInfosVisible} key={i}>
                   <View style={{ alignItems: "center" }}>
                     <View style={styles.header}>
                       <TouchableOpacity
@@ -1235,7 +1256,7 @@ function ProfilScreen(props) {
                         paddingLeft: 9,
                       }}
                     >
-                      {info.title}
+                      {name}
                     </Text>
                   </View>
                   <View
@@ -1249,7 +1270,7 @@ function ProfilScreen(props) {
                         color: "#FFFFFF",
                       }}
                     >
-                      {info.infos}
+                      {description}
                     </Text>
                     <Button
                       title="OK"
@@ -1465,8 +1486,15 @@ function ProfilScreen(props) {
 const styles = StyleSheet.create({
   button: {
     height: 30,
-    // display: "flex",
-    // flexDirection: "row",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#EBFAD5",
+  },
+  buttonPerso: {
+    height: 30,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -1489,27 +1517,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: "#EBFAD5",
   },
-  DropDownPicker: { borderColor: "#37663B", marginTop: 45 },
-  dropDownPickerDate: {
-    height: 50,
-    width: 100,
-    borderRadius: 0,
+  DropDownPicker: {
+    borderColor: "#37663B",
+    marginTop: 45,
   },
   dropDownPickerState: {
     height: 30,
-    width: 146,
-    // width: "43%",
+    minWidth: "41%",
     borderRadius: 0,
     borderColor: "#EBFAD5",
     borderWidth: 0.5,
     paddingHorizontal: 10,
   },
   dropDownPickerVaccines: {
-    height: 50,
-    width: 50,
+    height: 30,
+    minWidth: "28%",
     borderRadius: 0,
     borderColor: "#EBFAD5",
-    paddingRight: 0,
+    paddingLeft: 5,
     borderWidth: 0.5,
   },
   header: {
@@ -1541,8 +1566,10 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    display: "flex",
     alignItems: "center",
+  },
+  rowPerso: {
+    flexDirection: "row",
   },
   selectedTextStyle: {
     fontSize: 13,
@@ -1563,10 +1590,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#5BAA62",
     borderColor: "#37663B",
-    width: "27,9%",
+    width: "28%",
     color: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#EBFAD5",
+    paddingLeft: 5,
   },
   textHeadColumn2: {
     flexDirection: "row",
@@ -1576,23 +1604,24 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#EBFAD5",
+    paddingLeft: 5,
   },
   textHeadColumn3: {
     flexDirection: "row",
     backgroundColor: "#5BAA62",
     borderColor: "#5BAA62",
-    width: "32%",
+    width: "31%",
     color: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#EBFAD5",
+    paddingLeft: 5,
   },
   textRow: {
     height: 30,
-    width: 100,
+    width: "28%",
     alignItems: "center",
     justifyContent: "center",
-    // paddingTop: 15,
-    // padding: 10,
+    paddingLeft: 5,
     borderWidth: 1,
     borderColor: "#EBFAD5",
   },

@@ -270,12 +270,37 @@ function ProfilScreen(props) {
   let tempArray = items;
   let vaccines = [
     //Vaccins obligatoires
-    { name: "Diphtérie", status: "Obligatoire" },
-    { name: "Rougeole", status: "Obligatoire" },
-    { name: "Tétanos", status: "Obligatoire" },
+    {
+      name: "Diphtérie",
+      status: "Obligatoire",
+      description:
+        "La vaccination antidiphtérique est le seul moyen de contrôler cette infection grave. Le vaccin est composé de la toxine diphtérique purifiée et inactivée. La vaccination est obligatoire pour tous les enfants et les professionnels de santé. La primo-vaccination est maintenant obligatoire chez l’enfant à 2 et 4 mois. Le premier rappel se fait à l’âge de 11 mois et les autres rappels se font à 6 ans, 11/13 ans, 25 ans, 45 ans, 65 ans et puis tous les 10 ans. Les études de séroprévalence montrent qu’une haute proportion de sujets âgés de 50 ans et plus en France ont un titre d’anticorps non détectable ou inférieur au seuil considéré comme protecteur. Ces données soulignent l’importance de suivre les recommandations vaccinales, notamment les rappels tous les 10 ans chez les adultes âgés de plus de 65 ans.",
+    },
+    {
+      name: "Rougeole",
+      status: "Obligatoire",
+      description:
+        "Tous les enfants et adultes jeunes doivent être vaccinés contre la rougeole. C’est une vaccination très efficace qui protège de la maladie dans près de 100% des cas après 2 doses de vaccin. La généralisation de la vaccination contre la rougeole a pour objectif l’élimination de la maladie. Celle-ci est possible si 95% des enfants se font vacciner avec 2 doses. Le taux de couverture vaccinale reste insuffisant en France chez les 15-35 ans et chez les nourrissons, ce qui explique que le virus continue à circuler dans le pays.",
+    },
+    {
+      name: "Tétanos",
+      status: "Obligatoire",
+      description:
+        "N’importe qui peut contracter un tétanos ; tout le monde est donc concerné par cette vaccination tout au long de la vie. Cette maladie n’étant pas contagieuse, la protection par la vaccination est individuelle et dure au moins vingt ans jusqu’à 65 ans, moins longtemps au-delà. Il est donc indispensable de faire des injections de rappel tout au long de la vie (même si le vaccin n’est obligatoire que pour les nourrissons). La maladie n’est pas immunisante c'est-à-dire que le fait de l’avoir eue ne permet pas au système immunitaire de développer des anticorps garantissant une protection contre cette maladie si le corps y était à nouveau exposé. La protection n’est réalisée que par la vaccination. Le vaccin a également un intérêt en présence d’une blessure à haut risque de tétanos : chez les personnes non à jour de leur vaccination, une injection de vaccin et parfois d’immunoglobulines peuvent être réalisées. Les personnes les moins bien vaccinées en France contre le tétanos sont les personnes âgées (en particulier les femmes qui ont moins bénéficié dans leur vie adulte de rappels, ne serait-ce qu’à l’occasion du service militaire) alors que les activités de jardinage sont très fréquentes dans cette population.",
+    },
     //Vaccins recommandés
-    { name: "COVID-19", status: "Recommandé" },
-    { name: "Hépatite B", status: "Recommandé" },
+    {
+      name: "COVID-19",
+      status: "Recommandé",
+      description:
+        "En France, la vaccination contre la Covid-19 est recommandée pour tous à partir de 5 ans avec 2 doses. Un rappel vaccinal est ensuite recommandé pour toutes les personnes de 12 ans et plus. La vaccination est obligatoire pour les personnes travaillant dans les secteurs sanitaire, social et médico-social avec, depuis le 30 janvier 2022, un rappel exigé. Depuis le 14 mars 2022, il est recommandé aux personnes de 80 ans et plus, aux résidents des EHPAD et USLD et aux personnes immunodéprimées d'effectuer un deuxième rappel (4e dose le plus souvent). Celle-ci peut être faite dès 3 mois après la première dose de rappel ou une infection à la Covid-19. Depuis le 7 avril 2022, les personnes de 60 à 79 ans peuvent recevoir une seconde dose de rappel à partir de 6 mois après le dernier rappel ou une infection à la Covid-19. En France, près de 155 millions d’injections de vaccins ont été réalisées au total au 5 avril 2022 depuis le début de la campagne et actuellement aucun des effets indésirables ne remettent en cause le rapport bénéfice risque des vaccins utilisés. Le variant Omicron est retrouvé dans près de 100% des cas en France. Avec le variant Omicron, les vaccins existants restent efficaces sur les formes graves à condition que la vaccination soit complète avec un rappel. Le ministère de la santé a de nouveau souligné l’importance de la vaccination des femmes enceintes, qui, non-vaccinées, sont particulièrement à risque en cas de Covid-19, les risques concernant à la fois les femmes elles-mêmes et leurs nouveau-nés. De nouvelles études confirment que la vaccination des femmes enceintes est sûre et efficace pour les protéger, elles et leur bébé.",
+    },
+    {
+      name: "Hépatite B",
+      status: "Recommandé",
+      description:
+        "La vaccination permet de se protéger très efficacement de cette infection et de diminuer la transmission. La vaccination contre l’hépatite B est obligatoire, en France, pour tous les nourrissons nés à partir du 1er janvier 2018, et recommandée chez les enfants et les adolescents jusqu’à l’âge de 15 ans : les vacciner quand ils sont petits, c’est les protéger pour plus tard lorsqu’ils rencontreront le virus. Comparée à la plupart des pays d’Afrique ou d’Asie, la France est un pays de faible incidence de l'hépatite B par an et le risque d’infection est très faible durant l’enfance. Ce sont les adolescents et surtout les jeunes adultes qui sont les plus exposés au risque d’acquisition du virus de l’hépatite B (relations sexuelles avec partenaires multiples, usage de drogues par voie intraveineuse, voyage dans les pays à risque, professions exposées au sang, etc.) Il est important de veiller à ce que les enfants soient vaccinés avant l’âge d’apparition du risque, c’est-à-dire avant 16 ans.",
+    },
   ];
 
   let exams = [
@@ -285,8 +310,18 @@ function ProfilScreen(props) {
     { name: "examen3", status: "Obligatoire" },
     { name: "examen4", status: "Obligatoire" },
     //Examens recommandés
-    { name: "Bilan sanguin", status: "Recommandé" },
-    { name: "Bilan urinaire", status: "Recommandé" },
+    {
+      name: "Bilan sanguin",
+      status: "Recommandé",
+      description:
+        "En France, la vaccination contre la Covid-19 est recommandée pour tous à partir de 5 ans avec 2 doses. Un rappel vaccinal est ensuite recommandé pour toutes les personnes de 12 ans et plus. La vaccination est obligatoire pour les personnes travaillant dans les secteurs sanitaire, social et médico-social avec, depuis le 30 janvier 2022, un rappel exigé. Depuis le 14 mars 2022, il est recommandé aux personnes de 80 ans et plus, aux résidents des EHPAD et USLD et aux personnes immunodéprimées d'effectuer un deuxième rappel (4e dose le plus souvent). Celle-ci peut être faite dès 3 mois après la première dose de rappel ou une infection à la Covid-19. Depuis le 7 avril 2022, les personnes de 60 à 79 ans peuvent recevoir une seconde dose de rappel à partir de 6 mois après le dernier rappel ou une infection à la Covid-19. En France, près de 155 millions d’injections de vaccins ont été réalisées au total au 5 avril 2022 depuis le début de la campagne et actuellement aucun des effets indésirables ne remettent en cause le rapport bénéfice risque des vaccins utilisés. Le variant Omicron est retrouvé dans près de 100% des cas en France. Avec le variant Omicron, les vaccins existants restent efficaces sur les formes graves à condition que la vaccination soit complète avec un rappel. Le ministère de la santé a de nouveau souligné l’importance de la vaccination des femmes enceintes, qui, non-vaccinées, sont particulièrement à risque en cas de Covid-19, les risques concernant à la fois les femmes elles-mêmes et leurs nouveau-nés. De nouvelles études confirment que la vaccination des femmes enceintes est sûre et efficace pour les protéger, elles et leur bébé.",
+    },
+    {
+      name: "Bilan urinaire",
+      status: "Recommandé",
+      description:
+        "La vaccination permet de se protéger très efficacement de cette infection et de diminuer la transmission. La vaccination contre l’hépatite B est obligatoire, en France, pour tous les nourrissons nés à partir du 1er janvier 2018, et recommandée chez les enfants et les adolescents jusqu’à l’âge de 15 ans : les vacciner quand ils sont petits, c’est les protéger pour plus tard lorsqu’ils rencontreront le virus. Comparée à la plupart des pays d’Afrique ou d’Asie, la France est un pays de faible incidence de l'hépatite B par an et le risque d’infection est très faible durant l’enfance. Ce sont les adolescents et surtout les jeunes adultes qui sont les plus exposés au risque d’acquisition du virus de l’hépatite B (relations sexuelles avec partenaires multiples, usage de drogues par voie intraveineuse, voyage dans les pays à risque, professions exposées au sang, etc.) Il est important de veiller à ce que les enfants soient vaccinés avant l’âge d’apparition du risque, c’est-à-dire avant 16 ans.",
+    },
   ];
 
   /* DropDownPicker État */

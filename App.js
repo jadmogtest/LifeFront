@@ -1,10 +1,6 @@
 // CODES DÉSACTIVATION WARNING SUR MOBILE
 import { LogBox } from "react-native";
-LogBox.ignoreLogs(["Warning: ..."]);
-LogBox.ignoreLogs([
-  "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
-]);
-LogBox.ignoreLogs(["Disconnected from Metro."]);
+LogBox.ignoreAllLogs();
 import { ViewPropTypes } from "deprecated-react-native-prop-types";
 
 // IMPORT DES DIFFERENTES LIBRAIRIES
@@ -21,11 +17,11 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DashboardScreen from "./screens/DashboardScreen";
 import LogScreen from "./screens/LogScreen";
 import ProfilScreen from "./screens/ProfilScreen";
+import SettingsScreen from "./screens/SettingsScreen";
 import MapScreen from "./screens/MapScreen";
 import FavoriteScreen from "./screens/FavoriteScreen";
 import SignUpInfosScreen from "./screens/SignUpInfosScreen";
 import AddProfileScreen from "./screens/AddProfileScreen";
-// import SettingsScreen from "./screens/SettingsScreen";
 
 // NAVIGATION
 const Stack = createStackNavigator();
@@ -94,7 +90,6 @@ export default function App() {
           <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
           <Stack.Screen name="FavoriteScreen" component={FavoriteScreen} />
           <Stack.Screen name="AddProfileScreen" component={AddProfileScreen} />
-          {/* <Stack.Screen name="SettingsScreen" component={SettingsScreen} /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

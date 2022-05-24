@@ -62,11 +62,11 @@ function DashBoardScreen(props) {
     async function takeExams() {
       // let privateIp = "192.168.10.131"; //Remplacer privateIp par la vôtre
       // let privateIp = "192.168.1.43"; //Remplacer privateIp par la vôtre
-      let privateIp = "192.168.10.155"; //Remplacer privateIp par la vôtre
+      // let privateIp = "192.168.10.155"; //Remplacer privateIp par la vôtre
       // let privateIp = "172.20.10.3"; //Remplacer privateIp par la vôtre
 
       let brutResponse = await fetch(
-        `http://${privateIp}:3000/user/${props.token}`
+        `https://life-yourapp.herokuapp.com//user/${props.token}`
       );
       let jsonResponse = await brutResponse.json();
       let vaccinesList = jsonResponse.vaccines;

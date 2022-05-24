@@ -43,9 +43,9 @@ function LogScreen(props) {
   //Sign-in
   const signIn = async (mail, password) => {
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
-    let privateIp = "192.168.10.155"; //Remplacer privateIp par la vôtre
+    // let privateIp = "192.168.10.155"; //Remplacer privateIp par la vôtre
     // let privateIp = "172.20.10.3"; //Remplacer privateIp par la vôtre
-    const rawResponse = await fetch(`http://${privateIp}:3000/sign-in`, {
+    const rawResponse = await fetch(`https://life-yourapp.herokuapp.com//sign-in`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `passwordFromFront=${password}&emailFromFront=${mail}`,

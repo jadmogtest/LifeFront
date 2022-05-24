@@ -77,9 +77,9 @@ function SignUpInfosScreen(props) {
       //Remplacer privateIp par la vôtre
       // let privateIp = "192.168.10.131"
       // let privateIp = "192.168.1.43"
-      let privateIp = "192.168.10.155"
+      // let privateIp = "192.168.10.155"
       // let privateIp = "172.20.10.3"; //Remplacer privateIp par la vôtre
-      let rawRecUser = await fetch(`http://${privateIp}:3000/sign-up`, {
+      let rawRecUser = await fetch(`https://life-yourapp.herokuapp.com/sign-up`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         // body: `emailFromFront=${email}&passwordFromFront=${password}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}`,

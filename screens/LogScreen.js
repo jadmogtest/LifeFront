@@ -54,19 +54,17 @@ function LogScreen(props) {
     let response = await rawResponse.json();
     // console.log("yooooooooooooooooooooooooooo", response.token)
 
-
     if (response.result === true) {
       //Si la bdd retrouve le user on se connecte
       setLogin(true);
-      console.log("coucoucoucouc", response)
-      props.tokenStore(response.token)
+      console.log("coucoucoucouc", response);
+      props.tokenStore(response.token);
       props.addMail(mail);
       if (response.token) {
         props.navigation.navigate("Dashboard", {
           screen: "DashboardScreen",
         });
       }
-
     } else {
       setErrorSignIn(
         //J'affiche un message d'erreur si l'utilisateur n'existe pas ou champs de saisies vide
@@ -79,7 +77,6 @@ function LogScreen(props) {
   };
 
   // *<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SIGN-UP >>>>>>>>>>>>>>>>>>>>>>>>>>*
-
   const signUp = async () => {
     props.navigation.navigate("SignUpInfosScreen", {
       screen: "SignUpInfosScreen",
@@ -197,7 +194,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 40,
-    size: "md",
     backgroundColor: "#5BAA62",
     width: 300,
     height: 50,
@@ -255,7 +251,7 @@ function mapDispatchToProps(dispatch) {
     },
 
     tokenStore: function (token) {
-      dispatch({ type: "addToken", token: token })
+      dispatch({ type: "addToken", token: token });
     },
     // setUserId: function (userId) {
     //   dispatch({ type: "addUserId", userId: userId });

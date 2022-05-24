@@ -21,11 +21,11 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DashboardScreen from "./screens/DashboardScreen";
 import LogScreen from "./screens/LogScreen";
 import ProfilScreen from "./screens/ProfilScreen";
-import SettingsScreen from "./screens/SettingsScreen";
 import MapScreen from "./screens/MapScreen";
 import FavoriteScreen from "./screens/FavoriteScreen";
 import SignUpInfosScreen from "./screens/SignUpInfosScreen";
 import AddProfileScreen from "./screens/AddProfileScreen";
+import SettingsScreen from "./screens/SettingsScreen";
 
 // NAVIGATION
 const Stack = createStackNavigator();
@@ -38,7 +38,6 @@ import userId from "./reducers/userId";
 import etab from "./reducers/etablissementsdesante";
 import token from "./reducers/token";
 import list from "./reducers/list";
-
 
 /* J'importe le Provider */
 import { Provider } from "react-redux";
@@ -56,7 +55,7 @@ function BottomNavigator() {
           let iconName;
           if (route.name === "Dashboard") {
             iconName = "home";
-          } else if (route.name === "Profil") {
+          } else if (route.name === "ProfilScreen") {
             iconName = "user";
           } else if (route.name === "Settings") {
             iconName = "gear";
@@ -87,11 +86,15 @@ export default function App() {
           <Stack.Screen name="LogScreen" component={LogScreen} />
           <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
           <Stack.Screen name="MapScreen" component={MapScreen} />
-          <Stack.Screen name="SignUpInfosScreen" component={SignUpInfosScreen} />
+          <Stack.Screen
+            name="SignUpInfosScreen"
+            component={SignUpInfosScreen}
+          />
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
           <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
           <Stack.Screen name="FavoriteScreen" component={FavoriteScreen} />
           <Stack.Screen name="AddProfileScreen" component={AddProfileScreen} />
+          <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

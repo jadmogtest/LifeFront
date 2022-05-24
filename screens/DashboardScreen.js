@@ -61,7 +61,7 @@ function DashBoardScreen(props) {
   useEffect(() => {
     async function takeExams() {
 
-      let privateIp = "192.168.10.125"; //Remplacer privateIp par la vôtre
+      let privateIp = "192.168.10.115"; //Remplacer privateIp par la vôtre
       console.log('test', props.token)
       let brutResponse = await fetch(
         `http://${privateIp}:3000/user/${props.token}`

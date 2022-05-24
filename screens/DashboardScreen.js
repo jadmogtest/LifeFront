@@ -60,9 +60,8 @@ function DashBoardScreen(props) {
   //Récupération des vaccins et tests médicaux en BDD
   useEffect(() => {
     async function takeExams() {
-
-      let privateIp = "192.168.10.125"; //Remplacer privateIp par la vôtre
-      console.log('test', props.token)
+      let privateIp = "192.168.10.128"; //Remplacer privateIp par la vôtre
+      console.log("test", props.token);
       let brutResponse = await fetch(
         `http://${privateIp}:3000/user/${props.token}`
       );
@@ -100,7 +99,6 @@ function DashBoardScreen(props) {
     if (props.token) {
       takeExams();
     }
-
   }, [overlayContent]);
 
   let markedDates = {};

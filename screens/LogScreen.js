@@ -46,7 +46,7 @@ function LogScreen(props) {
       screen: "DashboardScreen",
     });
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
-    let privateIp = "192.168.10.114"; //Remplacer privateIp par la vôtre
+    let privateIp = "192.168.10.128"; //Remplacer privateIp par la vôtre
     const rawResponse = await fetch(`http://${privateIp}:3000/sign-in`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },

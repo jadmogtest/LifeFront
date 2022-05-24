@@ -74,7 +74,7 @@ function SignUpInfosScreen(props) {
     familyHistory
   ) => {
     async function addUser() {
-      let privateIp = "192.168.10.114"; //Remplacer privateIp par la vôtre
+      let privateIp = "192.168.10.128"; //Remplacer privateIp par la vôtre
       let rawRecUser = await fetch(`http://${privateIp}:3000/sign-up`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },

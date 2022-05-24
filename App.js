@@ -25,7 +25,7 @@ import MapScreen from "./screens/MapScreen";
 import FavoriteScreen from "./screens/FavoriteScreen";
 import SignUpInfosScreen from "./screens/SignUpInfosScreen";
 import AddProfileScreen from "./screens/AddProfileScreen";
-import SettingsScreen from "./screens/SettingsScreen";
+// import SettingsScreen from "./screens/SettingsScreen";
 
 // NAVIGATION
 const Stack = createStackNavigator();
@@ -94,7 +94,7 @@ export default function App() {
           <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
           <Stack.Screen name="FavoriteScreen" component={FavoriteScreen} />
           <Stack.Screen name="AddProfileScreen" component={AddProfileScreen} />
-          <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+          {/* <Stack.Screen name="SettingsScreen" component={SettingsScreen} /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

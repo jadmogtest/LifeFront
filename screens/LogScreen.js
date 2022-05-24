@@ -43,7 +43,7 @@ function LogScreen(props) {
   //Sign-in
   const signIn = async (mail, password) => {
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
-    let privateIp = "192.168.10.155"; //Remplacer privateIp par la vôtre
+    let privateIp = "192.168.10.109"; //Remplacer privateIp par la vôtre
     // let privateIp = "172.20.10.3"; //Remplacer privateIp par la vôtre
     const rawResponse = await fetch(`http://${privateIp}:3000/sign-in`, {
       method: "POST",

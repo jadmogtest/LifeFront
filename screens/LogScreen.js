@@ -42,9 +42,6 @@ function LogScreen(props) {
 
   //Sign-in
   const signIn = async (mail, password) => {
-    props.navigation.navigate("Dashboard", {
-      screen: "DashboardScreen",
-    });
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
     let privateIp = "192.168.10.128"; //Remplacer privateIp par la vôtre
     const rawResponse = await fetch(`http://${privateIp}:3000/sign-in`, {
@@ -54,7 +51,6 @@ function LogScreen(props) {
     });
 
     let response = await rawResponse.json();
-    // console.log("yooooooooooooooooooooooooooo", response.token)
 
     if (response.result === true) {
       //Si la bdd retrouve le user on se connecte
@@ -63,7 +59,7 @@ function LogScreen(props) {
       props.tokenStore(response.token);
       props.addMail(mail);
       if (response.token) {
-        props.navigation.navigate("Dashboard", {
+        props.navigation.navigate("BottomNavigator", {
           screen: "DashboardScreen",
         });
       }

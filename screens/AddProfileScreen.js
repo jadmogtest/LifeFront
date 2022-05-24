@@ -54,6 +54,15 @@ function AddProfileScreen(props) {
         { label: "Autre", value: "Autre" },
     ]);
 
+    //DropDownPicker nouveau profil ou connecter
+    const [open6, setOpen6] = useState(false);
+    const [value6, setValue6] = useState(null);
+    const [choicesList, setChoicesList] = useState([
+        { label: "Connecter un compte", value: "Connecter un compte" },
+        { label: "Nouveau Profil", value: "Nouveau Profil" },
+
+    ]);
+
     //Fonction Click Valider => infos vers Backend
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -64,9 +73,10 @@ function AddProfileScreen(props) {
     const [illnesses, setIllnesses] = useState([]);
     const [familyHistory, setFamilyHistory] = useState([]);
     const [relationship, SetRelationship] = useState("");
+    const [choice, setChoice] = useState("");
 
 
-    var handleSubmitSignUp = (
+    var handleSubmitSignIn = (
         firstName,
         lastName,
         email,
@@ -102,163 +112,190 @@ function AddProfileScreen(props) {
     return (
         <ScrollView>
             <View style={styles.container}>
-                <Text
-                    style={{
-                        marginTop: 60,
-                        fontSize: 20,
-                        color: "green",
-                        fontStyle: "italic",
-                    }}
-                >
-                    Nouveau profil
-                </Text>
-                <TextInput
-                    icon="key"
-                    style={styles.input}
-                    placeholder="Nom"
-                    autoCorrect={false}
-                    underlineColorAndroid="transparent"
-                    value={lastName}
-                    onChangeText={(value) => setLastName(value)}
-                />
-                <TextInput
-                    icon="key"
-                    style={styles.input}
-                    placeholder="Prénom"
-                    autoCorrect={false}
-                    underlineColorAndroid="transparent"
-                    value={firstName}
-                    onChangeText={(value) => setFirstName(value)}
-                />
-                <TextInput
-                    icon="key"
-                    style={styles.input}
-                    placeholder="Email"
-                    autoCorrect={false}
-                    underlineColorAndroid="transparent"
-                    value={email}
-                    onChangeText={(value) => setEmail(value)}
-                />
-                <TextInput
-                    type="date"
-                    icon="key"
-                    style={styles.input}
-                    placeholder="Date de naissance MM/JJ/AAAA"
-                    autoCorrect={false}
-                    underlineColorAndroid="transparent"
-                    value={birthdate}
-                    onChangeText={(value) => setBirthdate(new Date(value))}
-                />
-
-                <View>
+                <View style={{ marginTop: 40 }}>
                     <DropDownPicker
                         listMode="SCROLLVIEW"
                         style={styles.dropDownPicker}
                         dropDownContainerStyle={{ width: 300 }}
-                        // dropDownDirection="TOP"
-                        open={open}
-                        value={value}
-                        items={sex}
-                        setOpen={setOpen}
-                        setValue={setValue}
-                        setItems={setSex}
-                        placeholder="Sexe"
+                        open={open6}
+                        value={value6}
+                        items={choicesList}
+                        setOpen={setOpen6}
+                        setValue={setValue6}
+                        setItems={setChoicesList}
+                        placeholder="Nouveau Profil"
                         onChangeValue={(value) => {
-                            setSexe(value);
+                            setChoice(value);
                         }}
-                    />
-                    <DropDownPicker
-                        listMode="SCROLLVIEW"
-                        style={styles.dropDownPicker}
-                        dropDownContainerStyle={{ width: 300 }}
-                        open={open2}
-                        value={value2}
-                        items={job}
-                        setOpen={setOpen2}
-                        setValue={setValue2}
-                        setItems={setJob}
-                        onChangeValue={(value) => {
-                            setProfession(value);
-                        }}
-                        placeholder="Catégorie professionnelle"
                     />
 
-                    <DropDownPicker
-                        listMode="SCROLLVIEW"
-                        style={styles.dropDownPicker}
-                        dropDownContainerStyle={{ width: 300 }}
-                        open={open5}
-                        value={value5}
-                        items={relationList}
-                        setOpen={setOpen5}
-                        setValue={setValue5}
-                        setItems={setRelationList}
-                        onChangeValue={(value) => {
-                            SetRelationship(value);
-                        }}
-                        placeholder="Lien de parenté"
-                    />
-                    <Text
-                        style={{
-                            marginTop: 30,
-                            fontSize: 15,
-                            color: "green",
-                            fontStyle: "italic",
-                            textAlign: "center",
-                        }}
-                    >
-                        Informations complémentaires de santé
-                    </Text>
-                    <DropDownPicker
-                        listMode="SCROLLVIEW"
-                        style={styles.dropDownPicker}
-                        dropDownDirection="BOTTOM"
-                        dropDownContainerStyle={{ width: 300 }}
-                        open={open3}
-                        value={value3}
-                        items={pathos}
-                        setOpen={setOpen3}
-                        setValue={setValue3}
-                        setItems={setPathos}
-                        onChangeValue={(value) => {
-                            setIllnesses(value);
-                        }}
-                        placeholder="Pathologies"
-                        theme="LIGHT"
-                        multiple={true} //Permet de sélectionner plusieurs options
-                        min={0}
-                        mode="BADGE"
-                        valueStyle={{
-                            fontWeight: "bold",
-                        }}
-                    />
-                    <DropDownPicker
-                        listMode="SCROLLVIEW"
-                        style={styles.dropDownPicker}
-                        dropDownDirection="BOTTOM"
-                        dropDownContainerStyle={{ width: 300 }}
-                        open={open4}
-                        value={value4}
-                        items={ante}
-                        setOpen={setOpen4}
-                        setValue={setValue4}
-                        setItems={setAnte}
-                        onChangeValue={(value) => {
-                            setFamilyHistory(value);
-                        }}
-                        placeholder="Antécédents familiaux"
-                        theme="LIGHT"
-                        multiple={true} //Permet de sélectionner plusieurs options
-                        min={0}
-                        mode="BADGE"
-                        valueStyle={{
-                            fontWeight: "bold",
-                        }}
-                    />
                 </View>
+                {choice === "Connecter un compte" && (
+                    <View >
+                        <TextInput
+                            icon="key"
+                            style={styles.input}
+                            placeholder="Email"
+                            autoCorrect={false}
+                            underlineColorAndroid="transparent"
+                            value={email}
+                            onChangeText={(value) => setEmail(value)}
+                        />
+                    </View>
+                )}
+                {choice === "Nouveau Profil" && (
 
 
 
+                    <View style={styles.container}>
+                        <TextInput
+                            icon="key"
+                            style={styles.input}
+                            placeholder="Nom"
+                            autoCorrect={false}
+                            underlineColorAndroid="transparent"
+                            value={lastName}
+                            onChangeText={(value) => setLastName(value)}
+                        />
+                        <TextInput
+                            icon="key"
+                            style={styles.input}
+                            placeholder="Prénom"
+                            autoCorrect={false}
+                            underlineColorAndroid="transparent"
+                            value={firstName}
+                            onChangeText={(value) => setFirstName(value)}
+                        />
+                        <TextInput
+                            icon="key"
+                            style={styles.input}
+                            placeholder="Email"
+                            autoCorrect={false}
+                            underlineColorAndroid="transparent"
+                            value={email}
+                            onChangeText={(value) => setEmail(value)}
+                        />
+                        <TextInput
+                            type="date"
+                            icon="key"
+                            style={styles.input}
+                            placeholder="Date de naissance MM/JJ/AAAA"
+                            autoCorrect={false}
+                            underlineColorAndroid="transparent"
+                            value={birthdate}
+                            onChangeText={(value) => setBirthdate(new Date(value))}
+                        />
+
+                        <View>
+                            <DropDownPicker
+                                listMode="SCROLLVIEW"
+                                style={styles.dropDownPicker}
+                                dropDownContainerStyle={{ width: 300 }}
+                                // dropDownDirection="TOP"
+                                open={open}
+                                value={value}
+                                items={sex}
+                                setOpen={setOpen}
+                                setValue={setValue}
+                                setItems={setSex}
+                                placeholder="Sexe"
+                                onChangeValue={(value) => {
+                                    setSexe(value);
+                                }}
+                            />
+                            <DropDownPicker
+                                listMode="SCROLLVIEW"
+                                style={styles.dropDownPicker}
+                                dropDownContainerStyle={{ width: 300 }}
+                                open={open2}
+                                value={value2}
+                                items={job}
+                                setOpen={setOpen2}
+                                setValue={setValue2}
+                                setItems={setJob}
+                                onChangeValue={(value) => {
+                                    setProfession(value);
+                                }}
+                                placeholder="Catégorie professionnelle"
+                            />
+
+                            <DropDownPicker
+                                listMode="SCROLLVIEW"
+                                style={styles.dropDownPicker}
+                                dropDownContainerStyle={{ width: 300 }}
+                                open={open5}
+                                value={value5}
+                                items={relationList}
+                                setOpen={setOpen5}
+                                setValue={setValue5}
+                                setItems={setRelationList}
+                                onChangeValue={(value) => {
+                                    SetRelationship(value);
+                                }}
+                                placeholder="Lien de parenté"
+                            />
+                            <Text
+                                style={{
+                                    marginTop: 30,
+                                    fontSize: 15,
+                                    color: "green",
+                                    fontStyle: "italic",
+                                    textAlign: "center",
+                                }}
+                            >
+                                Informations complémentaires de santé
+                            </Text>
+                            <DropDownPicker
+                                listMode="SCROLLVIEW"
+                                style={styles.dropDownPicker}
+                                dropDownDirection="BOTTOM"
+                                dropDownContainerStyle={{ width: 300 }}
+                                open={open3}
+                                value={value3}
+                                items={pathos}
+                                setOpen={setOpen3}
+                                setValue={setValue3}
+                                setItems={setPathos}
+                                onChangeValue={(value) => {
+                                    setIllnesses(value);
+                                }}
+                                placeholder="Pathologies"
+                                theme="LIGHT"
+                                multiple={true} //Permet de sélectionner plusieurs options
+                                min={0}
+                                mode="BADGE"
+                                valueStyle={{
+                                    fontWeight: "bold",
+                                }}
+                            />
+                            <DropDownPicker
+                                listMode="SCROLLVIEW"
+                                style={styles.dropDownPicker}
+                                dropDownDirection="BOTTOM"
+                                dropDownContainerStyle={{ width: 300 }}
+                                open={open4}
+                                value={value4}
+                                items={ante}
+                                setOpen={setOpen4}
+                                setValue={setValue4}
+                                setItems={setAnte}
+                                onChangeValue={(value) => {
+                                    setFamilyHistory(value);
+                                }}
+                                placeholder="Antécédents familiaux"
+                                theme="LIGHT"
+                                multiple={true} //Permet de sélectionner plusieurs options
+                                min={0}
+                                mode="BADGE"
+                                valueStyle={{
+                                    fontWeight: "bold",
+                                }}
+                            />
+                        </View>
+
+
+                    </View>
+                )}
                 <Button
                     buttonStyle={styles.smallButton}
                     title="Valider"
@@ -277,6 +314,7 @@ function AddProfileScreen(props) {
                         props.navigation.navigate("ProfilScreen")
                     }
                 />
+
             </View>
         </ScrollView>
     );

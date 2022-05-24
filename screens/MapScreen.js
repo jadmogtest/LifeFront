@@ -37,10 +37,6 @@ function MapScreen(props) {
   const [currentLatitude, setCurrentLatitude] = useState(0);
   const [currentLongitude, setCurrentLongitude] = useState(0);
 
-  // //Variable qui va stocker les données API
-  // const [listAPI, setListAPI] = useState([]);
-  // const temp = [];
-
   //Variable qui va stocker les types de professionnels de santé par rapport à l'API
   const [listType, setListType] = useState([]);
   const [jobs, setJobs] = useState([]);
@@ -70,35 +66,6 @@ function MapScreen(props) {
       }
     }
 
-    // //Fonction qui exploite les données API
-    // async function loadData() {
-    //   var rawResponse = await fetch(
-    //     "https://data.opendatasoft.com/api/records/1.0/search/?dataset=medecins%40public&q=&rows=150"
-    //   );
-    //   var response = await rawResponse.json();
-    //   //Boucle pour poush les données API dans le tableau "temp"
-    //   for (let item of response.records) {
-    //     if (
-    //       item.fields.coordonnees &&
-    //       item.fields.libelle_regroupement != "none" &&
-    //       item.fields.libelle_regroupement != "None" &&
-    //       item.fields.libelle_regroupement != undefined
-    //     ) {
-    //       temp.push({
-    //         latitude: item.fields.coordonnees[0],
-    //         longitude: item.fields.coordonnees[1],
-    //         profession: item.fields.libelle_profession,
-    //         categorie: item.fields.libelle_regroupement,
-    //         adresse: item.fields.adresse,
-    //         ville: item.fields.commune,
-    //         tel: item.fields.column_10,
-    //         secteur: item.fields.column_14,
-    //       });
-    //     }
-    //   }
-    //   console.log("|| Prof. de santé ||", temp.length);
-    //   setListAPI(temp);
-    // }
     askPermissions();
     // loadData();
     listCategory();
@@ -135,6 +102,7 @@ function MapScreen(props) {
         Ville: marker.ville,
         Tel: marker.tel,
         Secteur: marker.secteur,
+        Categorie: marker.categorie,
       };
       return (
         <Marker
@@ -152,17 +120,17 @@ function MapScreen(props) {
             setVille(marker.ville);
             setTel(marker.tel);
             setSecteur(marker.secteur);
-            setCategory(listAPI.categorie);
-            console.log("TEST :::");
+            setCategory(marker.categorie);
+            // console.log("TEST :::", category);
           }}
         />
       );
     });
 
-  let newHCPro = (profession, adresse, ville, tel, category, secteur) => {
-    async function addHCPro() {
+  let addHCPro = (profession, adresse, ville, tel, category, secteur) => {
+    async function HCPro() {
       //Remplacer privateIp par la vôtre
-      let privateIp = "172.20.10.3"; //Remplacer privateIp par la vôtre
+      let privateIp = "192.168.10.128"; //Remplacer privateIp par la vôtre
       let fetchRouteAddhcpro = await fetch(
         `http://${privateIp}:3000/addhcpro`,
         {
@@ -171,7 +139,9 @@ function MapScreen(props) {
           body: `professionFromFront=${profession}&adresseFromFront=${adresse}&villeFromFront=${ville}&telFromFront=${tel}&categoryFromFront=${category}&secteurFromFront=${secteur}`,
         }
       );
+      let saveHCPro = await fetchRouteAddhcpro.json();
     }
+    HCPro();
   };
 
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
@@ -255,14 +225,14 @@ function MapScreen(props) {
                   onPress={() => {
                     setModalVisible(!modalVisible);
                     setModalVisible2(!modalVisible2);
-                    // newHCPro(
-                    //   profession,
-                    //   adresse,
-                    //   ville,
-                    //   tel,
-                    //   category,
-                    //   secteur
-                    // );
+                    addHCPro(
+                      profession,
+                      adresse,
+                      ville,
+                      tel,
+                      category,
+                      secteur
+                    );
                   }}
                 >
                   <Ionicons name="add-circle" size={20} color="green" />

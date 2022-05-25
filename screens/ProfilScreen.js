@@ -1,5 +1,5 @@
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Animated,
   Dimensions,
@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import ModalDropdown from "react-native-modal-dropdown";
+import AppLoading from "expo-app-loading";
 import { Button, Text } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker"; //npm install react-native-dropdown-picker
 import { AntDesign, Entypo, Ionicons } from "@expo/vector-icons";
@@ -19,6 +21,15 @@ import DateTimePickerModal from "react-native-modal-datetime-picker"; //expo ins
 import { Dropdown } from "react-native-element-dropdown"; //npm install react-native-element-dropdown --save
 
 import Icon from "react-native-vector-icons/Ionicons";
+
+// IMPORT DES FONTS
+import {
+  useFonts,
+  PTSans_400Regular,
+  PTSans_400Regular_Italic,
+  PTSans_700Bold,
+  PTSans_700Bold_Italic,
+} from "@expo-google-fonts/pt-sans";
 
 //* Connexion avec redux : npm install --save redux react-redux */
 import { connect } from "react-redux";
@@ -269,25 +280,28 @@ function ProfilScreen(props) {
   // const [open4, setOpen4] = useState(false);
   let names = ["Claire", "Mandy", "Nicolas", "Jad"];
   let tempArray = items;
-  let vaccines = [
+  const [vaccines, setVaccines] = useState([
     //Vaccins obligatoires
     {
       name: "Diphtérie",
       status: "Obligatoire",
       description:
         "La vaccination antidiphtérique est le seul moyen de contrôler cette infection grave. Le vaccin est composé de la toxine diphtérique purifiée et inactivée. La vaccination est obligatoire pour tous les enfants et les professionnels de santé. La primo-vaccination est maintenant obligatoire chez l’enfant à 2 et 4 mois. Le premier rappel se fait à l’âge de 11 mois et les autres rappels se font à 6 ans, 11/13 ans, 25 ans, 45 ans, 65 ans et puis tous les 10 ans. Les études de séroprévalence montrent qu’une haute proportion de sujets âgés de 50 ans et plus en France ont un titre d’anticorps non détectable ou inférieur au seuil considéré comme protecteur. Ces données soulignent l’importance de suivre les recommandations vaccinales, notamment les rappels tous les 10 ans chez les adultes âgés de plus de 65 ans.",
+      date: Date.now(),
     },
     {
       name: "Rougeole",
       status: "Obligatoire",
       description:
         "Tous les enfants et adultes jeunes doivent être vaccinés contre la rougeole. C’est une vaccination très efficace qui protège de la maladie dans près de 100% des cas après 2 doses de vaccin. La généralisation de la vaccination contre la rougeole a pour objectif l’élimination de la maladie. Celle-ci est possible si 95% des enfants se font vacciner avec 2 doses. Le taux de couverture vaccinale reste insuffisant en France chez les 15-35 ans et chez les nourrissons, ce qui explique que le virus continue à circuler dans le pays.",
+      date: Date.now(),
     },
     {
       name: "Tétanos",
       status: "Obligatoire",
       description:
         "N’importe qui peut contracter un tétanos ; tout le monde est donc concerné par cette vaccination tout au long de la vie. Cette maladie n’étant pas contagieuse, la protection par la vaccination est individuelle et dure au moins vingt ans jusqu’à 65 ans, moins longtemps au-delà. Il est donc indispensable de faire des injections de rappel tout au long de la vie (même si le vaccin n’est obligatoire que pour les nourrissons). La maladie n’est pas immunisante c'est-à-dire que le fait de l’avoir eue ne permet pas au système immunitaire de développer des anticorps garantissant une protection contre cette maladie si le corps y était à nouveau exposé. La protection n’est réalisée que par la vaccination. Le vaccin a également un intérêt en présence d’une blessure à haut risque de tétanos : chez les personnes non à jour de leur vaccination, une injection de vaccin et parfois d’immunoglobulines peuvent être réalisées. Les personnes les moins bien vaccinées en France contre le tétanos sont les personnes âgées (en particulier les femmes qui ont moins bénéficié dans leur vie adulte de rappels, ne serait-ce qu’à l’occasion du service militaire) alors que les activités de jardinage sont très fréquentes dans cette population.",
+      date: Date.now(),
     },
     //Vaccins recommandés
     {
@@ -295,14 +309,16 @@ function ProfilScreen(props) {
       status: "Recommandé",
       description:
         "En France, la vaccination contre la Covid-19 est recommandée pour tous à partir de 5 ans avec 2 doses. Un rappel vaccinal est ensuite recommandé pour toutes les personnes de 12 ans et plus. La vaccination est obligatoire pour les personnes travaillant dans les secteurs sanitaire, social et médico-social avec, depuis le 30 janvier 2022, un rappel exigé. Depuis le 14 mars 2022, il est recommandé aux personnes de 80 ans et plus, aux résidents des EHPAD et USLD et aux personnes immunodéprimées d'effectuer un deuxième rappel (4e dose le plus souvent). Celle-ci peut être faite dès 3 mois après la première dose de rappel ou une infection à la Covid-19. Depuis le 7 avril 2022, les personnes de 60 à 79 ans peuvent recevoir une seconde dose de rappel à partir de 6 mois après le dernier rappel ou une infection à la Covid-19. En France, près de 155 millions d’injections de vaccins ont été réalisées au total au 5 avril 2022 depuis le début de la campagne et actuellement aucun des effets indésirables ne remettent en cause le rapport bénéfice risque des vaccins utilisés. Le variant Omicron est retrouvé dans près de 100% des cas en France. Avec le variant Omicron, les vaccins existants restent efficaces sur les formes graves à condition que la vaccination soit complète avec un rappel. Le ministère de la santé a de nouveau souligné l’importance de la vaccination des femmes enceintes, qui, non-vaccinées, sont particulièrement à risque en cas de Covid-19, les risques concernant à la fois les femmes elles-mêmes et leurs nouveau-nés. De nouvelles études confirment que la vaccination des femmes enceintes est sûre et efficace pour les protéger, elles et leur bébé.",
+      date: Date.now(),
     },
     {
       name: "Hépatite B",
       status: "Recommandé",
       description:
         "La vaccination permet de se protéger très efficacement de cette infection et de diminuer la transmission. La vaccination contre l’hépatite B est obligatoire, en France, pour tous les nourrissons nés à partir du 1er janvier 2018, et recommandée chez les enfants et les adolescents jusqu’à l’âge de 15 ans : les vacciner quand ils sont petits, c’est les protéger pour plus tard lorsqu’ils rencontreront le virus. Comparée à la plupart des pays d’Afrique ou d’Asie, la France est un pays de faible incidence de l'hépatite B par an et le risque d’infection est très faible durant l’enfance. Ce sont les adolescents et surtout les jeunes adultes qui sont les plus exposés au risque d’acquisition du virus de l’hépatite B (relations sexuelles avec partenaires multiples, usage de drogues par voie intraveineuse, voyage dans les pays à risque, professions exposées au sang, etc.) Il est important de veiller à ce que les enfants soient vaccinés avant l’âge d’apparition du risque, c’est-à-dire avant 16 ans.",
+      date: Date.now(),
     },
-  ];
+  ]);
 
   let exams = [
     //Examens obligatoires
@@ -316,12 +332,14 @@ function ProfilScreen(props) {
       status: "Recommandé",
       description:
         "Un bilan sanguin regroupe un ensemble d’analyses réalisées à partir d’un prélèvement sanguin. Les paramètres à étudier sont sélectionnés par le médecin en fonction du diagnostic envisagé ou des organes suspectés. Un bilan sanguin permet de mesurer, selon les besoins, la concentration sanguine de divers éléments, tels que les globules rouges ou blancs, certaines hormones, des protéines, un agent infectieux, etc.",
+      date: Date.now(),
     },
     {
       name: "ECBU",
       status: "Recommandé",
       description:
         "L'ECBU, examen cytobactériologique des urines (ou cytologie urinaire), est notamment pratiqué lorsqu'une infection urinaire est suspectée. Il consiste à recueillir et à analyser les urines, pour détecter une concentration anormalement élevée de leucocytes, signe d'une infection. De nombreuses substances peuvent être analysées et détectées dans les urines. Les analyses d'urines permettent d'aider au diagnostic de certaines pathologies, mais aussi de mieux définir leur traitement. Mais elles permettent aussi de savoir si une femme est enceinte par exemple.",
+      date: Date.now(),
     },
   ];
 
@@ -341,6 +359,7 @@ function ProfilScreen(props) {
   const [value5, setValue5] = useState(null);
   const [value6, setValue6] = useState(null);
   const [value7, setValue7] = useState(null);
+  const [value8, setValue8] = useState(null);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -435,7 +454,7 @@ function ProfilScreen(props) {
         "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la liste des vaccins obligatoires et des vaccins recommandés vous pouvez en ajouter dans la section 'Vaccins projets personnels' en cliquant sur",
     },
     {
-      title: "Vaccins/Examens projets personnels :",
+      title: "Besoins personnels :",
       infos:
         "Si vous souhaitez réaliser un vaccin ou un examen qui n'apparait pas dans la liste des vaccins/examens obligatoires et des vaccins/examens recommandés vous pouvez en ajouter dans la section 'Vaccins/examens projets personnels' en cliquant sur",
     },
@@ -546,18 +565,27 @@ function ProfilScreen(props) {
     setModalDefVisible(true);
   };
 
-  const dateModal = () => {
+  //Modal du dateTimePicker dans vaccins obligatoires
+  const dateModal = (index) => {
     setModalDate(true);
-    <DateTimePicker
-      mode="date"
-      display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-      value={date}
-      minimumDate={new Date(Date.now())}
-      // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-      onChange={onChange}
-      onConfirm={handleDatePicker}
-      onCancel={hideDatePicker}
-    />;
+
+    console.log("lastdate", date);
+
+    let vaccinesCopy = [...vaccines];
+    vaccinesCopy[index].date = date;
+    setVaccines(vaccinesCopy);
+  };
+
+  const onChange9 = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    if (Platform.OS === "android") {
+      setShow(false);
+    }
+    if (event.type === "neutralButtonPressed") {
+      setDate(new Date(0));
+    } else {
+      setDate(currentDate);
+    }
   };
 
   const dateModal2 = () => {
@@ -742,6 +770,46 @@ function ProfilScreen(props) {
     // console.log(healthCareCopy);
   };
 
+  /* Fonction status pour le dropDown des vaccins obligatoires */
+  const mandatoryVaccinesStatus = (item, index) => {
+    let status = "A jour";
+    let type = "name";
+    let position = 0;
+    let healthCareCopy = [...healthCare];
+    // healthCareCopy[index].status = item.value;
+    // console.log(healthCareCopy);
+  };
+
+  /* Fonction status pour le dropDown des vaccins recommandés */
+  const recommendedVaccinesStatus = (item, index) => {
+    let status = "A jour";
+    let type = "name";
+    let position = 0;
+    let healthCareCopy = [...healthCare];
+    // healthCareCopy[index].status = item.value;
+    // console.log(healthCareCopy);
+  };
+
+  /* Fonction status pour le dropDown des examens obligatoires */
+  const mandatoryExamsStatus = (item, index) => {
+    let status = "A jour";
+    let type = "name";
+    let position = 0;
+    let healthCareCopy = [...healthCare];
+    // healthCareCopy[index].status = item.value;
+    // console.log(healthCareCopy);
+  };
+
+  /* Fonction status pour le dropDown des examens recommandés */
+  const recommendedExamsStatus = (item, index) => {
+    let status = "A jour";
+    let type = "name";
+    let position = 0;
+    let healthCareCopy = [...healthCare];
+    // healthCareCopy[index].status = item.value;
+    // console.log(healthCareCopy);
+  };
+
   /* Fonction name pour le dropDown d'ajout de soin */
   const healthCareName = (item, index) => {
     let name = "Tétanos";
@@ -804,10 +872,11 @@ function ProfilScreen(props) {
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
           value={e.name}
-          search //Permet au user de chercher le nom du vaccin sans avoir besoin de scroller sur la liste de nom proposée
-          placeholder="À renseigner"
+          search //Permet au user de chercher le nom du soin sans avoir besoin de scroller sur la liste de soin proposée
+          placeholder="Je choisis"
           labelField="label"
           valueField="value"
+          minHeight={165}
           items={vaccinesName}
           multiple={false} //Permet de sélectionner une seule option
           onChange={(item) => {
@@ -851,7 +920,7 @@ function ProfilScreen(props) {
           </TouchableOpacity>
           <Icon
             key={index}
-            style={{ top: -5 }}
+            style={{ marginLeft: 10 }}
             name="close-circle"
             color="#5BAA62"
             size={20}
@@ -862,642 +931,670 @@ function ProfilScreen(props) {
     );
   });
 
+  //Fonts
+   let [fontsLoaded] = useFonts({
+     PTSans_400Regular,
+     PTSans_400Regular_Italic,
+     PTSans_700Bold,
+     PTSans_700Bold_Italic,
+   });
+
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
-  return (
-    <ScrollView>
-      <View style={styles.container}>
-        <DropDownPicker
-          style={styles.DropDownPicker}
-          open={open}
-          placeholder="Aucun filtre sélectionné" //Ce texte apparait si aucun filtre sélectionné
-          value={value}
-          items={items}
-          setOpen={setOpen}
-          setValue={setValue}
-          setItems={setItems}
-          autoScroll={true}
-          closeOnBackPressed={true}
-          listMode="MODAL"
-          theme="LIGHT"
-          multiple={true} //Permet de sélectionner plusieurs options
-          min={0} //Possible de ne rien sélectionner
-          // onSelectItem={(item) => setFilterCriteria(item)}
-          max={10}
-          mode="BADGE"
-          valueStyle={{
-            fontWeight: "bold",
-          }}
-          badgeDotColors={[
-            "#e76f51",
-            "#00b4d8",
-            "#e9c46a",
-            "#e76f51",
-            "#8ac926",
-            "#00b4d8",
-            "#e9c46a",
-          ]}
-        />
-        {/*>>>>>>>>>>>>>>>>>>>>> Vaccins obligatoires <<<<<<<<<<<<<<<<<<<<<< */}
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          {/* Affiche ce qui est après le '&&' que si au moins un élément des filtres est égal à Vaccin*/}
-          {value.find((element) => element === "Vaccin") && (
-            <View style={styles.filterView}>
-              {/* Affiche ce qui est après le '&&' que si au moins un élément des filtres est égal à Obligatoire*/}
-              {value.find((element) => element === "Obligatoire") && (
-                <View>
-                  <View style={styles.title}>
-                    <Ionicons
-                      name="ios-information-circle"
-                      size={30}
-                      color="#5BAA62"
-                      onPress={() => infosModal("Vaccins obligatoires :")}
-                    />
-                    <Text style={styles.textTitle}>Vaccins obligatoires :</Text>
-                  </View>
-                  <View style={styles.headrow}>
-                    <Text style={styles.textHeadColumn1}>Nom : </Text>
-                    <Text style={styles.textHeadColumn2}>État : </Text>
-                    <Text style={styles.textHeadColumn3}>Date : </Text>
-                  </View>
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
+    return (
+      <ScrollView>
+        <View style={styles.container}>
+          <DropDownPicker
+            style={styles.DropDownPicker}
+            open={open}
+            placeholder="Aucun filtre sélectionné" //Ce texte apparait si aucun filtre sélectionné
+            value={value}
+            items={items}
+            setOpen={setOpen}
+            setValue={setValue}
+            setItems={setItems}
+            autoScroll={true}
+            closeOnBackPressed={true}
+            listMode="MODAL"
+            theme="LIGHT"
+            multiple={true} //Permet de sélectionner plusieurs options
+            min={0} //Possible de ne rien sélectionner
+            // onSelectItem={(item) => setFilterCriteria(item)}
+            max={10}
+            mode="BADGE"
+            valueStyle={{
+              fontWeight: "bold",
+            }}
+            badgeDotColors={[
+              "#e76f51",
+              "#00b4d8",
+              "#e9c46a",
+              "#e76f51",
+              "#8ac926",
+              "#00b4d8",
+              "#e9c46a",
+            ]}
+          />
+          {/*>>>>>>>>>>>>>>>>>>>>> Vaccins obligatoires <<<<<<<<<<<<<<<<<<<<<< */}
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            {/* Affiche ce qui est après le '&&' que si au moins un élément des filtres est égal à Vaccin*/}
+            {value.find((element) => element === "Vaccin") && (
+              <View style={styles.filterView}>
+                {/* Affiche ce qui est après le '&&' que si au moins un élément des filtres est égal à Obligatoire*/}
+                {value.find((element) => element === "Obligatoire") && (
+                  <View>
+                    <View style={styles.title}>
+                      <Ionicons
+                        name="ios-information-circle"
+                        size={30}
+                        color="#5BAA62"
+                        onPress={() => infosModal("Vaccins obligatoires :")}
+                      />
+                      <Text style={styles.textTitle}>
+                        Vaccins obligatoires :
+                      </Text>
+                    </View>
+                    <View style={styles.headrow}>
+                      <Text style={styles.textHeadColumn1}>Nom : </Text>
+                      <Text style={styles.textHeadColumn2}>État : </Text>
+                      <Text style={styles.textHeadColumn3}>Date : </Text>
+                    </View>
 
-                  {/* Affiche dynamiquement la liste des vaccins obligatoires  */}
-                  {vaccines
-                    .filter((element) => element.status === "Obligatoire")
-                    .map((e, index) => (
-                      <View style={{ backgroundColor: "#fff" }}>
-                        <View style={styles.row} key={e}>
-                          <Text
-                            style={styles.textRow}
-                            onPress={() => launchModal(e.name, e.description)}
-                          >
-                            {" "}
-                            {e.name}
-                          </Text>
-                          {/* Pour colorer la bordure du dropdown picker */}
-                          <Dropdown
-                            style={[
-                              styles.dropDownPickerState,
-                              isFocus1 && { borderColor: "#5BAA62" },
-                            ]}
-                            placeholderStyle={styles.placeholderStyle}
-                            selectedTextStyle={styles.selectedTextStyle}
-                            value={e.status}
-                            placeholder="À renseigner"
-                            labelField="label"
-                            valueField="value"
-                            maxHeight={165}
-                            data={state1}
-                            multiple={false} //Permet de sélectionner une seule option
-                            onFocus={() => setIsFocus1(true)}
-                            onBlur={() => setIsFocus1(false)}
-                            onChange={(item) => {
-                              healthCareStatus(item, index); //Pour mettre à jour le status du soin
-                            }}
-                          />
-                          <View style={{ minWidth: "32%" }}>
-                            {/* Le bouton pour afficher le dateTimePicker */}
-                            <TouchableOpacity
-                              style={styles.button}
-                              onPress={() => dateModal()}
+                    {/* Affiche dynamiquement la liste des vaccins obligatoires  */}
+                    {vaccines
+                      .filter((element) => element.status === "Obligatoire")
+                      .map((e, index) => (
+                        <View style={{ backgroundColor: "#fff" }}>
+                          <View style={styles.row} key={e}>
+                            <Text
+                              style={styles.textRow}
+                              onPress={() => launchModal(e.name, e.description)}
                             >
-                              {/* Affiche la date sélectionnée par le user dans le bouton */}
-                              <Text style={styles.textDatePicker}>
-                                {new Date(date).toLocaleDateString("fr-FR")}
-                              </Text>
-                            </TouchableOpacity>
+                              {" "}
+                              {e.name}
+                            </Text>
+                            {/* Pour colorer la bordure du dropdown picker */}
+                            <Dropdown
+                              style={[
+                                styles.dropDownPickerState,
+                                isFocus1 && { borderColor: "#5BAA62" },
+                              ]}
+                              placeholderStyle={styles.placeholderStyle}
+                              selectedTextStyle={styles.selectedTextStyle}
+                              value={e.status}
+                              placeholder="À renseigner"
+                              labelField="label"
+                              valueField="value"
+                              maxHeight={165}
+                              data={state1}
+                              multiple={false} //Permet de sélectionner une seule option
+                              onFocus={() => setIsFocus1(true)}
+                              onBlur={() => setIsFocus1(false)}
+                              onChange={(item) => {
+                                mandatoryVaccinesStatus(item, index); //Pour mettre à jour le status du soin
+                              }}
+                            />
+                            <View style={{ minWidth: "32%" }}>
+                              {/* Le bouton pour afficher le dateTimePicker */}
+                              <TouchableOpacity
+                                style={styles.button}
+                                onPress={() => dateModal(index)}
+                              >
+                                {/* Affiche la date sélectionnée par le user dans le bouton */}
+                                <Text style={styles.textDatePicker}>
+                                  {new Date(e.date).toLocaleDateString("fr-FR")}
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
                           </View>
                         </View>
-                      </View>
-                    ))}
-                </View>
-              )}
-
-              {/* >>>>>>>>>>>>>>>>>>>>> Vaccins recommandés <<<<<<<<<<<<<<<<<<<<<< */}
-
-              {/* Affiche le haut du tableau et tout le tableau que si un élément dans les filtres est égal à Recommandé */}
-              {value.find((element) => element === "Recommandé") && (
-                <View>
-                  <View style={styles.title}>
-                    <Ionicons
-                      name="ios-information-circle"
-                      size={30}
-                      color="#5BAA62"
-                      onPress={() => infosModal("Vaccins recommandés :")}
-                    />
-                    <Text style={styles.textTitle}>Vaccins recommandés :</Text>
+                      ))}
                   </View>
-                  <View style={styles.headrow}>
-                    <Text style={styles.textHeadColumn1}>Nom : </Text>
-                    <Text style={styles.textHeadColumn2}>État : </Text>
-                    <Text style={styles.textHeadColumn3}>Date : </Text>
-                  </View>
+                )}
 
-                  {/* Affiche dynamiquement la liste des vaccins recommandés */}
-                  {vaccines
-                    .filter((element) => element.status === "Recommandé")
-                    .map((e, index) => (
-                      <View style={{ backgroundColor: "#fff" }}>
-                        <View style={styles.row}>
-                          <Text
-                            style={styles.textRow}
-                            onPress={() => launchModal(e.name, e.description)}
-                          >
-                            {" "}
-                            {e.name}
-                          </Text>
-                          {/* Pour colorer la bordure du dropdown picker */}
-                          <Dropdown
-                            style={[
-                              styles.dropDownPickerState,
-                              isFocus4 && { borderColor: "#5BAA62" },
-                            ]}
-                            placeholderStyle={styles.placeholderStyle}
-                            selectedTextStyle={styles.selectedTextStyle}
-                            value={e.status}
-                            placeholder="À renseigner"
-                            labelField="label"
-                            valueField="value"
-                            maxHeight={165}
-                            data={state4}
-                            multiple={false} //Permet de sélectionner une seule option
-                            onFocus={() => setIsFocus4(true)}
-                            onBlur={() => setIsFocus4(false)}
-                            onChange={(item) => {
-                              healthCareStatus(item, index); //Pour mettre à jour le status du soin
-                            }}
-                          />
-                          <View style={{ minWidth: "32%" }}>
-                            {/* Le bouton pour afficher le dateTimePicker */}
-                            <TouchableOpacity
-                              style={styles.button}
-                              onPress={() => dateModal4()}
+                {/* >>>>>>>>>>>>>>>>>>>>> Vaccins recommandés <<<<<<<<<<<<<<<<<<<<<< */}
+
+                {/* Affiche le haut du tableau et tout le tableau que si un élément dans les filtres est égal à Recommandé */}
+                {value.find((element) => element === "Recommandé") && (
+                  <View>
+                    <View style={styles.title}>
+                      <Ionicons
+                        name="ios-information-circle"
+                        size={30}
+                        color="#5BAA62"
+                        onPress={() => infosModal("Vaccins recommandés :")}
+                      />
+                      <Text style={styles.textTitle}>
+                        Vaccins recommandés :
+                      </Text>
+                    </View>
+                    <View style={styles.headrow}>
+                      <Text style={styles.textHeadColumn1}>Nom : </Text>
+                      <Text style={styles.textHeadColumn2}>État : </Text>
+                      <Text style={styles.textHeadColumn3}>Date : </Text>
+                    </View>
+
+                    {/* Affiche dynamiquement la liste des vaccins recommandés */}
+                    {vaccines
+                      .filter((element) => element.status === "Recommandé")
+                      .map((e, index) => (
+                        <View style={{ backgroundColor: "#fff" }}>
+                          <View style={styles.row}>
+                            <Text
+                              style={styles.textRow}
+                              onPress={() => launchModal(e.name, e.description)}
                             >
-                              {/* Affiche la date sélectionnée par le user dans le bouton */}
-                              <Text style={styles.textDatePicker}>
-                                {new Date(date4).toLocaleDateString("fr-FR")}
-                              </Text>
-                            </TouchableOpacity>
+                              {" "}
+                              {e.name}
+                            </Text>
+                            {/* Pour colorer la bordure du dropdown picker */}
+                            <Dropdown
+                              style={[
+                                styles.dropDownPickerState,
+                                isFocus4 && { borderColor: "#5BAA62" },
+                              ]}
+                              placeholderStyle={styles.placeholderStyle}
+                              selectedTextStyle={styles.selectedTextStyle}
+                              value={e.status}
+                              placeholder="À renseigner"
+                              labelField="label"
+                              valueField="value"
+                              maxHeight={165}
+                              data={state4}
+                              multiple={false} //Permet de sélectionner une seule option
+                              onFocus={() => setIsFocus4(true)}
+                              onBlur={() => setIsFocus4(false)}
+                              onChange={(item) => {
+                                recommendedVaccinesStatus(item, index); //Pour mettre à jour le status du soin
+                              }}
+                            />
+                            <View style={{ minWidth: "32%" }}>
+                              {/* Le bouton pour afficher le dateTimePicker */}
+                              <TouchableOpacity
+                                style={styles.button}
+                                onPress={() => dateModal4()}
+                              >
+                                {/* Affiche la date sélectionnée par le user dans le bouton */}
+                                <Text style={styles.textDatePicker}>
+                                  {new Date(date4).toLocaleDateString("fr-FR")}
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
                           </View>
                         </View>
-                      </View>
-                    ))}
-                </View>
-              )}
+                      ))}
+                  </View>
+                )}
+              </View>
+            )}
+
+            {/* >>>>>>>>>>>>>>>>>>>>> Examens de santé recommandés <<<<<<<<<<<<<<<<<<<<<< */}
+
+            {/* Affiche ce qui est après '&&' que si au moins élément dans le filtre est égal à Examen de santé */}
+            {value.find((element) => element === "Examen de santé") && (
+              <View style={styles.filterView}>
+                {/* Aaffiche le haut du tableau et tout le tableau que si un élément des filtres est égal à Obligatoire */}
+                {value.find((element) => element === "Obligatoire") && (
+                  <View>
+                    <View style={styles.title}>
+                      <Ionicons
+                        name="ios-information-circle"
+                        size={30}
+                        color="#5BAA62"
+                        onPress={() =>
+                          infosModal("Examens de santé obligatoires :")
+                        }
+                      />
+                      <Text style={styles.textTitle}>
+                        Examens de santé obligatoires :
+                      </Text>
+                    </View>
+
+                    <View style={styles.headrow}>
+                      <Text style={styles.textHeadColumn1}>Nom : </Text>
+                      <Text style={styles.textHeadColumn2}>État : </Text>
+                      <Text style={styles.textHeadColumn3}>Date : </Text>
+                    </View>
+                    {/* Affiche dynamiquement la liste des examens qui sont obligatoires uniquement */}
+                    {exams
+                      .filter((element) => element.status === "Obligatoire")
+                      .map((e, index) => (
+                        <View style={{ backgroundColor: "#fff" }}>
+                          <View style={styles.row}>
+                            <Text
+                              style={styles.textRow}
+                              onPress={() => launchModal(e.name, e.description)}
+                            >
+                              {e.name}
+                            </Text>
+                            <Dropdown
+                              style={[
+                                styles.dropDownPickerState,
+                                isFocus7 && { borderColor: "#5BAA62" },
+                              ]}
+                              placeholderStyle={styles.placeholderStyle}
+                              selectedTextStyle={styles.selectedTextStyle}
+                              value={e.status}
+                              placeholder="À renseigner"
+                              labelField="label"
+                              valueField="value"
+                              maxHeight={165}
+                              data={state7}
+                              multiple={false} //Permet de sélectionner une seule option
+                              onFocus={() => setIsFocus7(true)}
+                              onBlur={() => setIsFocus7(false)}
+                              onChange={(item) => {
+                                mandatoryExamsStatus(item, index); //Pour mettre à jour le status du soin
+                              }}
+                            />
+                            <View style={{ minWidth: "32%" }}>
+                              {/* Le bouton pour afficher le dateTimePicker */}
+                              <TouchableOpacity
+                                style={styles.button}
+                                onPress={() => dateModal7()}
+                              >
+                                {/* Affiche la date sélectionnée par le user dans le bouton */}
+                                <Text style={styles.textDatePicker}>
+                                  {new Date(date7).toLocaleDateString("fr-FR")}
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        </View>
+                      ))}
+                  </View>
+                )}
+
+                {/* Affiche le tableau que si  il y a un élément des filtres égal á Recommandé*/}
+                {value.find((element) => element === "Recommandé") && (
+                  <View>
+                    <View style={styles.title}>
+                      <Ionicons
+                        name="ios-information-circle"
+                        size={30}
+                        color="#5BAA62"
+                        onPress={() =>
+                          infosModal("Examens de santé recommandés :")
+                        }
+                      />
+                      <Text style={styles.textTitle}>
+                        Examens de santé recommandés :
+                      </Text>
+                    </View>
+
+                    <View style={styles.headrow}>
+                      <Text style={styles.textHeadColumn1}>Nom : </Text>
+                      <Text style={styles.textHeadColumn2}>État : </Text>
+                      <Text style={styles.textHeadColumn3}>Date : </Text>
+                    </View>
+                    {/* Affiche dynamiquement la liste des examens qui sont recommandés uniquement */}
+                    {exams
+                      .filter((element) => element.status === "Recommandé")
+                      .map((e, index) => (
+                        <View style={{ backgroundColor: "#fff" }}>
+                          <View style={styles.row}>
+                            <Text
+                              style={styles.textRow}
+                              onPress={() => launchModal(e.name, e.description)}
+                            >
+                              {e.name}
+                            </Text>
+                            <Dropdown
+                              style={[
+                                styles.dropDownPickerState,
+                                isFocus6 && { borderColor: "#5BAA62" },
+                              ]}
+                              placeholderStyle={styles.placeholderStyle}
+                              selectedTextStyle={styles.selectedTextStyle}
+                              value={value6}
+                              placeholder="À renseigner"
+                              labelField="label"
+                              valueField="value"
+                              maxHeight={165}
+                              data={state6}
+                              multiple={false} //Permet de sélectionner une seule option
+                              onFocus={() => setIsFocus6(true)}
+                              onBlur={() => setIsFocus6(false)}
+                              onChange={(item) => {
+                                recommendedExamsStatus(item, index); //Pour mettre à jour le status du soin
+                              }}
+                            />
+                            <View style={{ minWidth: "32%" }}>
+                              {/* Le bouton pour afficher le dateTimePicker */}
+                              <TouchableOpacity
+                                style={styles.button}
+                                onPress={() => dateModal6()}
+                              >
+                                {/* Affiche la date sélectionnée par le user dans le bouton */}
+                                <Text style={styles.textDatePicker}>
+                                  {new Date(date6).toLocaleDateString("fr-FR")}
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        </View>
+                      ))}
+                  </View>
+                )}
+              </View>
+            )}
+
+            {/*>>>>>>>>>>>>>>>>>>>>> Vaccins/Examens projets personnels <<<<<<<<<<<<<<<<<<<<<< */}
+            <View style={styles.title}>
+              <Ionicons
+                name="ios-information-circle"
+                size={30}
+                color="#5BAA62"
+                onPress={() => infosModal("Besoins personnels :")}
+              />
+              <Text style={styles.textTitle}>Besoins personnels :</Text>
             </View>
-          )}
 
-          {/* >>>>>>>>>>>>>>>>>>>>> Examens de santé recommandés <<<<<<<<<<<<<<<<<<<<<< */}
-
-          {/* Affiche ce qui est après '&&' que si au moins élément dans le filtre est égal à Examen de santé */}
-          {value.find((element) => element === "Examen de santé") && (
-            <View style={styles.filterView}>
-              {/* Aaffiche le haut du tableau et tout le tableau que si un élément des filtres est égal à Obligatoire */}
-              {value.find((element) => element === "Obligatoire") && (
-                <View>
-                  <View style={styles.title}>
-                    <Ionicons
-                      name="ios-information-circle"
-                      size={30}
-                      color="#5BAA62"
-                      onPress={() =>
-                        infosModal("Examens de santé obligatoires :")
-                      }
-                    />
-                    <Text style={styles.textTitle}>
-                      Examens de santé obligatoires :
-                    </Text>
-                  </View>
-
-                  <View style={styles.headrow}>
-                    <Text style={styles.textHeadColumn1}>Nom : </Text>
-                    <Text style={styles.textHeadColumn2}>État : </Text>
-                    <Text style={styles.textHeadColumn3}>Date : </Text>
-                  </View>
-                  {/* Affiche dynamiquement la liste des examens qui sont obligatoires uniquement */}
-                  {exams
-                    .filter((element) => element.status === "Obligatoire")
-                    .map((e, index) => (
-                      <View style={{ backgroundColor: "#fff" }}>
-                        <View style={styles.row}>
-                          <Text
-                            style={styles.textRow}
-                            onPress={() => launchModal(e.name, e.description)}
-                          >
-                            {e.name}
-                          </Text>
-                          <Dropdown
-                            style={[
-                              styles.dropDownPickerState,
-                              isFocus7 && { borderColor: "#5BAA62" },
-                            ]}
-                            placeholderStyle={styles.placeholderStyle}
-                            selectedTextStyle={styles.selectedTextStyle}
-                            value={e.status}
-                            placeholder="À renseigner"
-                            labelField="label"
-                            valueField="value"
-                            maxHeight={165}
-                            data={state7}
-                            multiple={false} //Permet de sélectionner une seule option
-                            onFocus={() => setIsFocus7(true)}
-                            onBlur={() => setIsFocus7(false)}
-                            onChange={(item) => {
-                              healthCareStatus(item, index); //Pour mettre à jour le status du soin
-                            }}
-                          />
-                          <View style={{ minWidth: "32%" }}>
-                            {/* Le bouton pour afficher le dateTimePicker */}
-                            <TouchableOpacity
-                              style={styles.button}
-                              onPress={() => dateModal7()}
-                            >
-                              {/* Affiche la date sélectionnée par le user dans le bouton */}
-                              <Text style={styles.textDatePicker}>
-                                {new Date(date7).toLocaleDateString("fr-FR")}
-                              </Text>
-                            </TouchableOpacity>
-                          </View>
-                        </View>
-                      </View>
-                    ))}
-                </View>
-              )}
-
-              {/* Affiche le tableau que si  il y a un élément des filtres égal á Recommandé*/}
-              {value.find((element) => element === "Recommandé") && (
-                <View>
-                  <View style={styles.title}>
-                    <Ionicons
-                      name="ios-information-circle"
-                      size={30}
-                      color="#5BAA62"
-                      onPress={() =>
-                        infosModal("Examens de santé recommandés :")
-                      }
-                    />
-                    <Text style={styles.textTitle}>
-                      Examens de santé recommandés :
-                    </Text>
-                  </View>
-
-                  <View style={styles.headrow}>
-                    <Text style={styles.textHeadColumn1}>Nom : </Text>
-                    <Text style={styles.textHeadColumn2}>État : </Text>
-                    <Text style={styles.textHeadColumn3}>Date : </Text>
-                  </View>
-                  {/* Affiche dynamiquement la liste des examens qui sont recommandés uniquement */}
-                  {exams
-                    .filter((element) => element.status === "Recommandé")
-                    .map((e, index) => (
-                      <View style={{ backgroundColor: "#fff" }}>
-                        <View style={styles.row}>
-                          <Text
-                            style={styles.textRow}
-                            onPress={() => launchModal(e.name, e.description)}
-                          >
-                            {e.name}
-                          </Text>
-                          <Dropdown
-                            style={[
-                              styles.dropDownPickerState,
-                              isFocus6 && { borderColor: "#5BAA62" },
-                            ]}
-                            placeholderStyle={styles.placeholderStyle}
-                            selectedTextStyle={styles.selectedTextStyle}
-                            value={value6}
-                            placeholder="À renseigner"
-                            labelField="label"
-                            valueField="value"
-                            maxHeight={165}
-                            data={state6}
-                            multiple={false} //Permet de sélectionner une seule option
-                            onFocus={() => setIsFocus6(true)}
-                            onBlur={() => setIsFocus6(false)}
-                            onChange={(item) => {
-                              healthCareStatus(item, index); //Pour mettre à jour le status du soin
-                            }}
-                          />
-                          <View style={{ minWidth: "32%" }}>
-                            {/* Le bouton pour afficher le dateTimePicker */}
-                            <TouchableOpacity
-                              style={styles.button}
-                              onPress={() => dateModal6()}
-                            >
-                              {/* Affiche la date sélectionnée par le user dans le bouton */}
-                              <Text style={styles.textDatePicker}>
-                                {new Date(date6).toLocaleDateString("fr-FR")}
-                              </Text>
-                            </TouchableOpacity>
-                          </View>
-                        </View>
-                      </View>
-                    ))}
-                </View>
-              )}
+            {/*>>>>>>>>>>>>>>>>>>>>> Ajouter un vaccin/un examen <<<<<<<<<<<<<<<<<<<<<< */}
+            {/* Ajout d'une ligne quand le user clic sur l'icône + */}
+            <View>{healthCarePerso}</View>
+            <View style={styles.title}>
+              <AntDesign
+                name="pluscircle"
+                size={24}
+                color="#5BAA62"
+                onPress={() => {
+                  addHealthCare();
+                }}
+              />
+              <Text style={styles.text}>Ajouter un vaccin </Text>
             </View>
-          )}
 
-          {/*>>>>>>>>>>>>>>>>>>>>> Vaccins/Examens projets personnels <<<<<<<<<<<<<<<<<<<<<< */}
-          <View style={styles.title}>
-            <Ionicons
-              name="ios-information-circle"
-              size={30}
-              color="#5BAA62"
-              onPress={() => infosModal("Vaccins/Examens projets personnels :")}
-            />
-            <Text style={styles.textTitle}>
-              Vaccins/Examens projets personnels :
-            </Text>
-          </View>
+            {/*>>>>>>>>>>>>>>>>>>>>> Préparer un voyage <<<<<<<<<<<<<<<<<<<<<< */}
+            {/* Redirecttion vers site Pasteur au clic sur globe */}
+            <View style={styles.title}>
+              <Entypo
+                name="globe"
+                size={24}
+                color="#5BAA62"
+                onPress={() => {
+                  Linking.openURL(
+                    "https://www.pasteur.fr/fr/centre-medical/preparer-son-voyage?emkfid=EMF-22701181460-k--77618669180--s&gclid=EAIaIQobChMIzcO_oLvS9wIVRajVCh2S5ANiEAAYASAAEgLNrvD_BwE"
+                  );
+                }}
+              />
+              <Text style={styles.text}>Préparer un voyage </Text>
+            </View>
 
-          {/*>>>>>>>>>>>>>>>>>>>>> Ajouter un vaccin/un examen <<<<<<<<<<<<<<<<<<<<<< */}
-          {/* Ajout d'une ligne quand le user clic sur l'icône + */}
-          <View>{healthCarePerso}</View>
-          <View style={styles.title}>
-            <AntDesign
-              name="pluscircle"
-              size={24}
-              color="#5BAA62"
-              onPress={() => {
-                addHealthCare();
+            {/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> LES MODALS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */}
+            {/*>>>>>>>>>>>>>>>>>>>>> Modal d'infos de vaccin et d'examen <<<<<<<<<<<<<<<<<<<<<< */}
+
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
               }}
-            />
-            <Text style={styles.text}>Ajouter un vaccin </Text>
-          </View>
-
-          {/*>>>>>>>>>>>>>>>>>>>>> Préparer un voyage <<<<<<<<<<<<<<<<<<<<<< */}
-          {/* Redirecttion vers site Pasteur au clic sur globe */}
-          <View style={styles.title}>
-            <Entypo
-              name="globe"
-              size={24}
-              color="#5BAA62"
-              onPress={() => {
-                Linking.openURL(
-                  "https://www.pasteur.fr/fr/centre-medical/preparer-son-voyage?emkfid=EMF-22701181460-k--77618669180--s&gclid=EAIaIQobChMIzcO_oLvS9wIVRajVCh2S5ANiEAAYASAAEgLNrvD_BwE"
+            >
+              {infos.map((info, i) => {
+                return (
+                  <ModalInfos visible={modalInfosVisible} key={i}>
+                    <View style={{ alignItems: "center" }}>
+                      <View style={styles.header}>
+                        <TouchableOpacity
+                          onPress={() => setModalInfosVisible(false)}
+                        ></TouchableOpacity>
+                      </View>
+                    </View>
+                    <View style={styles.title}>
+                      <Ionicons
+                        name="ios-information-circle"
+                        size={30}
+                        color="#FFFFFF"
+                        onPress={() => setModalInfosVisible(true)}
+                      />
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          color: "#FFFFFF",
+                          paddingLeft: 9,
+                        }}
+                      >
+                        {name}
+                      </Text>
+                    </View>
+                    <View
+                      style={{ justifyContent: "center", alignItems: "center" }}
+                    >
+                      <Text
+                        style={{
+                          marginVertical: 30,
+                          fontSize: 17,
+                          textAlign: "center",
+                          color: "#FFFFFF",
+                        }}
+                      >
+                        {description}
+                      </Text>
+                      <Button
+                        title="OK"
+                        buttonStyle={styles.buttonModal}
+                        onPress={() => setModalInfosVisible(false)}
+                      />
+                    </View>
+                  </ModalInfos>
                 );
-              }}
-            />
-            <Text style={styles.text}>Préparer un voyage </Text>
+              })}
+            </View>
           </View>
 
-          {/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> LES MODALS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */}
-          {/*>>>>>>>>>>>>>>>>>>>>> Modal d'infos de vaccin et d'examen <<<<<<<<<<<<<<<<<<<<<< */}
+          {/*>>>>>>>>>>>>>>>>>>>>> Modal dateTimePicker <<<<<<<<<<<<<<<<<<<<<< */}
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ModalInfos visible={modalDate}>
+              <Text onPress={() => setModalDate(false)}>fermer</Text>
+              <Text
+                onPress={() => {
+                  setDate(date), setModalDate(false);
+                }}
+              >
+                OK
+              </Text>
+
+              <DateTimePicker
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+                value={date}
+                minimumDate={new Date(Date.now())}
+                // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+                onChange={setDate}
+                onConfirm={setDate}
+                onCancel={hideDatePicker}
+              />
+            </ModalInfos>
+          </View>
 
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
-            {infos.map((info, i) => {
-              return (
-                <ModalInfos visible={modalInfosVisible} key={i}>
-                  <View style={{ alignItems: "center" }}>
-                    <View style={styles.header}>
-                      <TouchableOpacity
-                        onPress={() => setModalInfosVisible(false)}
-                      ></TouchableOpacity>
-                    </View>
+            <ModalInfos visible={modalDate2}>
+              <Text onPress={() => setModalDate2(false)}>fermer</Text>
+              <DateTimePicker
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+                value={date2}
+                minimumDate={new Date(Date.now())}
+                // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+                onChange={onChange2}
+                onConfirm={handleDatePicker}
+                onCancel={hideDatePicker}
+              />
+            </ModalInfos>
+          </View>
+
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ModalInfos visible={modalDate3}>
+              <Text onPress={() => setModalDate3(false)}>fermer</Text>
+              <DateTimePicker
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+                value={date3}
+                minimumDate={new Date(Date.now())}
+                // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+                onChange={onChange3}
+                onConfirm={handleDatePicker}
+                onCancel={hideDatePicker}
+              />
+            </ModalInfos>
+          </View>
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ModalInfos visible={modalDate4}>
+              <Text onPress={() => setModalDate4(false)}>fermer</Text>
+              <DateTimePicker
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+                value={date4}
+                minimumDate={new Date(Date.now())}
+                // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+                onChange={onChange4}
+                onConfirm={handleDatePicker}
+                onCancel={hideDatePicker}
+              />
+            </ModalInfos>
+          </View>
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ModalInfos visible={modalDate5}>
+              <Text onPress={() => setModalDate5(false)}>fermer</Text>
+              <DateTimePicker
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+                value={date5}
+                minimumDate={new Date(Date.now())}
+                // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+                onChange={onChange5}
+                onConfirm={handleDatePicker}
+                onCancel={hideDatePicker}
+              />
+            </ModalInfos>
+          </View>
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ModalInfos visible={modalDate6}>
+              <Text onPress={() => setModalDate6(false)}>fermer</Text>
+              <DateTimePicker
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+                value={date6}
+                minimumDate={new Date(Date.now())}
+                // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+                onChange={onChange6}
+                onConfirm={handleDatePicker}
+                onCancel={hideDatePicker}
+              />
+            </ModalInfos>
+          </View>
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ModalInfos visible={modalDate7}>
+              <Text onPress={() => setModalDate7(false)}>fermer</Text>
+              <DateTimePicker
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+                value={date7}
+                minimumDate={new Date(Date.now())}
+                // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+                onChange={onChange7}
+                onConfirm={handleDatePicker}
+                onCancel={hideDatePicker}
+              />
+            </ModalInfos>
+          </View>
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ModalInfos visible={modalDate8}>
+              <Text onPress={() => setModalDate8(false)}>fermer</Text>
+              <DateTimePicker
+                mode="date"
+                style={{
+                  backgroundColor: "#FFF",
+                }}
+                display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
+                value={date8}
+                minimumDate={new Date(Date.now())}
+                // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
+                onChange={onChange8}
+                onConfirm={handleDatePicker}
+                onCancel={hideDatePicker}
+              />
+            </ModalInfos>
+          </View>
+
+          {/* Je map sur definitionList pour dynamiser les modals de définition */}
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ModalInfos visible={modalDefVisible}>
+              <ScrollView>
+                <View style={{ alignItems: "center" }}>
+                  <View style={styles.header}>
+                    <TouchableOpacity
+                      onPress={() => setModalDefVisible(false)}
+                    ></TouchableOpacity>
                   </View>
-                  <View style={styles.title}>
-                    <Ionicons
-                      name="ios-information-circle"
-                      size={30}
-                      color="#FFFFFF"
-                      onPress={() => setModalInfosVisible(true)}
-                    />
-                    <Text
-                      style={{
-                        textAlign: "center",
-                        color: "#FFFFFF",
-                        paddingLeft: 9,
-                      }}
-                    >
-                      {name}
-                    </Text>
-                  </View>
-                  <View
-                    style={{ justifyContent: "center", alignItems: "center" }}
+                </View>
+                <View style={styles.title}>
+                  <Ionicons
+                    name="ios-information-circle"
+                    size={30}
+                    color="#FFFFFF"
+                    onPress={() => setModalDefVisible(true)}
+                  />
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      color: "#FFFFFF",
+                      paddingLeft: 9,
+                    }}
+                    h4
                   >
-                    <Text
-                      style={{
-                        marginVertical: 30,
-                        fontSize: 17,
-                        textAlign: "center",
-                        color: "#FFFFFF",
-                      }}
-                    >
-                      {description}
-                    </Text>
-                    <Button
-                      title="OK"
-                      buttonStyle={styles.buttonModal}
-                      onPress={() => setModalInfosVisible(false)}
-                    />
-                  </View>
-                </ModalInfos>
-              );
-            })}
+                    {name} :
+                  </Text>
+                </View>
+                <View
+                  style={{ justifyContent: "center", alignItems: "center" }}
+                >
+                  <Text
+                    style={{
+                      marginVertical: 30,
+                      fontSize: 17,
+                      textAlign: "center",
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    {description}
+                  </Text>
+                  <Button
+                    title="OK"
+                    buttonStyle={styles.buttonModal}
+                    onPress={() => setModalDefVisible(false)}
+                  />
+                </View>
+              </ScrollView>
+            </ModalInfos>
           </View>
         </View>
-
-        {/*>>>>>>>>>>>>>>>>>>>>> Modal dateTimePicker <<<<<<<<<<<<<<<<<<<<<< */}
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <ModalInfos visible={modalDate}>
-            <Text onPress={() => setModalDate(false)}>fermer</Text>
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date}
-              minimumDate={new Date(Date.now())}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange}
-              onConfirm={handleDatePicker}
-              onCancel={hideDatePicker}
-            />
-          </ModalInfos>
-        </View>
-
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <ModalInfos visible={modalDate2}>
-            <Text onPress={() => setModalDate2(false)}>fermer</Text>
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date2}
-              minimumDate={new Date(Date.now())}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange2}
-              onConfirm={handleDatePicker}
-              onCancel={hideDatePicker}
-            />
-          </ModalInfos>
-        </View>
-
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <ModalInfos visible={modalDate3}>
-            <Text onPress={() => setModalDate3(false)}>fermer</Text>
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date3}
-              minimumDate={new Date(Date.now())}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange3}
-              onConfirm={handleDatePicker}
-              onCancel={hideDatePicker}
-            />
-          </ModalInfos>
-        </View>
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <ModalInfos visible={modalDate4}>
-            <Text onPress={() => setModalDate4(false)}>fermer</Text>
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date4}
-              minimumDate={new Date(Date.now())}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange4}
-              onConfirm={handleDatePicker}
-              onCancel={hideDatePicker}
-            />
-          </ModalInfos>
-        </View>
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <ModalInfos visible={modalDate5}>
-            <Text onPress={() => setModalDate5(false)}>fermer</Text>
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date5}
-              minimumDate={new Date(Date.now())}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange5}
-              onConfirm={handleDatePicker}
-              onCancel={hideDatePicker}
-            />
-          </ModalInfos>
-        </View>
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <ModalInfos visible={modalDate6}>
-            <Text onPress={() => setModalDate6(false)}>fermer</Text>
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date6}
-              minimumDate={new Date(Date.now())}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange6}
-              onConfirm={handleDatePicker}
-              onCancel={hideDatePicker}
-            />
-          </ModalInfos>
-        </View>
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <ModalInfos visible={modalDate7}>
-            <Text onPress={() => setModalDate7(false)}>fermer</Text>
-            <DateTimePicker
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date7}
-              minimumDate={new Date(Date.now())}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange7}
-              onConfirm={handleDatePicker}
-              onCancel={hideDatePicker}
-            />
-          </ModalInfos>
-        </View>
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <ModalInfos visible={modalDate8}>
-            <Text onPress={() => setModalDate8(false)}>fermer</Text>
-            <DateTimePicker
-              mode="date"
-              style={{
-                backgroundColor: "#FFF",
-              }}
-              display={Platform.OS === "ios" ? "spinner" : "default"} //Version du dateTimePicker adapté aux versions androïd(default) et ios
-              value={date8}
-              minimumDate={new Date(Date.now())}
-              // minimumDate={new Date(Date.now() + 10 * 60 * 1000)}
-              onChange={onChange8}
-              onConfirm={handleDatePicker}
-              onCancel={hideDatePicker}
-            />
-          </ModalInfos>
-        </View>
-
-        {/* Je map sur definitionList pour dynamiser les modals de définition */}
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <ModalInfos visible={modalDefVisible}>
-            <ScrollView>
-              <View style={{ alignItems: "center" }}>
-                <View style={styles.header}>
-                  <TouchableOpacity
-                    onPress={() => setModalDefVisible(false)}
-                  ></TouchableOpacity>
-                </View>
-              </View>
-              <View style={styles.title}>
-                <Ionicons
-                  name="ios-information-circle"
-                  size={30}
-                  color="#FFFFFF"
-                  onPress={() => setModalDefVisible(true)}
-                />
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: "#FFFFFF",
-                    paddingLeft: 9,
-                  }}
-                  h4
-                >
-                  {name} :
-                </Text>
-              </View>
-              <View style={{ justifyContent: "center", alignItems: "center" }}>
-                <Text
-                  style={{
-                    marginVertical: 30,
-                    fontSize: 17,
-                    textAlign: "center",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  {description}
-                </Text>
-                <Button
-                  title="OK"
-                  buttonStyle={styles.buttonModal}
-                  onPress={() => setModalDefVisible(false)}
-                />
-              </View>
-            </ScrollView>
-          </ModalInfos>
-        </View>
-      </View>
-    </ScrollView>
-  );
+      </ScrollView>
+    );
+  }
 }
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STYLES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 const styles = StyleSheet.create({
@@ -1508,6 +1605,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderColor: "#EBFAD5",
+    fontFamily: "PTSans_400Regular",
   },
   buttonPerso: {
     height: 30,
@@ -1516,6 +1614,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderColor: "#EBFAD5",
+    fontFamily: "PTSans_400Regular",
   },
   buttonModal: {
     alignItems: "center",
@@ -1526,6 +1625,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 40,
     margin: 15,
+    fontFamily: "PTSans_400Regular",
   },
   container: {
     flex: 1,
@@ -1537,6 +1637,7 @@ const styles = StyleSheet.create({
   DropDownPicker: {
     borderColor: "#37663B",
     marginTop: 45,
+    fontFamily: "PTSans_400Regular",
   },
   dropDownPickerState: {
     height: 30,
@@ -1545,6 +1646,7 @@ const styles = StyleSheet.create({
     borderColor: "#EBFAD5",
     borderWidth: 0.5,
     paddingHorizontal: 10,
+    fontFamily: "PTSans_400Regular",
   },
   dropDownPickerVaccines: {
     height: 30,
@@ -1553,12 +1655,14 @@ const styles = StyleSheet.create({
     borderColor: "#EBFAD5",
     paddingLeft: 5,
     borderWidth: 0.5,
+    fontFamily: "PTSans_400Regular",
   },
   header: {
     width: "100%",
     height: 40,
     alignItems: "flex-end",
     justifyContent: "center",
+    fontFamily: "PTSans_400Regular",
   },
   headrow: {
     flexDirection: "row",
@@ -1580,6 +1684,7 @@ const styles = StyleSheet.create({
   },
   placeholderStyle: {
     fontSize: 13,
+    fontFamily: "PTSans_400Regular",
   },
   row: {
     flexDirection: "row",
@@ -1594,6 +1699,7 @@ const styles = StyleSheet.create({
   text: {
     color: "#37663B",
     marginLeft: 10, //Espace entre texte et icône
+    fontFamily: "PTSans_400Regular",
   },
   textDatePicker: {
     alignContent: "center",
@@ -1602,6 +1708,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     padding: 10,
     borderColor: "#EBFAD5",
+    fontFamily: "PTSans_400Regular",
   },
   textHeadColumn1: {
     flexDirection: "row",
@@ -1612,6 +1719,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#EBFAD5",
     paddingLeft: 5,
+    fontFamily: "PTSans_400Regular",
   },
   textHeadColumn2: {
     flexDirection: "row",
@@ -1622,6 +1730,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#EBFAD5",
     paddingLeft: 5,
+    fontFamily: "PTSans_400Regular",
   },
   textHeadColumn3: {
     flexDirection: "row",
@@ -1632,6 +1741,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#EBFAD5",
     paddingLeft: 5,
+    fontFamily: "PTSans_400Regular",
   },
   textRow: {
     height: 30,
@@ -1641,6 +1751,7 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     borderWidth: 1,
     borderColor: "#EBFAD5",
+    fontFamily: "PTSans_400Regular",
   },
   textTitle: {
     fontWeight: "bold",
@@ -1648,6 +1759,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#37663B",
     marginLeft: 10, //Espace entre texte et icône
+    fontFamily: "PTSans_400Bold",
   },
   title: {
     flexDirection: "row",
@@ -1656,6 +1768,7 @@ const styles = StyleSheet.create({
     padding: 9,
     color: "#37663B",
     width: 350,
+    fontFamily: "PTSans_400Regular",
   },
   filterView: {
     flexDirection: "column",
@@ -1666,6 +1779,10 @@ const styles = StyleSheet.create({
 });
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> REDUX <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
+function mapStateToProps(state) {
+  return { newHealthCare: state.newHealthCare };
+}
+
 function mapDispatchToProps(dispatch) {
   return {
     addToProfil: function (newHealthCare) {
@@ -1680,4 +1797,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(ProfilScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(ProfilScreen);

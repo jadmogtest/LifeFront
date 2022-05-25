@@ -61,7 +61,9 @@ function DashBoardScreen(props) {
   useEffect(() => {
     async function takeExams() {
       // console.log('test', props.token)
-      let brutResponse = await fetch(`http://192.168.1.16/user/${props.token}`);
+      let brutResponse = await fetch(
+        `http://192.168.1.16:3000/user/${props.token}`
+      );
       let jsonResponse = await brutResponse.json();
       let vaccinesList = jsonResponse.vaccines;
       let medicalTestsList = jsonResponse.medicalTests;

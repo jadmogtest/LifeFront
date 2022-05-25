@@ -21,7 +21,7 @@ function DeleteAccountScreen(props) {
       <Button
         type="solid"
         buttonStyle={styles.button}
-        title="Recréer un compte parce que je suis un vrai casse-couilles et que je ne sais pas ce que je veux !!!! "
+        title="Recréer un compte "
         onPress={() => signUp()}
       ></Button>
     </View>

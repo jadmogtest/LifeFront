@@ -141,7 +141,6 @@ function SettingScreen(props) {
   //CheckBox
   const [checked, setChecked] = useState(false);
 
-
   //UseEffect de récupération des données User
 
   useEffect(() => {
@@ -174,15 +173,13 @@ function SettingScreen(props) {
     userData()
   }, []);
 
-
   let illnessesList = illnesses.map((e, i) => (
-    <Text style={{ margin: 2, marginRight: 168 }} key={i}>{e.name}</Text>
+    <Text style={{ margin: 6 }} key={i}>{e.name}</Text>
   ))
 
   let familyHistoryList = familyHistory.map((e, i) => (
-    <Text style={{ margin: 2, marginRight: 168 }} key={i}>{e.name}</Text>
+    <Text style={{ margin: 6 }} key={i}>{e.name}</Text>
   ))
-
 
 
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
@@ -320,7 +317,7 @@ function SettingScreen(props) {
           <Text >Pathologies</Text>
         </View>
         <View style={styles.inputContainer}>
-          <View >
+          <View style={{ flexDirection: "row" }}>
             {illnessesList}
           </View>
           <Button
@@ -335,14 +332,14 @@ function SettingScreen(props) {
           <Text >Antécédents familiaux</Text>
         </View>
         <View style={styles.inputContainer}>
-          <View >
+          <View style={{ flexDirection: "row" }}>
             {familyHistoryList}
           </View>
           <Button
             buttonStyle={{ width: 60, height: 40, backgroundColor: "#5BAA62" }}
             title="Modifier"
             titleStyle={{ fontSize: 11 }}
-          // onPress={() => deconnectAccount()}
+          // onPress={() => deconnectAccount()} 
           />
         </View>
 
@@ -564,3 +561,5 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SettingScreen);
+
+

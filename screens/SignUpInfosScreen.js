@@ -88,7 +88,9 @@ function SignUpInfosScreen(props) {
 
       if (recUser.result === true) {
         props.tokenStore(recUser.saveUser.token);
-        props.navigation.navigate("Dashboard");
+        props.navigation.navigate("BottomNavigator", {
+          screen: "DashboardScreen",
+        });
       }
     }
     if (pwdConfirmed && check === true && check2 === true) {

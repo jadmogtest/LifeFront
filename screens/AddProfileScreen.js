@@ -75,7 +75,7 @@ function AddProfileScreen(props) {
     const [familyHistory, setFamilyHistory] = useState([]);
     const [relationship, SetRelationship] = useState("");
     const [choice, setChoice] = useState("");
-    const [msg, setMsg] = useState("")
+    const [msg, setMsg] = useState([])
 
 
     var handleAddProfile = (
@@ -92,8 +92,8 @@ function AddProfileScreen(props) {
 
     ) => {
         async function addProfile() {
-            let privateIp = "192.168.10.115"; //Remplacer privateIp par la vôtre
-            let rawRecUser = await fetch(`http://${privateIp}:3000/add-profile/${props.token}`, {
+            // let privateIp = "192.168.10.115"; //Remplacer privateIp par la vôtre
+            let rawRecUser = await fetch(`https://life-yourapp.herokuapp.com/add-profile/${props.token}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: `emailFromFront=${email}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}&relationshipFromFront=${relationship}`,
@@ -102,7 +102,9 @@ function AddProfileScreen(props) {
             console.log(recUser)
             if (recUser.user) {
                 // props.navigation.navigate("ProfilScreen");
-                setMsg(`${email} En attente de validation`)
+                // setMsg(`${email} En attente de validation`)
+                setMsg([...msg, `${email} En attente de validation`])
+                setEmail("")
 
 
             }
@@ -113,6 +115,10 @@ function AddProfileScreen(props) {
 
     };
     console.log(firstName)
+
+    let listMsg = msg.map((e, i) => (
+        <Text key={i}>{e}</Text>
+    ))
     return (
         <ScrollView>
             <View style={styles.container}>
@@ -314,7 +320,7 @@ function AddProfileScreen(props) {
                         // props.navigation.navigate("ProfilScreen")
                     }
                 />
-                <Text>{msg}</Text>
+                {listMsg}
             </View>
         </ScrollView>
     );

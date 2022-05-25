@@ -1,5 +1,5 @@
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Animated,
   Modal,
@@ -16,6 +16,8 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { Ionicons } from "@expo/vector-icons";
 
 import { connect } from "react-redux";
+
+var moment = require("moment");
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> COMPOSENT MODAL INFOS ICÔNES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 const ModalDelete = ({ visible, children }) => {
@@ -139,6 +141,50 @@ function SettingScreen(props) {
   //CheckBox
   const [checked, setChecked] = useState(false);
 
+
+  //UseEffect de récupération des données User
+
+  useEffect(() => {
+    async function userData() {
+
+      let brutResponse = await fetch(
+        `https://life-yourapp.herokuapp.com/user/${props.token}`
+      );
+      let jsonResponse = await brutResponse.json();
+      let firstname = jsonResponse.firstname;
+      let lastname = jsonResponse.lastname;
+      let birthdate = new Date(jsonResponse.birthdate);
+      let dateFormated = moment(birthdate).format("DD-MM-YYYY");
+      let sex = jsonResponse.sex;
+      let profession = jsonResponse.profession;
+      let illnesses = jsonResponse.illnesses;
+      let familyHistory = jsonResponse.familyHistory;
+      let mail = jsonResponse.mail;
+
+      setFirstName(firstname);
+      setLastName(lastname);
+      setBirthdate(dateFormated);
+      setSexe(sex);
+      setProfession(profession);
+      setIllnesses(illnesses)
+      setFamilyHistory(familyHistory)
+      setEmail(mail)
+
+    }
+    userData()
+  }, []);
+
+
+  let illnessesList = illnesses.map((e, i) => (
+    <Text style={{ margin: 2, marginRight: 168 }} key={i}>{e.name}</Text>
+  ))
+
+  let familyHistoryList = familyHistory.map((e, i) => (
+    <Text style={{ margin: 2, marginRight: 168 }} key={i}>{e.name}</Text>
+  ))
+
+
+
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   return (
     <ScrollView>
@@ -146,12 +192,18 @@ function SettingScreen(props) {
         <Text
           style={{
             marginTop: 60,
+            marginBottom: 20,
             fontSize: 30,
             color: "#37663B",
           }}
         >
           Vos informations
         </Text>
+
+        <View style={styles.texte}>
+          <Text >Nom</Text>
+        </View>
+
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -160,9 +212,20 @@ function SettingScreen(props) {
             autoCorrect={false}
             underlineColorAndroid="transparent"
             value={lastName}
-            onChangeText={(value) => setLastName(value)}
+          // onChangeText={(value) => setLastName(value)}
+          />
+          <Button
+            buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
+            title="Modifier"
+            titleStyle={{ fontSize: 11 }}
+          // onPress={() => deconnectAccount()}
           />
         </View>
+
+        <View style={styles.texte}>
+          <Text >Prénom</Text>
+        </View>
+
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -173,6 +236,16 @@ function SettingScreen(props) {
             value={firstName}
             onChangeText={(value) => setFirstName(value)}
           />
+          <Button
+            buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
+            title="Modifier"
+            titleStyle={{ fontSize: 11 }}
+          // onPress={() => deconnectAccount()}
+          />
+        </View>
+
+        <View style={styles.texte}>
+          <Text >Date de naissance</Text>
         </View>
         <View style={styles.inputContainer}>
           <TextInput
@@ -185,42 +258,57 @@ function SettingScreen(props) {
             value={birthdate}
             onChangeText={(value) => setBirthdate(new Date(value))}
           />
+          <Button
+            buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
+            title="Modifier"
+            titleStyle={{ fontSize: 11 }}
+          // onPress={() => deconnectAccount()}
+          />
         </View>
 
-        <View>
-          <View style={styles.row}>
-            <Dropdown
-              style={styles.dropDownPicker}
-              placeholder="Sexe"
-              value={value}
-              data={sex}
-              labelField="label"
-              valueField="value"
-              maxHeight={100}
-              setOpen={setOpen}
-              onChangeValue={(value) => {
-                setSexe(value);
-              }}
-            />
-            <Dropdown
-              style={styles.dropDownPicker}
-              placeholder="Catégorie professionnelle"
-              value={value2}
-              data={job}
-              labelField="label"
-              valueField="value"
-              maxHeight={100}
-              setOpen={setOpen2}
-              onChangeValue={(value) => {
-                setProfession(value);
-              }}
-            />
-          </View>
+        <View style={styles.texte}>
+          <Text >Sexe</Text>
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            editable={false}
+            autoCorrect={false}
+            underlineColorAndroid="transparent"
+            value={sexe}
+            onChangeText={(value) => setBirthdate(new Date(value))}
+          />
+          <Button
+            buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
+            title="Modifier"
+            titleStyle={{ fontSize: 11 }}
+          // onPress={() => deconnectAccount()}
+          />
         </View>
 
+        <View style={styles.texte}>
+          <Text >Profession</Text>
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            editable={false}
+            autoCorrect={false}
+            underlineColorAndroid="transparent"
+            value={profession}
+            onChangeText={(value) => setBirthdate(new Date(value))}
+          />
+          <Button
+            buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
+            title="Modifier"
+            titleStyle={{ fontSize: 11 }}
+          // onPress={() => deconnectAccount()}
+          />
+        </View>
         <Text
           style={{
             marginTop: 30,
+            marginBottom: 20,
             fontSize: 15,
             color: "#37663B",
             textAlign: "center",
@@ -228,38 +316,40 @@ function SettingScreen(props) {
         >
           Informations complémentaires de santé
         </Text>
-        <View>
-          <Dropdown
-            style={styles.dropDownPicker}
-            placeholder="Pathologies"
-            value={value3}
-            data={pathos}
-            labelField="label"
-            valueField="value"
-            maxHeight={100}
-            setOpen={setOpen3}
-            onChangeValue={(value) => {
-              setIllnesses(value);
-            }}
-          />
-          <Dropdown
-            style={styles.dropDownPicker}
-            placeholder="Antécédents familiaux"
-            open={open4}
-            value={value4}
-            data={ante}
-            labelField="label"
-            valueField="value"
-            maxHeight={100}
-            setOpen={setOpen4}
-            onChangeValue={(value) => {
-              setFamilyHistory(value);
-            }}
+        <View style={styles.texte}>
+          <Text >Pathologies</Text>
+        </View>
+        <View style={styles.inputContainer}>
+          <View >
+            {illnessesList}
+          </View>
+          <Button
+            buttonStyle={{ width: 60, height: 40, backgroundColor: "#5BAA62" }}
+            title="Modifier"
+            titleStyle={{ fontSize: 11 }}
+          // onPress={() => deconnectAccount()}
           />
         </View>
+
+        <View style={styles.texte}>
+          <Text >Antécédents familiaux</Text>
+        </View>
+        <View style={styles.inputContainer}>
+          <View >
+            {familyHistoryList}
+          </View>
+          <Button
+            buttonStyle={{ width: 60, height: 40, backgroundColor: "#5BAA62" }}
+            title="Modifier"
+            titleStyle={{ fontSize: 11 }}
+          // onPress={() => deconnectAccount()}
+          />
+        </View>
+
         <Text
           style={{
-            marginTop: 30,
+            marginTop: 20,
+            marginBottom: 20,
             fontSize: 15,
             color: "#37663B",
             textAlign: "center",
@@ -267,12 +357,14 @@ function SettingScreen(props) {
         >
           Informations de connexion
         </Text>
+
         <View style={styles.inputContainer}>
           <View>
             <Icon name="mail" color="#5BAA62" size={30} />
           </View>
           <TextInput
             placeholder="Email"
+            editable={false}
             style={styles.input}
             underlineColor="transparent"
             theme={{ colors: { primary: "#5BAA62" } }}
@@ -280,40 +372,19 @@ function SettingScreen(props) {
             onChangeText={(value) => setEmail(value)}
             leftIcon={<Icon name="mail" color="#5BAA62" size={30} />}
           />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <View>
-            <Icon name="key" color="#5BAA62" size={30} />
-          </View>
-          <TextInput
-            placeholder="Mot de passe"
-            style={styles.input}
-            autoCorrect={false}
-            secureTextEntry={passwordVisible}
-            underlineColor="transparent"
-            theme={{ colors: { primary: "#5BAA62" } }}
-            value={password}
-            onChangeText={(value) => setPassword(value)}
-            leftIcon={<Icon name="key" color="#5BAA62" size={30} />}
-            rightIcon={
-              <Icon
-                name={passwordVisible ? "eye" : "eye-off"}
-                color="#5BAA62"
-                size={30}
-                onPress={() => setPasswordVisible(!passwordVisible)}
-              />
-            }
+          <Button
+            buttonStyle={{ width: 60, height: 40, marginLeft: 40, backgroundColor: "#5BAA62" }}
+            title="Modifier"
+            titleStyle={{ fontSize: 11 }}
+          // onPress={() => deconnectAccount()}
           />
-          <View>
-            <Icon
-              name={passwordVisible ? "eye" : "eye-off"}
-              color="#5BAA62"
-              size={30}
-              onPress={() => setPasswordVisible(!passwordVisible)}
-            />
-          </View>
         </View>
+        <Button
+          buttonStyle={styles.deconnectButton}
+          title="Reset password"
+        // onPress={() => deconnectAccount()}
+        />
+
         <Button
           buttonStyle={styles.deconnectButton}
           title="Se Déconnecter"
@@ -429,24 +500,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
   },
   input: {
-    margin: 12,
-    padding: 10,
+    padding: 7,
     borderRadius: 5,
-    width: 190,
-    height: 50,
+    width: 170,
+    height: 40,
   },
   inputContainer: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    alignSelf: "center",
+    alignSelf: "flex-start",
     backgroundColor: "white",
-    marginTop: 20,
-    paddingLeft: 10,
-    paddingRight: 20,
+    marginBottom: 15,
+    marginLeft: 30,
+    paddingLeft: 5,
     borderRadius: 8,
-    height: 50,
-    width: 300,
+    height: 40,
+    width: 250,
   },
   modalBackGround: {
     flex: 1,
@@ -472,6 +542,11 @@ const styles = StyleSheet.create({
   title: {
     justifyContent: "center",
   },
+  texte: {
+
+    width: "80 %"
+
+  }
 });
 function mapDispatchToProps(dispatch) {
   return {
@@ -483,4 +558,9 @@ function mapDispatchToProps(dispatch) {
     },
   };
 }
-export default connect(null, mapDispatchToProps)(SettingScreen);
+
+function mapStateToProps(state) {
+  return { token: state.token };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SettingScreen);

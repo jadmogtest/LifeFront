@@ -932,12 +932,12 @@ function ProfilScreen(props) {
   });
 
   //Fonts
-   let [fontsLoaded] = useFonts({
-     PTSans_400Regular,
-     PTSans_400Regular_Italic,
-     PTSans_700Bold,
-     PTSans_700Bold_Italic,
-   });
+  let [fontsLoaded] = useFonts({
+    PTSans_400Regular,
+    PTSans_400Regular_Italic,
+    PTSans_700Bold,
+    PTSans_700Bold_Italic,
+  });
 
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   if (!fontsLoaded) {

@@ -68,7 +68,7 @@ function DashBoardScreen(props) {
       let privateIp = "192.168.10.115"; //Remplacer privateIp par la vôtre
       console.log('test', props.token)
       let brutResponse = await fetch(
-        `https://life-yourapp.herokuapp.com//user/${props.token}`
+        `https://life-yourapp.herokuapp.com/user/${props.token}`
       );
       let jsonResponse = await brutResponse.json();
       let vaccinesList = jsonResponse.vaccines;

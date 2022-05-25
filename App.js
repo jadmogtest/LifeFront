@@ -41,7 +41,9 @@ import { Provider } from "react-redux";
 /* J'importe le Store */
 import { createStore, combineReducers } from "redux";
 /* Je crée le store */
-const store = createStore(combineReducers({ etab, list, mail, userId, token })); //J'appelle les reducers
+const store = createStore(
+  combineReducers({ etab, list, mail, userId, token })
+); //J'appelle les reducers
 
 // FONCTION TABBAR
 function BottomNavigator() {

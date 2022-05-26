@@ -1,4 +1,4 @@
-// *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< //
 import React, { useState, useEffect } from "react";
 import {
   Animated,
@@ -19,7 +19,7 @@ import { connect } from "react-redux";
 
 var moment = require("moment");
 
-// *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> COMPOSENT MODAL INFOS ICÔNES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> COMPOSENT MODAL INFOS ICÔNES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< //
 const ModalDelete = ({ visible, children }) => {
   const [showModal, setShowModal] = React.useState(visible);
   const scaleValue = React.useRef(new Animated.Value(0)).current;
@@ -59,7 +59,7 @@ const ModalDelete = ({ visible, children }) => {
   );
 };
 
-// *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FONCTION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FONCTION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< //
 function SettingScreen(props) {
   //DropDownPicker Sexe
   const [open, setOpen] = useState(false);
@@ -109,40 +109,6 @@ function SettingScreen(props) {
   const [pwdConfirmed, setPwdConfirmed] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(true);
 
-  var handleSubmitSignUp = (
-    email,
-    password,
-    firstName,
-    lastName,
-    birthdate,
-    sexe,
-    profession,
-    illnesses,
-    familyHistory
-  ) => {
-    async function addUser() {
-      //Remplacer privateIp par la vôtre
-      // let privateIp = "192.168.10.131"
-      // let privateIp = "192.168.1.43"
-      let privateIp = "192.168.10.137"; //Remplacer privateIp par la vôtre
-      let rawRecUser = await fetch(`http://${privateIp}:3000/sign-up`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        // body: `emailFromFront=${email}&passwordFromFront=${password}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}`,
-        body: `emailFromFront=${email}&passwordFromFront=${password}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}`,
-      });
-      var recUser = await rawRecUser.json();
-      // console.log("c'est moi!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", recUser.saveUser.firstname)
-      props.setUserId(recUser.saveUser._id);
-      props.setfirstName(recUser.saveUser.firstname);
-      if (recUser.result === true) {
-        props.tokenStore(recUser.saveUser.token);
-      }
-    }
-    if (pwdConfirmed && check === true && check2 === true) {
-      addUser();
-      props.navigation.navigate("Dashboard");
-    }
   /* Fonctions pour boutons à la fin du formulaire */
   const [logout, setLogout] = useState(false);
   const [sup, setSup] = useState(false);
@@ -180,31 +146,31 @@ function SettingScreen(props) {
   useEffect(() => {
     async function userData() {
 
-      let brutResponse = await fetch(
-        `https://life-yourapp.herokuapp.com/user/${props.token}`
-      );
-      let jsonResponse = await brutResponse.json();
-      let firstname = jsonResponse.firstname;
-      let lastname = jsonResponse.lastname;
-      let birthdate = new Date(jsonResponse.birthdate);
-      let dateFormated = moment(birthdate).format("DD-MM-YYYY");
-      let sex = jsonResponse.sex;
-      let profession = jsonResponse.profession;
-      let illnesses = jsonResponse.illnesses;
-      let familyHistory = jsonResponse.familyHistory;
-      let mail = jsonResponse.mail;
+  let brutResponse = await fetch(
+    `https://life-yourapp.herokuapp.com/user/${props.token}`
+  );
+  let jsonResponse = await brutResponse.json();
+  let firstname = jsonResponse.firstname;
+  let lastname = jsonResponse.lastname;
+  let birthdate = new Date(jsonResponse.birthdate);
+  let dateFormated = moment(birthdate).format("DD-MM-YYYY");
+  let sex = jsonResponse.sex;
+  let profession = jsonResponse.profession;
+  let illnesses = jsonResponse.illnesses;
+  let familyHistory = jsonResponse.familyHistory;
+  let mail = jsonResponse.mail;
 
-      setFirstName(firstname);
-      setLastName(lastname);
-      setBirthdate(dateFormated);
-      setSexe(sex);
-      setProfession(profession);
-      setIllnesses(illnesses)
-      setFamilyHistory(familyHistory)
-      setEmail(mail)
+  setFirstName(firstname);
+  setLastName(lastname);
+  setBirthdate(dateFormated);
+  setSexe(sex);
+  setProfession(profession);
+  setIllnesses(illnesses)
+  setFamilyHistory(familyHistory)
+  setEmail(mail)
 
-    }
-    userData()
+}
+userData()
   }, []);
 
   let illnessesList = illnesses.map((e, i) => (
@@ -215,8 +181,7 @@ function SettingScreen(props) {
     <Text style={{ margin: 6 }} key={i}>{e.name}</Text>
   ))
 
-
-  // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
+  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< //
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -231,108 +196,108 @@ function SettingScreen(props) {
           Vos informations
         </Text>
 
-        <View style={styles.texte}>
-          <Text >Nom</Text>
-        </View>
+    <View style={styles.texte}>
+      <Text >Nom</Text>
+    </View>
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Dupont"
-            editable={false}
-            autoCorrect={false}
-            underlineColorAndroid="transparent"
-            value={lastName}
-          // onChangeText={(value) => setLastName(value)}
-          />
-          <Button
-            buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
-            title="Modifier"
-            titleStyle={{ fontSize: 11 }}
-          // onPress={() => deconnectAccount()}
-          />
-        </View>
+    <View style={styles.inputContainer}>
+      <TextInput
+        style={styles.input}
+        placeholder="Dupont"
+        editable={false}
+        autoCorrect={false}
+        underlineColorAndroid="transparent"
+        value={lastName}
+      // onChangeText={(value) => setLastName(value)}
+      />
+      <Button
+        buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
+        title="Modifier"
+        titleStyle={{ fontSize: 11 }}
+      // onPress={() => deconnectAccount()}
+      />
+    </View>
 
-        <View style={styles.texte}>
-          <Text >Prénom</Text>
-        </View>
+    <View style={styles.texte}>
+      <Text >Prénom</Text>
+    </View>
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Marie"
-            editable={false}
-            autoCorrect={false}
-            underlineColorAndroid="transparent"
-            value={firstName}
-            onChangeText={(value) => setFirstName(value)}
-          />
-          <Button
-            buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
-            title="Modifier"
-            titleStyle={{ fontSize: 11 }}
-          // onPress={() => deconnectAccount()}
-          />
-        </View>
+    <View style={styles.inputContainer}>
+      <TextInput
+        style={styles.input}
+        placeholder="Marie"
+        editable={false}
+        autoCorrect={false}
+        underlineColorAndroid="transparent"
+        value={firstName}
+        onChangeText={(value) => setFirstName(value)}
+      />
+      <Button
+        buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
+        title="Modifier"
+        titleStyle={{ fontSize: 11 }}
+      // onPress={() => deconnectAccount()}
+      />
+    </View>
 
-        <View style={styles.texte}>
-          <Text >Date de naissance</Text>
-        </View>
-        <View style={styles.inputContainer}>
-          <TextInput
-            type="date"
-            style={styles.input}
-            placeholder="12/05/1982"
-            editable={false}
-            autoCorrect={false}
-            underlineColorAndroid="transparent"
-            value={birthdate}
-            onChangeText={(value) => setBirthdate(new Date(value))}
-          />
-          <Button
-            buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
-            title="Modifier"
-            titleStyle={{ fontSize: 11 }}
-          // onPress={() => deconnectAccount()}
-          />
-        </View>
+    <View style={styles.texte}>
+      <Text >Date de naissance</Text>
+    </View>
+    <View style={styles.inputContainer}>
+      <TextInput
+        type="date"
+        style={styles.input}
+        placeholder="12/05/1982"
+        editable={false}
+        autoCorrect={false}
+        underlineColorAndroid="transparent"
+        value={birthdate}
+        onChangeText={(value) => setBirthdate(new Date(value))}
+      />
+      <Button
+        buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
+        title="Modifier"
+        titleStyle={{ fontSize: 11 }}
+      // onPress={() => deconnectAccount()}
+      />
+    </View>
 
-        <View style={styles.texte}>
-          <Text >Sexe</Text>
-        </View>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            editable={false}
-            autoCorrect={false}
-            underlineColorAndroid="transparent"
-            value={sexe}
-            onChangeText={(value) => setBirthdate(new Date(value))}
-          />
-          <Button
-            buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
-            title="Modifier"
-            titleStyle={{ fontSize: 11 }}
-          // onPress={() => deconnectAccount()}
-          />
-        </View>
+    <View style={styles.texte}>
+      <Text >Sexe</Text>
+    </View>
+    <View style={styles.inputContainer}>
+      <TextInput
+        style={styles.input}
+        editable={false}
+        autoCorrect={false}
+        underlineColorAndroid="transparent"
+        value={sexe}
+        onChangeText={(value) => setBirthdate(new Date(value))}
+      />
+      <Button
+        buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
+        title="Modifier"
+        titleStyle={{ fontSize: 11 }}
+      // onPress={() => deconnectAccount()}
+      />
+    </View>
 
-        <View style={styles.texte}>
-          <Text >Profession</Text>
-        </View>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            editable={false}
-            autoCorrect={false}
-            underlineColorAndroid="transparent"
-            value={profession}
-            onChangeText={(value) => setBirthdate(new Date(value))}
-          />
-          <Button
-            buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
-            title="Modifier"
-            titleStyle={{ fontSize: 11 }}
+    <View style={styles.texte}>
+      <Text >Profession</Text>
+    </View>
+    <View style={styles.inputContainer}>
+      <TextInput
+        style={styles.input}
+        editable={false}
+        autoCorrect={false}
+        underlineColorAndroid="transparent"
+        value={profession}
+        onChangeText={(value) => setBirthdate(new Date(value))}
+      />
+      <Button
+        buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
+        title="Modifier"
+        titleStyle={{ fontSize: 11 }}
           // onPress={() => deconnectAccount()}
           />
         </View>
@@ -367,126 +332,126 @@ function SettingScreen(props) {
           <Text >Antécédents familiaux</Text>
         </View>
 
-        <View style={{ display: "flex", flexDirection: "row", marginRight: 23 }}>
-          <View style={styles.inputContainer}>
-            <View style={{ flexDirection: "row" }}>
-              {familyHistoryList}
-            </View>
-          </View>
-          <Button
-            buttonStyle={{ width: 60, height: 40, backgroundColor: "#5BAA62" }}
-            title="Modifier"
-            titleStyle={{ fontSize: 11 }}
-          // onPress={() => deconnectAccount()} 
-          />
+    <View style={{ display: "flex", flexDirection: "row", marginRight: 23 }}>
+      <View style={styles.inputContainer}>
+        <View style={{ flexDirection: "row" }}>
+          {familyHistoryList}
         </View>
-
-        <Text
-          style={{
-            marginTop: 20,
-            marginBottom: 20,
-            fontSize: 15,
-            color: "#37663B",
-            textAlign: "center",
-          }}
-        >
-          Informations de connexion
-        </Text>
-
-        <View style={styles.inputContainer}>
-          <View>
-            <Icon name="mail" color="#5BAA62" size={30} />
-          </View>
-          <TextInput
-            placeholder="Email"
-            editable={false}
-            style={styles.input}
-            underlineColor="transparent"
-            theme={{ colors: { primary: "#5BAA62" } }}
-            value={email}
-            onChangeText={(value) => setEmail(value)}
-            leftIcon={<Icon name="mail" color="#5BAA62" size={30} />}
-          />
-          <Button
-            buttonStyle={{ width: 60, height: 40, marginLeft: 40, backgroundColor: "#5BAA62" }}
-            title="Modifier"
-            titleStyle={{ fontSize: 11 }}
-          // onPress={() => deconnectAccount()}
-          />
-        </View>
-        <Button
-          buttonStyle={styles.deconnectButton}
-          title="Reset password"
-        // onPress={() => deconnectAccount()}
-        />
-
-        <Button
-          buttonStyle={styles.deconnectButton}
-          title="Se Déconnecter"
-          onPress={() => deconnectAccount()}
-        />
-        <Button
-          buttonStyle={styles.deleteButton}
-          title="Supprimer mon compte"
-          onPress={() => deleteButton()}
-        />
       </View>
+      <Button
+        buttonStyle={{ width: 60, height: 40, backgroundColor: "#5BAA62" }}
+        title="Modifier"
+        titleStyle={{ fontSize: 11 }}
+      // onPress={() => deconnectAccount()} 
+      />
+    </View>
 
-      {/*>>>>>>>>>>>>>>>>>>>>> Modal Suppression de compte <<<<<<<<<<<<<<<<<<<<<< */}
-      <ModalDelete visible={modalDeleteVisible}>
-        <View style={{ alignItems: "center" }}>
-          <View style={styles.header}>
-            <TouchableOpacity
-              onPress={() => setModalDeleteVisible(false)}
-            ></TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.title}>
-          <Ionicons
-            name="warning"
-            size={100}
-            color="#FFFFFF"
-            onPress={() => setModalDeleteVisible(true)}
-          />
-        </View>
-        <View style={{ justifyContent: "center", alignItems: "center" }}>
-          <Text
-            style={{
-              marginVertical: 30,
-              fontSize: 17,
-              textAlign: "center",
-              color: "#FFFFFF",
-            }}
-          >
-            Vous êtes sur le point de supprimer votre compte utilisateur. Sa
-            suppression est irréversible et entrainera la suppression de
-            l'intégralité des informations que vous avez saisie.{" "}
-          </Text>
-          <View style={styles.checkboxContainer}>
-            <CheckBox
-              center
-              status={checked ? "checked" : "unchecked"}
-              value={checked}
-              checked={checked}
-              checkedColor="#FFFFFF"
-              onPress={() => {
-                setChecked(!checked);
-              }}
-            />
-            <Text style={styles.textCheckbox}>
-              Je confirme la suppression définitive de mon compte
-            </Text>
-          </View>
-          <Button
-            title="Valider"
-            buttonStyle={styles.buttonModal}
-            onPress={() => deleteAccount()}
-          />
-        </View>
-      </ModalDelete>
-    </ScrollView>
+    <Text
+      style={{
+        marginTop: 20,
+        marginBottom: 20,
+        fontSize: 15,
+        color: "#37663B",
+        textAlign: "center",
+      }}
+    >
+      Informations de connexion
+    </Text>
+
+    <View style={styles.inputContainer}>
+      <View>
+        <Icon name="mail" color="#5BAA62" size={30} />
+      </View>
+      <TextInput
+        placeholder="Email"
+        editable={false}
+        style={styles.input}
+        underlineColor="transparent"
+        theme={{ colors: { primary: "#5BAA62" } }}
+        value={email}
+        onChangeText={(value) => setEmail(value)}
+        leftIcon={<Icon name="mail" color="#5BAA62" size={30} />}
+      />
+      <Button
+        buttonStyle={{ width: 60, height: 40, marginLeft: 40, backgroundColor: "#5BAA62" }}
+        title="Modifier"
+        titleStyle={{ fontSize: 11 }}
+      // onPress={() => deconnectAccount()}
+      />
+    </View>
+    <Button
+      buttonStyle={styles.deconnectButton}
+      title="Reset password"
+    // onPress={() => deconnectAccount()}
+    />
+
+    <Button
+      buttonStyle={styles.deconnectButton}
+      title="Se Déconnecter"
+      onPress={() => deconnectAccount()}
+    />
+    <Button
+      buttonStyle={styles.deleteButton}
+      title="Supprimer mon compte"
+      onPress={() => deleteButton()}
+    />
+  </View>
+
+  {/*>>>>>>>>>>>>>>>>>>>>> Modal Suppression de compte <<<<<<<<<<<<<<<<<<<<<< */}
+  <ModalDelete visible={modalDeleteVisible}>
+    <View style={{ alignItems: "center" }}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => setModalDeleteVisible(false)}
+        ></TouchableOpacity>
+      </View>
+    </View>
+    <View style={styles.title}>
+      <Ionicons
+        name="warning"
+        size={100}
+        color="#FFFFFF"
+        onPress={() => setModalDeleteVisible(true)}
+      />
+    </View>
+    <View style={{ justifyContent: "center", alignItems: "center" }}>
+      <Text
+        style={{
+          marginVertical: 30,
+          fontSize: 17,
+          textAlign: "center",
+          color: "#FFFFFF",
+        }}
+      >
+        Vous êtes sur le point de supprimer votre compte utilisateur. Sa
+        suppression est irréversible et entrainera la suppression de
+        l'intégralité des informations que vous avez saisie.{" "}
+      </Text>
+      <View style={styles.checkboxContainer}>
+        <CheckBox
+          center
+          status={checked ? "checked" : "unchecked"}
+          value={checked}
+          checked={checked}
+          checkedColor="#FFFFFF"
+          onPress={() => {
+            setChecked(!checked);
+          }}
+        />
+        <Text style={styles.textCheckbox}>
+          Je confirme la suppression définitive de mon compte
+        </Text>
+      </View>
+      <Button
+        title="Valider"
+        buttonStyle={styles.buttonModal}
+        onPress={() => deleteAccount()}
+      />
+    </View>
+  </ModalDelete>
+</ScrollView>
   );
-}}
+}
 
 const styles = StyleSheet.create({
   buttonModal: {
@@ -579,8 +544,7 @@ const styles = StyleSheet.create({
   },
   texte: {
 
-    width: "80 %"
-
+width: "80 %"
   }
 });
 function mapDispatchToProps(dispatch) {
@@ -599,5 +563,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SettingScreen);
-
-

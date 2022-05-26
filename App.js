@@ -23,7 +23,7 @@ import LogScreen from "./screens/LogScreen";
 import ProfilScreen from "./screens/ProfilScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import MapScreen from "./screens/MapScreen";
-import FavoriteScreen from "./screens/FavoriteScreen";
+import AddressBookScreen from "./screens/AddressBookScreen";
 import SignUpInfosScreen from "./screens/SignUpInfosScreen";
 import AddProfileScreen from "./screens/AddProfileScreen";
 
@@ -92,7 +92,10 @@ export default function App() {
           />
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
           <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
-          <Stack.Screen name="FavoriteScreen" component={FavoriteScreen} />
+          <Stack.Screen
+            name="AddressBookScreen"
+            component={AddressBookScreen}
+          />
           <Stack.Screen name="AddProfileScreen" component={AddProfileScreen} />
         </Stack.Navigator>
       </NavigationContainer>

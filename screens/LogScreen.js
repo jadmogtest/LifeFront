@@ -43,7 +43,7 @@ function LogScreen(props) {
   //Sign-in
   const signIn = async (mail, password) => {
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
-    let privateIp = "192.168.10.128"; //Remplacer privateIp par la vôtre
+    let privateIp = "192.168.10.137"; //Remplacer privateIp par la vôtre
     const rawResponse = await fetch(`http://${privateIp}:3000/sign-in`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -55,7 +55,7 @@ function LogScreen(props) {
     if (response.result === true) {
       //Si la bdd retrouve le user on se connecte
       setLogin(true);
-      console.log("coucoucoucouc", response);
+      // console.log("coucoucoucouc", response);
       props.tokenStore(response.token);
       props.addMail(mail);
       if (response.token) {

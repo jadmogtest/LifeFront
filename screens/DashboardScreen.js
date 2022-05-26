@@ -60,8 +60,8 @@ function DashBoardScreen(props) {
   //Récupération des vaccins et tests médicaux en BDD
   useEffect(() => {
     async function takeExams() {
-      let privateIp = "192.168.10.128"; //Remplacer privateIp par la vôtre
-      console.log("test", props.token);
+      let privateIp = "192.168.10.137"; //Remplacer privateIp par la vôtre
+      // console.log("test", props.token);
       let brutResponse = await fetch(
         `http://${privateIp}:3000/user/${props.token}`
       );
@@ -127,7 +127,7 @@ function DashBoardScreen(props) {
   //Fonction qui exploite les données API
   async function loadData() {
     var rawResponse = await fetch(
-      "https://data.opendatasoft.com/api/records/1.0/search/?dataset=medecins%40public&q=&rows=150"
+      "https://data.opendatasoft.com/api/records/1.0/search/?dataset=medecins%40public&q=&rows=200"
     );
     var response = await rawResponse.json();
     //Boucle pour poush les données API dans le tableau "temp"
@@ -200,8 +200,8 @@ function DashBoardScreen(props) {
         buttonStyle={styles.bigButton}
         title="Mes lieux de santé"
         onPress={() =>
-          props.navigation.navigate("FavoriteScreen", {
-            screen: "FavoriteScreen",
+          props.navigation.navigate("AddressBookScreen", {
+            screen: "AdressBookScreen",
           })
         }
       />

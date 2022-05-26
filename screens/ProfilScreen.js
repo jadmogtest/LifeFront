@@ -898,7 +898,7 @@ function ProfilScreen(props) {
           ]}
         />
         {/*>>>>>>>>>>>>>>>>>>>>> Vaccins obligatoires <<<<<<<<<<<<<<<<<<<<<< */}
-        <View
+        {<View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
           {/* Affiche ce qui est après le '&&' que si au moins un élément des filtres est égal à Vaccin*/}
@@ -1299,7 +1299,7 @@ function ProfilScreen(props) {
               );
             })}
           </View>
-        </View>
+        </View>}
 
         {/*>>>>>>>>>>>>>>>>>>>>> Modal dateTimePicker <<<<<<<<<<<<<<<<<<<<<< */}
         <View

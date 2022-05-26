@@ -4,7 +4,7 @@ import MapView, { Marker } from "react-native-maps";
 import Icon from "react-native-vector-icons/Entypo";
 import Tab from "../component/Tab";
 import { Button } from "react-native-elements";
-import { SlideModal } from "react-native-slide-modal";
+
 import {
   StyleSheet,
   Text,

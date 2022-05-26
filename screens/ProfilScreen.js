@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import AppLoading from "expo-app-loading";
+import AppLoading from "expo-app-loading"; //npm i expo-app-loading
 import { Button, Text } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker"; //npm install react-native-dropdown-picker
 import { AntDesign, Entypo, Ionicons } from "@expo/vector-icons";
@@ -26,7 +26,7 @@ import {
   PTSans_400Regular_Italic,
   PTSans_700Bold,
   PTSans_700Bold_Italic,
-} from "@expo-google-fonts/pt-sans";
+} from "@expo-google-fonts/pt-sans"; //@expo-google-fonts/pt-sans
 
 //* Connexion avec redux : npm install --save redux react-redux */
 import { connect } from "react-redux";
@@ -113,6 +113,31 @@ const ModalDefinitions = ({ visible, children }) => {
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FONCTION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 function ProfilScreen(props) {
+  // *>>>>>>>>>>>>>> FUSION BACK ET FRONT <<<<<<<<<<<<<<<<* //
+  const [vaccines, setVaccines] = useState([]);
+  const [medicalTests, setMedicalTests] = useState([]);
+  const [userFamily, setUserFamily] = useState([]);
+  const [firstnameUser, setFirstnameUser] = useState("");
+  useEffect(() => {
+    async function fetchUserInfo() {
+      // console.log('test', props.token)
+      let brutResponse = await fetch(
+        `http://192.168.10.117:3000/profil/${props.token}` //Récupération du token depuis le reducer pour l'envoyer au back, on respecter structure url
+      );
+      let jsonResponse = await brutResponse.json(); //Transforme réponse en format json
+      // console.log("coucou", jsonResponse);
+      setVaccines(jsonResponse.user.vaccines);
+      setMedicalTests(jsonResponse.user.medicalTests);
+      // console.log("profil", jsonResponse.userFamily);
+      setUserFamily(jsonResponse.userFamily.family); //Récuper les proches du user principal
+      setFirstnameUser(jsonResponse.user.firstname); //Récuper le prénom du user principal
+      console.log("jsonResponse.user.firstname", jsonResponse.user.firstname);
+      console.log("jsonResponse.user", jsonResponse.user);
+    }
+    fetchUserInfo(); //Premier argument du useEffect
+    // setTimeout(itemSetter(), 5000);
+  }, []);
+
   //Dropdown list filtre
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([
@@ -120,15 +145,13 @@ function ProfilScreen(props) {
     "Vaccin",
     "Obligatoire",
     "Recommandé",
+    "Personnel",
   ]);
 
   const [items, setItems] = useState([
     //Profil
-    { label: "Profil", value: "Profil", disabled: true }, //disabled: true => le user ne peux pas le sélectionner
-    { label: "Claire", value: "Claire", parent: "Profil" },
-    { label: "Mandy", value: "Mandy", parent: "Profil" },
-    { label: "Jad", value: "Jad", parent: "Profil" },
-    { label: "Nicolas", value: "Nicolas", parent: "Profil" },
+    // { label: "Profil", value: "Profil", disabled: true }, //disabled: true => le user ne peux pas le sélectionner
+    // { label: "Claire", value: "Claire", parent: "Profil" },
 
     //Catégorie
     { label: "Catégorie", value: "Catégorie", disabled: true },
@@ -161,126 +184,127 @@ function ProfilScreen(props) {
   let names = ["Claire", "Mandy", "Nicolas", "Jad"];
   let tempArray = items;
   const [tempState, setTempState] = useState({});
+  const [exams, setExams] = useState({});
 
   //Tableau des données des vaccins
-  const [vaccines, setVaccines] = useState([
-    //Vaccins obligatoires
-    {
-      id: 1,
-      name: "Diphtérie",
-      status: "Obligatoire",
-      description:
-        "La vaccination antidiphtérique est le seul moyen de contrôler cette infection grave. Le vaccin est composé de la toxine diphtérique purifiée et inactivée. La vaccination est obligatoire pour tous les enfants et les professionnels de santé. La primo-vaccination est maintenant obligatoire chez l’enfant à 2 et 4 mois. Le premier rappel se fait à l’âge de 11 mois et les autres rappels se font à 6 ans, 11/13 ans, 25 ans, 45 ans, 65 ans et puis tous les 10 ans. Les études de séroprévalence montrent qu’une haute proportion de sujets âgés de 50 ans et plus en France ont un titre d’anticorps non détectable ou inférieur au seuil considéré comme protecteur. Ces données soulignent l’importance de suivre les recommandations vaccinales, notamment les rappels tous les 10 ans chez les adultes âgés de plus de 65 ans.",
-      date: Date.now(),
-    },
-    {
-      id: 2,
-      name: "Rougeole",
-      status: "Obligatoire",
-      description:
-        "Tous les enfants et adultes jeunes doivent être vaccinés contre la rougeole. C’est une vaccination très efficace qui protège de la maladie dans près de 100% des cas après 2 doses de vaccin. La généralisation de la vaccination contre la rougeole a pour objectif l’élimination de la maladie. Celle-ci est possible si 95% des enfants se font vacciner avec 2 doses. Le taux de couverture vaccinale reste insuffisant en France chez les 15-35 ans et chez les nourrissons, ce qui explique que le virus continue à circuler dans le pays.",
-      date: Date.now(),
-    },
-    {
-      id: 3,
-      name: "Tétanos",
-      status: "Obligatoire",
-      description:
-        "N’importe qui peut contracter un tétanos ; tout le monde est donc concerné par cette vaccination tout au long de la vie. Cette maladie n’étant pas contagieuse, la protection par la vaccination est individuelle et dure au moins vingt ans jusqu’à 65 ans, moins longtemps au-delà. Il est donc indispensable de faire des injections de rappel tout au long de la vie (même si le vaccin n’est obligatoire que pour les nourrissons). La maladie n’est pas immunisante c'est-à-dire que le fait de l’avoir eue ne permet pas au système immunitaire de développer des anticorps garantissant une protection contre cette maladie si le corps y était à nouveau exposé. La protection n’est réalisée que par la vaccination. Le vaccin a également un intérêt en présence d’une blessure à haut risque de tétanos : chez les personnes non à jour de leur vaccination, une injection de vaccin et parfois d’immunoglobulines peuvent être réalisées. Les personnes les moins bien vaccinées en France contre le tétanos sont les personnes âgées (en particulier les femmes qui ont moins bénéficié dans leur vie adulte de rappels, ne serait-ce qu’à l’occasion du service militaire) alors que les activités de jardinage sont très fréquentes dans cette population.",
-      date: Date.now(),
-    },
-    //Vaccins recommandés
-    {
-      id: 4,
-      name: "COVID-19 1re D",
-      status: "Recommandé",
-      description:
-        "En France, la vaccination contre la Covid-19 est recommandée pour tous à partir de 5 ans avec 2 doses. Un rappel vaccinal est ensuite recommandé pour toutes les personnes de 12 ans et plus. La vaccination est obligatoire pour les personnes travaillant dans les secteurs sanitaire, social et médico-social avec, depuis le 30 janvier 2022, un rappel exigé. Depuis le 14 mars 2022, il est recommandé aux personnes de 80 ans et plus, aux résidents des EHPAD et USLD et aux personnes immunodéprimées d'effectuer un deuxième rappel (4e dose le plus souvent). Celle-ci peut être faite dès 3 mois après la première dose de rappel ou une infection à la Covid-19. Depuis le 7 avril 2022, les personnes de 60 à 79 ans peuvent recevoir une seconde dose de rappel à partir de 6 mois après le dernier rappel ou une infection à la Covid-19. En France, près de 155 millions d’injections de vaccins ont été réalisées au total au 5 avril 2022 depuis le début de la campagne et actuellement aucun des effets indésirables ne remettent en cause le rapport bénéfice risque des vaccins utilisés. Le variant Omicron est retrouvé dans près de 100% des cas en France. Avec le variant Omicron, les vaccins existants restent efficaces sur les formes graves à condition que la vaccination soit complète avec un rappel. Le ministère de la santé a de nouveau souligné l’importance de la vaccination des femmes enceintes, qui, non-vaccinées, sont particulièrement à risque en cas de Covid-19, les risques concernant à la fois les femmes elles-mêmes et leurs nouveau-nés. De nouvelles études confirment que la vaccination des femmes enceintes est sûre et efficace pour les protéger, elles et leur bébé.",
-      date: Date.now(),
-    },
-    {
-      id: 5,
-      name: "COVID-19 2e D",
-      status: "Recommandé",
-      description:
-        "En France, la vaccination contre la Covid-19 est recommandée pour tous à partir de 5 ans avec 2 doses. Un rappel vaccinal est ensuite recommandé pour toutes les personnes de 12 ans et plus. La vaccination est obligatoire pour les personnes travaillant dans les secteurs sanitaire, social et médico-social avec, depuis le 30 janvier 2022, un rappel exigé. Depuis le 14 mars 2022, il est recommandé aux personnes de 80 ans et plus, aux résidents des EHPAD et USLD et aux personnes immunodéprimées d'effectuer un deuxième rappel (4e dose le plus souvent). Celle-ci peut être faite dès 3 mois après la première dose de rappel ou une infection à la Covid-19. Depuis le 7 avril 2022, les personnes de 60 à 79 ans peuvent recevoir une seconde dose de rappel à partir de 6 mois après le dernier rappel ou une infection à la Covid-19. En France, près de 155 millions d’injections de vaccins ont été réalisées au total au 5 avril 2022 depuis le début de la campagne et actuellement aucun des effets indésirables ne remettent en cause le rapport bénéfice risque des vaccins utilisés. Le variant Omicron est retrouvé dans près de 100% des cas en France. Avec le variant Omicron, les vaccins existants restent efficaces sur les formes graves à condition que la vaccination soit complète avec un rappel. Le ministère de la santé a de nouveau souligné l’importance de la vaccination des femmes enceintes, qui, non-vaccinées, sont particulièrement à risque en cas de Covid-19, les risques concernant à la fois les femmes elles-mêmes et leurs nouveau-nés. De nouvelles études confirment que la vaccination des femmes enceintes est sûre et efficace pour les protéger, elles et leur bébé.",
-      date: Date.now(),
-    },
-    {
-      id: 6,
-      name: "COVID-19 3e D",
-      status: "Recommandé",
-      description:
-        "En France, la vaccination contre la Covid-19 est recommandée pour tous à partir de 5 ans avec 2 doses. Un rappel vaccinal est ensuite recommandé pour toutes les personnes de 12 ans et plus. La vaccination est obligatoire pour les personnes travaillant dans les secteurs sanitaire, social et médico-social avec, depuis le 30 janvier 2022, un rappel exigé. Depuis le 14 mars 2022, il est recommandé aux personnes de 80 ans et plus, aux résidents des EHPAD et USLD et aux personnes immunodéprimées d'effectuer un deuxième rappel (4e dose le plus souvent). Celle-ci peut être faite dès 3 mois après la première dose de rappel ou une infection à la Covid-19. Depuis le 7 avril 2022, les personnes de 60 à 79 ans peuvent recevoir une seconde dose de rappel à partir de 6 mois après le dernier rappel ou une infection à la Covid-19. En France, près de 155 millions d’injections de vaccins ont été réalisées au total au 5 avril 2022 depuis le début de la campagne et actuellement aucun des effets indésirables ne remettent en cause le rapport bénéfice risque des vaccins utilisés. Le variant Omicron est retrouvé dans près de 100% des cas en France. Avec le variant Omicron, les vaccins existants restent efficaces sur les formes graves à condition que la vaccination soit complète avec un rappel. Le ministère de la santé a de nouveau souligné l’importance de la vaccination des femmes enceintes, qui, non-vaccinées, sont particulièrement à risque en cas de Covid-19, les risques concernant à la fois les femmes elles-mêmes et leurs nouveau-nés. De nouvelles études confirment que la vaccination des femmes enceintes est sûre et efficace pour les protéger, elles et leur bébé.",
-      date: Date.now(),
-    },
-    {
-      id: 7,
-      name: "COVID-19 4e D",
-      status: "Recommandé",
-      description:
-        "En France, la vaccination contre la Covid-19 est recommandée pour tous à partir de 5 ans avec 2 doses. Un rappel vaccinal est ensuite recommandé pour toutes les personnes de 12 ans et plus. La vaccination est obligatoire pour les personnes travaillant dans les secteurs sanitaire, social et médico-social avec, depuis le 30 janvier 2022, un rappel exigé. Depuis le 14 mars 2022, il est recommandé aux personnes de 80 ans et plus, aux résidents des EHPAD et USLD et aux personnes immunodéprimées d'effectuer un deuxième rappel (4e dose le plus souvent). Celle-ci peut être faite dès 3 mois après la première dose de rappel ou une infection à la Covid-19. Depuis le 7 avril 2022, les personnes de 60 à 79 ans peuvent recevoir une seconde dose de rappel à partir de 6 mois après le dernier rappel ou une infection à la Covid-19. En France, près de 155 millions d’injections de vaccins ont été réalisées au total au 5 avril 2022 depuis le début de la campagne et actuellement aucun des effets indésirables ne remettent en cause le rapport bénéfice risque des vaccins utilisés. Le variant Omicron est retrouvé dans près de 100% des cas en France. Avec le variant Omicron, les vaccins existants restent efficaces sur les formes graves à condition que la vaccination soit complète avec un rappel. Le ministère de la santé a de nouveau souligné l’importance de la vaccination des femmes enceintes, qui, non-vaccinées, sont particulièrement à risque en cas de Covid-19, les risques concernant à la fois les femmes elles-mêmes et leurs nouveau-nés. De nouvelles études confirment que la vaccination des femmes enceintes est sûre et efficace pour les protéger, elles et leur bébé.",
-      date: Date.now(),
-    },
-    {
-      id: 8,
-      name: "Hépatite B",
-      status: "Recommandé",
-      description:
-        "La vaccination permet de se protéger très efficacement de cette infection et de diminuer la transmission. La vaccination contre l’hépatite B est obligatoire, en France, pour tous les nourrissons nés à partir du 1er janvier 2018, et recommandée chez les enfants et les adolescents jusqu’à l’âge de 15 ans : les vacciner quand ils sont petits, c’est les protéger pour plus tard lorsqu’ils rencontreront le virus. Comparée à la plupart des pays d’Afrique ou d’Asie, la France est un pays de faible incidence de l'hépatite B par an et le risque d’infection est très faible durant l’enfance. Ce sont les adolescents et surtout les jeunes adultes qui sont les plus exposés au risque d’acquisition du virus de l’hépatite B (relations sexuelles avec partenaires multiples, usage de drogues par voie intraveineuse, voyage dans les pays à risque, professions exposées au sang, etc.) Il est important de veiller à ce que les enfants soient vaccinés avant l’âge d’apparition du risque, c’est-à-dire avant 16 ans.",
-      date: Date.now(),
-    },
-  ]);
+  // const [vaccines, setVaccines] = useState([
+  //   //Vaccins obligatoires
+  //   {
+  //     id: 1,
+  //     name: "Diphtérie",
+  //     status: "Obligatoire",
+  //     description:
+  //       "La vaccination antidiphtérique est le seul moyen de contrôler cette infection grave. Le vaccin est composé de la toxine diphtérique purifiée et inactivée. La vaccination est obligatoire pour tous les enfants et les professionnels de santé. La primo-vaccination est maintenant obligatoire chez l’enfant à 2 et 4 mois. Le premier rappel se fait à l’âge de 11 mois et les autres rappels se font à 6 ans, 11/13 ans, 25 ans, 45 ans, 65 ans et puis tous les 10 ans. Les études de séroprévalence montrent qu’une haute proportion de sujets âgés de 50 ans et plus en France ont un titre d’anticorps non détectable ou inférieur au seuil considéré comme protecteur. Ces données soulignent l’importance de suivre les recommandations vaccinales, notamment les rappels tous les 10 ans chez les adultes âgés de plus de 65 ans.",
+  //     date: Date.now(),
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Rougeole",
+  //     status: "Obligatoire",
+  //     description:
+  //       "Tous les enfants et adultes jeunes doivent être vaccinés contre la rougeole. C’est une vaccination très efficace qui protège de la maladie dans près de 100% des cas après 2 doses de vaccin. La généralisation de la vaccination contre la rougeole a pour objectif l’élimination de la maladie. Celle-ci est possible si 95% des enfants se font vacciner avec 2 doses. Le taux de couverture vaccinale reste insuffisant en France chez les 15-35 ans et chez les nourrissons, ce qui explique que le virus continue à circuler dans le pays.",
+  //     date: Date.now(),
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Tétanos",
+  //     status: "Obligatoire",
+  //     description:
+  //       "N’importe qui peut contracter un tétanos ; tout le monde est donc concerné par cette vaccination tout au long de la vie. Cette maladie n’étant pas contagieuse, la protection par la vaccination est individuelle et dure au moins vingt ans jusqu’à 65 ans, moins longtemps au-delà. Il est donc indispensable de faire des injections de rappel tout au long de la vie (même si le vaccin n’est obligatoire que pour les nourrissons). La maladie n’est pas immunisante c'est-à-dire que le fait de l’avoir eue ne permet pas au système immunitaire de développer des anticorps garantissant une protection contre cette maladie si le corps y était à nouveau exposé. La protection n’est réalisée que par la vaccination. Le vaccin a également un intérêt en présence d’une blessure à haut risque de tétanos : chez les personnes non à jour de leur vaccination, une injection de vaccin et parfois d’immunoglobulines peuvent être réalisées. Les personnes les moins bien vaccinées en France contre le tétanos sont les personnes âgées (en particulier les femmes qui ont moins bénéficié dans leur vie adulte de rappels, ne serait-ce qu’à l’occasion du service militaire) alors que les activités de jardinage sont très fréquentes dans cette population.",
+  //     date: Date.now(),
+  //   },
+  //   //Vaccins recommandés
+  //   {
+  //     id: 4,
+  //     name: "COVID-19 1re D",
+  //     status: "Recommandé",
+  //     description:
+  //       "En France, la vaccination contre la Covid-19 est recommandée pour tous à partir de 5 ans avec 2 doses. Un rappel vaccinal est ensuite recommandé pour toutes les personnes de 12 ans et plus. La vaccination est obligatoire pour les personnes travaillant dans les secteurs sanitaire, social et médico-social avec, depuis le 30 janvier 2022, un rappel exigé. Depuis le 14 mars 2022, il est recommandé aux personnes de 80 ans et plus, aux résidents des EHPAD et USLD et aux personnes immunodéprimées d'effectuer un deuxième rappel (4e dose le plus souvent). Celle-ci peut être faite dès 3 mois après la première dose de rappel ou une infection à la Covid-19. Depuis le 7 avril 2022, les personnes de 60 à 79 ans peuvent recevoir une seconde dose de rappel à partir de 6 mois après le dernier rappel ou une infection à la Covid-19. En France, près de 155 millions d’injections de vaccins ont été réalisées au total au 5 avril 2022 depuis le début de la campagne et actuellement aucun des effets indésirables ne remettent en cause le rapport bénéfice risque des vaccins utilisés. Le variant Omicron est retrouvé dans près de 100% des cas en France. Avec le variant Omicron, les vaccins existants restent efficaces sur les formes graves à condition que la vaccination soit complète avec un rappel. Le ministère de la santé a de nouveau souligné l’importance de la vaccination des femmes enceintes, qui, non-vaccinées, sont particulièrement à risque en cas de Covid-19, les risques concernant à la fois les femmes elles-mêmes et leurs nouveau-nés. De nouvelles études confirment que la vaccination des femmes enceintes est sûre et efficace pour les protéger, elles et leur bébé.",
+  //     date: Date.now(),
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "COVID-19 2e D",
+  //     status: "Recommandé",
+  //     description:
+  //       "En France, la vaccination contre la Covid-19 est recommandée pour tous à partir de 5 ans avec 2 doses. Un rappel vaccinal est ensuite recommandé pour toutes les personnes de 12 ans et plus. La vaccination est obligatoire pour les personnes travaillant dans les secteurs sanitaire, social et médico-social avec, depuis le 30 janvier 2022, un rappel exigé. Depuis le 14 mars 2022, il est recommandé aux personnes de 80 ans et plus, aux résidents des EHPAD et USLD et aux personnes immunodéprimées d'effectuer un deuxième rappel (4e dose le plus souvent). Celle-ci peut être faite dès 3 mois après la première dose de rappel ou une infection à la Covid-19. Depuis le 7 avril 2022, les personnes de 60 à 79 ans peuvent recevoir une seconde dose de rappel à partir de 6 mois après le dernier rappel ou une infection à la Covid-19. En France, près de 155 millions d’injections de vaccins ont été réalisées au total au 5 avril 2022 depuis le début de la campagne et actuellement aucun des effets indésirables ne remettent en cause le rapport bénéfice risque des vaccins utilisés. Le variant Omicron est retrouvé dans près de 100% des cas en France. Avec le variant Omicron, les vaccins existants restent efficaces sur les formes graves à condition que la vaccination soit complète avec un rappel. Le ministère de la santé a de nouveau souligné l’importance de la vaccination des femmes enceintes, qui, non-vaccinées, sont particulièrement à risque en cas de Covid-19, les risques concernant à la fois les femmes elles-mêmes et leurs nouveau-nés. De nouvelles études confirment que la vaccination des femmes enceintes est sûre et efficace pour les protéger, elles et leur bébé.",
+  //     date: Date.now(),
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "COVID-19 3e D",
+  //     status: "Recommandé",
+  //     description:
+  //       "En France, la vaccination contre la Covid-19 est recommandée pour tous à partir de 5 ans avec 2 doses. Un rappel vaccinal est ensuite recommandé pour toutes les personnes de 12 ans et plus. La vaccination est obligatoire pour les personnes travaillant dans les secteurs sanitaire, social et médico-social avec, depuis le 30 janvier 2022, un rappel exigé. Depuis le 14 mars 2022, il est recommandé aux personnes de 80 ans et plus, aux résidents des EHPAD et USLD et aux personnes immunodéprimées d'effectuer un deuxième rappel (4e dose le plus souvent). Celle-ci peut être faite dès 3 mois après la première dose de rappel ou une infection à la Covid-19. Depuis le 7 avril 2022, les personnes de 60 à 79 ans peuvent recevoir une seconde dose de rappel à partir de 6 mois après le dernier rappel ou une infection à la Covid-19. En France, près de 155 millions d’injections de vaccins ont été réalisées au total au 5 avril 2022 depuis le début de la campagne et actuellement aucun des effets indésirables ne remettent en cause le rapport bénéfice risque des vaccins utilisés. Le variant Omicron est retrouvé dans près de 100% des cas en France. Avec le variant Omicron, les vaccins existants restent efficaces sur les formes graves à condition que la vaccination soit complète avec un rappel. Le ministère de la santé a de nouveau souligné l’importance de la vaccination des femmes enceintes, qui, non-vaccinées, sont particulièrement à risque en cas de Covid-19, les risques concernant à la fois les femmes elles-mêmes et leurs nouveau-nés. De nouvelles études confirment que la vaccination des femmes enceintes est sûre et efficace pour les protéger, elles et leur bébé.",
+  //     date: Date.now(),
+  //   },
+  //   {
+  //     id: 7,
+  //     name: "COVID-19 4e D",
+  //     status: "Recommandé",
+  //     description:
+  //       "En France, la vaccination contre la Covid-19 est recommandée pour tous à partir de 5 ans avec 2 doses. Un rappel vaccinal est ensuite recommandé pour toutes les personnes de 12 ans et plus. La vaccination est obligatoire pour les personnes travaillant dans les secteurs sanitaire, social et médico-social avec, depuis le 30 janvier 2022, un rappel exigé. Depuis le 14 mars 2022, il est recommandé aux personnes de 80 ans et plus, aux résidents des EHPAD et USLD et aux personnes immunodéprimées d'effectuer un deuxième rappel (4e dose le plus souvent). Celle-ci peut être faite dès 3 mois après la première dose de rappel ou une infection à la Covid-19. Depuis le 7 avril 2022, les personnes de 60 à 79 ans peuvent recevoir une seconde dose de rappel à partir de 6 mois après le dernier rappel ou une infection à la Covid-19. En France, près de 155 millions d’injections de vaccins ont été réalisées au total au 5 avril 2022 depuis le début de la campagne et actuellement aucun des effets indésirables ne remettent en cause le rapport bénéfice risque des vaccins utilisés. Le variant Omicron est retrouvé dans près de 100% des cas en France. Avec le variant Omicron, les vaccins existants restent efficaces sur les formes graves à condition que la vaccination soit complète avec un rappel. Le ministère de la santé a de nouveau souligné l’importance de la vaccination des femmes enceintes, qui, non-vaccinées, sont particulièrement à risque en cas de Covid-19, les risques concernant à la fois les femmes elles-mêmes et leurs nouveau-nés. De nouvelles études confirment que la vaccination des femmes enceintes est sûre et efficace pour les protéger, elles et leur bébé.",
+  //     date: Date.now(),
+  //   },
+  //   {
+  //     id: 8,
+  //     name: "Hépatite B",
+  //     status: "Recommandé",
+  //     description:
+  //       "La vaccination permet de se protéger très efficacement de cette infection et de diminuer la transmission. La vaccination contre l’hépatite B est obligatoire, en France, pour tous les nourrissons nés à partir du 1er janvier 2018, et recommandée chez les enfants et les adolescents jusqu’à l’âge de 15 ans : les vacciner quand ils sont petits, c’est les protéger pour plus tard lorsqu’ils rencontreront le virus. Comparée à la plupart des pays d’Afrique ou d’Asie, la France est un pays de faible incidence de l'hépatite B par an et le risque d’infection est très faible durant l’enfance. Ce sont les adolescents et surtout les jeunes adultes qui sont les plus exposés au risque d’acquisition du virus de l’hépatite B (relations sexuelles avec partenaires multiples, usage de drogues par voie intraveineuse, voyage dans les pays à risque, professions exposées au sang, etc.) Il est important de veiller à ce que les enfants soient vaccinés avant l’âge d’apparition du risque, c’est-à-dire avant 16 ans.",
+  //     date: Date.now(),
+  //   },
+  // ]);
 
-  //Tableau des données des examens
-  const [exams, setExams] = useState([
-    //Examens obligatoires
-    {
-      id: 1,
-      name: "Suivi médical 1",
-      status: "Obligatoire",
-      description: "",
-      date: Date.now(),
-    },
-    {
-      id: 2,
-      name: "Suivi médical 2",
-      status: "Obligatoire",
-      description: "",
-      date: Date.now(),
-    },
-    {
-      id: 3,
-      name: "Suivi médical 3",
-      status: "Obligatoire",
-      description: "",
-      date: Date.now(),
-    },
-    {
-      id: 4,
-      name: "Suivi médical 4",
-      status: "Obligatoire",
-      description: "",
-      date: Date.now(),
-    },
-    //Examens recommandés
-    {
-      id: 5,
-      name: "Bilan sanguin",
-      status: "Recommandé",
-      description:
-        "Un bilan sanguin regroupe un ensemble d’analyses réalisées à partir d’un prélèvement sanguin. Les paramètres à étudier sont sélectionnés par le médecin en fonction du diagnostic envisagé ou des organes suspectés. Un bilan sanguin permet de mesurer, selon les besoins, la concentration sanguine de divers éléments, tels que les globules rouges ou blancs, certaines hormones, des protéines, un agent infectieux, etc.",
-      date: Date.now(),
-    },
-    {
-      id: 6,
-      name: "ECBU",
-      status: "Recommandé",
-      description:
-        "L'ECBU, examen cytobactériologique des urines (ou cytologie urinaire), est notamment pratiqué lorsqu'une infection urinaire est suspectée. Il consiste à recueillir et à analyser les urines, pour détecter une concentration anormalement élevée de leucocytes, signe d'une infection. De nombreuses substances peuvent être analysées et détectées dans les urines. Les analyses d'urines permettent d'aider au diagnostic de certaines pathologies, mais aussi de mieux définir leur traitement. Mais elles permettent aussi de savoir si une femme est enceinte par exemple.",
-      date: Date.now(),
-    },
-  ]);
+  // //Tableau des données des examens
+  // const [exams, setExams] = useState([
+  //   //Examens obligatoires
+  //   {
+  //     id: 1,
+  //     name: "Suivi médical 1",
+  //     status: "Obligatoire",
+  //     description: "",
+  //     date: Date.now(),
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Suivi médical 2",
+  //     status: "Obligatoire",
+  //     description: "",
+  //     date: Date.now(),
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Suivi médical 3",
+  //     status: "Obligatoire",
+  //     description: "",
+  //     date: Date.now(),
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Suivi médical 4",
+  //     status: "Obligatoire",
+  //     description: "",
+  //     date: Date.now(),
+  //   },
+  //   //Examens recommandés
+  //   {
+  //     id: 5,
+  //     name: "Bilan sanguin",
+  //     status: "Recommandé",
+  //     description:
+  //       "Un bilan sanguin regroupe un ensemble d’analyses réalisées à partir d’un prélèvement sanguin. Les paramètres à étudier sont sélectionnés par le médecin en fonction du diagnostic envisagé ou des organes suspectés. Un bilan sanguin permet de mesurer, selon les besoins, la concentration sanguine de divers éléments, tels que les globules rouges ou blancs, certaines hormones, des protéines, un agent infectieux, etc.",
+  //     date: Date.now(),
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "ECBU",
+  //     status: "Recommandé",
+  //     description:
+  //       "L'ECBU, examen cytobactériologique des urines (ou cytologie urinaire), est notamment pratiqué lorsqu'une infection urinaire est suspectée. Il consiste à recueillir et à analyser les urines, pour détecter une concentration anormalement élevée de leucocytes, signe d'une infection. De nombreuses substances peuvent être analysées et détectées dans les urines. Les analyses d'urines permettent d'aider au diagnostic de certaines pathologies, mais aussi de mieux définir leur traitement. Mais elles permettent aussi de savoir si une femme est enceinte par exemple.",
+  //     date: Date.now(),
+  //   },
+  // ]);
 
   /* DropDownPicker État */
   // 5 ouvertures individuelles pour les 6 dropdown
@@ -467,8 +491,8 @@ function ProfilScreen(props) {
   //Pour le datePicker des examens obligatoires et recommandés
   const changeStateExams = () => {
     // console.log(tempState.date);
-    let examsCopy = [...exams];
-    let index = examsCopy.findIndex((exam) => {
+    let medicalTestsCopy = [...medicalTests];
+    let index = medicalTestsCopy.findIndex((exam) => {
       if (exam.id === tempState.id) {
         return true;
       } else {
@@ -476,9 +500,9 @@ function ProfilScreen(props) {
       }
     });
     // console.log(index);
-    examsCopy[index].date = tempState.date;
+    medicalTestsCopy[index].date = tempState.date;
     setTempState({});
-    setExams(examsCopy);
+    setExams(medicalTestsCopy);
     setModalDate(false);
   };
 
@@ -514,14 +538,26 @@ function ProfilScreen(props) {
 
   //liste dynamique filtre profils
   const itemSetter = () => {
-    for (let i = 0; i < names.length; i++) {
+    console.log("hello", userFamily);
+    for (let i = 0; i < userFamily.length; i++) {
       tempArray.unshift({
-        label: names[i],
-        value: names[i],
+        label: userFamily[i].firstname,
+        value: userFamily[i].firstname,
         parent: "Profil",
       });
+      // console.log("tempArray1", tempArray);
+      // console.log("userFamily[i].firstname", userFamily[i].firstname);
     }
-    tempArray.unshift({ label: "Profil", value: "Profil" });
+    tempArray.unshift({
+      label: firstnameUser,
+      value: firstnameUser,
+      parent: "Profil",
+    });
+    console.log("firstnameUser", firstnameUser);
+    tempArray.unshift({ label: "Profil", value: "Profil", disabled: true });
+
+    // console.log("tempArray2", tempArray);
+
     setItems(tempArray);
   };
 
@@ -545,8 +581,10 @@ function ProfilScreen(props) {
   }, [value]);
 
   useEffect(() => {
-    itemSetter();
-  }, [items]);
+    if (userFamily && firstnameUser) {
+      itemSetter();
+    }
+  }, [userFamily, firstnameUser]); //Permet affichage des nom user et family dans le filtre
 
   /* >>>>>>>>>> Ajout d'une ligne de vaccin au clic sur l'icône + <<<<<<<<<<<<<< */
   const [healthCare, setHealthCare] = useState([]); //Pour garder afficher les vaccins déja ajoutés lorsque le user reclic sur l'icône +
@@ -672,73 +710,86 @@ function ProfilScreen(props) {
   var healthCarePerso = healthCare.map((e, index) => {
     return (
       // Pour supprimer une ligne de soin quand on clique sur la ligne onPress={() => props.deleteHealthCare(element)}
-      <View
-        style={{
-          flexDirection: "row",
-          minWidth: 360,
-          backgroundColor: "white",
-        }}
-        key={e}
-      >
-        <Dropdown
-          style={styles.dropDownPickerVaccines}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          value={e.name}
-          search //Permet au user de chercher le nom du vaccin sans avoir besoin de scroller sur la liste de nom proposée
-          placeholder="Je choisis"
-          labelField="label"
-          valueField="value"
-          items={vaccinesName}
-          multiple={false} //Permet de sélectionner une seule option
-          onChange={(item) => {
-            healthCareName(item, index); //Pour mettre à jour le nom du soin
-          }}
-        />
-        <Dropdown
-          style={styles.dropDownPickerState}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          value={e.status}
-          placeholder="À renseigner"
-          labelField="label"
-          valueField="value"
-          maxHeight={165}
-          data={state5}
-          multiple={false} //Permet de sélectionner une seule option
-          onChange={(item) => {
-            healthCareStatus(item, index); //Pour mettre à jour le status du soin
-          }}
-        />
-        <View
-          key={index}
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            minWidth: 100,
-            paddingHorizontal: 5,
-          }}
-        >
-          {/* Le bouton pour afficher le dateTimePicker */}
-          <TouchableOpacity
-            key={index}
-            onPress={() => dateModal(e.id, e.status)}
-          >
-            {/* Affiche la date sélectionnée par le user dans le bouton */}
-            <Text style={{ fontFamily: "PTSans_400Regular" }}>
-              {new Date(e.date).toLocaleDateString("fr-FR")}
-            </Text>
-          </TouchableOpacity>
-          <Icon
-            key={index}
-            style={{ paddingLeft: 10 }}
-            name="close-circle"
-            color="#5BAA62"
-            size={20}
-            onPress={() => deleteHealthCare(index)}
-          />
-        </View>
+      <View>
+        {value.find(
+          (element) => element === "Vaccin" || element === "Examen de santé"
+        ) && (
+            <View
+              style={{
+                flexDirection: "row",
+                minWidth: 360,
+                backgroundColor: "white",
+              }}
+              key={e}
+            >
+              <Dropdown
+                key={e}
+                style={styles.dropDownPickerVaccines}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                value={e.name}
+                closeAfterSelecting={true}
+                search //Input recherche
+                searchPlaceholder="Recherche..."
+                searchable={true} //Permet au user de chercher le nom du vaccin sans avoir besoin de scroller sur la liste de nom proposée
+                addCustomItem={true}
+                placeholder="Je choisis"
+                labelField="label"
+                valueField="value"
+                data={vaccinesName}
+                multiple={false} //Permet de sélectionner une seule option
+                dropDownDirection="TOP"
+                onChange={(item) => {
+                  healthCareName(item, index); //Pour mettre à jour le nom du soin
+                }}
+              />
+              <Dropdown
+                key={e}
+                style={styles.dropDownPickerState}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                value={e.status}
+                placeholder="À renseigner"
+                labelField="label"
+                valueField="value"
+                maxHeight={165}
+                data={state5}
+                multiple={false} //Permet de sélectionner une seule option
+                onChange={(item) => {
+                  healthCareStatus(item, index); //Pour mettre à jour le status du soin
+                }}
+              />
+              <View
+                key={index}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  minWidth: 100,
+                  paddingHorizontal: 5,
+                }}
+              >
+                {/* Le bouton pour afficher le dateTimePicker */}
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => dateModal(e.id, e.status)}
+                >
+                  {/* Affiche la date sélectionnée par le user dans le bouton */}
+                  <Text style={{ fontFamily: "PTSans_400Regular" }}>
+                    {new Date(e.date).toLocaleDateString("fr-FR")}
+                  </Text>
+                </TouchableOpacity>
+                <Icon
+                  key={index}
+                  style={{ paddingLeft: 10 }}
+                  name="close-circle"
+                  color="#5BAA62"
+                  size={20}
+                  onPress={() => deleteHealthCare(index)}
+                />
+              </View>
+            </View>
+          )}
       </View>
     );
   });
@@ -763,6 +814,7 @@ function ProfilScreen(props) {
   } else {
     return (
       <ScrollView>
+        <View></View>
         <View style={styles.container}>
           <DropDownPicker
             style={styles.DropDownPicker}
@@ -824,7 +876,7 @@ function ProfilScreen(props) {
 
                     {/* Affiche dynamiquement la liste des vaccins obligatoires  */}
                     {vaccines
-                      .filter((element) => element.status === "Obligatoire")
+                      .filter((element) => element.priority === "Obligatoire")
                       .map((e, index) => (
                         <View style={{ backgroundColor: "#fff" }}>
                           <View style={styles.row} key={e}>
@@ -860,11 +912,13 @@ function ProfilScreen(props) {
                               {/* Le bouton pour afficher le dateTimePicker */}
                               <TouchableOpacity
                                 style={styles.button}
-                                onPress={() => dateModal(e.id, e.status)}
+                                onPress={() => dateModal(e._id, e.status)}
                               >
                                 {/* Affiche la date sélectionnée par le user dans le bouton */}
                                 <Text style={styles.textDatePicker}>
-                                  {new Date(e.date).toLocaleDateString("fr-FR")}
+                                  {new Date(e.endDate).toLocaleDateString(
+                                    "fr-FR"
+                                  )}
                                 </Text>
                               </TouchableOpacity>
                             </View>
@@ -898,7 +952,7 @@ function ProfilScreen(props) {
 
                     {/* Affiche dynamiquement la liste des vaccins recommandés */}
                     {vaccines
-                      .filter((element) => element.status === "Recommandé")
+                      .filter((element) => element.priority === "Recommandé")
                       .map((e, index) => (
                         <View style={{ backgroundColor: "#fff" }}>
                           <View style={styles.row}>
@@ -938,7 +992,9 @@ function ProfilScreen(props) {
                               >
                                 {/* Affiche la date sélectionnée par le user dans le bouton */}
                                 <Text style={styles.textDatePicker}>
-                                  {new Date(e.date).toLocaleDateString("fr-FR")}
+                                  {new Date(e.endDate).toLocaleDateString(
+                                    "fr-FR"
+                                  )}
                                 </Text>
                               </TouchableOpacity>
                             </View>
@@ -978,8 +1034,8 @@ function ProfilScreen(props) {
                       <Text style={styles.textHeadColumn3}>Date : </Text>
                     </View>
                     {/* Affiche dynamiquement la liste des examens qui sont obligatoires uniquement */}
-                    {exams
-                      .filter((element) => element.status === "Obligatoire")
+                    {medicalTests
+                      .filter((element) => element.priority === "Obligatoire")
                       .map((e, index) => (
                         <View style={{ backgroundColor: "#fff" }}>
                           <View style={styles.row}>
@@ -1013,7 +1069,7 @@ function ProfilScreen(props) {
                               {/* Le bouton pour afficher le dateTimePicker */}
                               <TouchableOpacity
                                 style={styles.button}
-                                onPress={() => dateModal(e.id, e.status)}
+                                onPress={() => dateModal(e._id, e.status)}
                               >
                                 {/* Affiche la date sélectionnée par le user dans le bouton */}
                                 <Text style={styles.textDatePicker}>
@@ -1050,8 +1106,8 @@ function ProfilScreen(props) {
                       <Text style={styles.textHeadColumn3}>Date : </Text>
                     </View>
                     {/* Affiche dynamiquement la liste des examens qui sont recommandés uniquement */}
-                    {exams
-                      .filter((element) => element.status === "Recommandé")
+                    {medicalTests
+                      .filter((element) => element.priority === "Recommandé")
                       .map((e, index) => (
                         <View style={{ backgroundColor: "#fff" }}>
                           <View style={styles.row}>
@@ -1102,30 +1158,41 @@ function ProfilScreen(props) {
             )}
 
             {/*>>>>>>>>>>>>>>>>>>>>> Vaccins/Examens projets personnels <<<<<<<<<<<<<<<<<<<<<< */}
-            <View style={styles.title}>
-              <Ionicons
-                name="ios-information-circle"
-                size={30}
-                color="#5BAA62"
-                onPress={() => infosModal("Besoins personnels :")}
-              />
-              <Text style={styles.textTitle}>Besoins personnels :</Text>
-            </View>
+            {value.find(
+              (element) => element === "Vaccin" || element === "Examen de santé"
+            ) && (
+                <View style={styles.title}>
+                  <Ionicons
+                    name="ios-information-circle"
+                    size={30}
+                    color="#5BAA62"
+                    onPress={() => infosModal("Besoins personnels :")}
+                  />
+                  <Text style={styles.textTitle}>Besoins personnels :</Text>
+                </View>
+              )}
 
             {/*>>>>>>>>>>>>>>>>>>>>> Ajouter un vaccin/un examen <<<<<<<<<<<<<<<<<<<<<< */}
+
             {/* Ajout d'une ligne quand le user clic sur l'icône + */}
             <View>{healthCarePerso}</View>
-            <View style={styles.subTitle}>
-              <AntDesign
-                name="pluscircle"
-                size={24}
-                color="#5BAA62"
-                onPress={() => {
-                  addHealthCare();
-                }}
-              />
-              <Text style={styles.text}>Ajouter un vaccin </Text>
-            </View>
+            {value.find(
+              (element) =>
+                element === "Vaccin" ||
+                (element === "Examen de santé" && element === "Personnel")
+            ) && (
+                <View style={styles.subTitle}>
+                  <AntDesign
+                    name="pluscircle"
+                    size={24}
+                    color="#5BAA62"
+                    onPress={() => {
+                      addHealthCare();
+                    }}
+                  />
+                  <Text style={styles.text}>Ajouter un vaccin ou un examen </Text>
+                </View>
+              )}
 
             {/*>>>>>>>>>>>>>>>>>>>>> Préparer un voyage <<<<<<<<<<<<<<<<<<<<<< */}
             {/* Redirecttion vers site Pasteur au clic sur globe et sur le texte (au choix) */}
@@ -1541,7 +1608,7 @@ const styles = StyleSheet.create({
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> REDUX <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 function mapStateToProps(state) {
-  return { newHealthCare: state.newHealthCare };
+  return { newHealthCare: state.newHealthCare, token: state.token };
 }
 
 function mapDispatchToProps(dispatch) {

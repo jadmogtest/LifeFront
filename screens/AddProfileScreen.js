@@ -101,8 +101,7 @@ function AddProfileScreen(props) {
             var recUser = await rawRecUser.json();
             console.log(recUser)
             if (recUser.user) {
-                // props.navigation.navigate("ProfilScreen");
-                // setMsg(`${email} En attente de validation`)
+
                 setMsg([...msg, `${email} En attente de validation`])
                 setEmail("")
 

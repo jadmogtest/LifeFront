@@ -60,9 +60,7 @@ function DashBoardScreen(props) {
   //Récupération des vaccins et tests médicaux en BDD
   useEffect(() => {
     async function takeExams() {
-
-      // let privateIp = "192.168.10.115"; //Remplacer privateIp par la vôtre
-      console.log('test', props.token)
+      // console.log('test', props.token)
       let brutResponse = await fetch(
         `https://life-yourapp.herokuapp.com/user/${props.token}`
       );

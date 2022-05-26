@@ -316,9 +316,11 @@ function SettingScreen(props) {
         <View style={styles.texte}>
           <Text >Pathologies</Text>
         </View>
-        <View style={styles.inputContainer}>
-          <View style={{ flexDirection: "row" }}>
-            {illnessesList}
+        <View style={{ display: "flex", flexDirection: "row", marginRight: 23 }}>
+          <View style={styles.inputContainer}>
+            <View style={{ flexDirection: "row" }}>
+              {illnessesList}
+            </View>
           </View>
           <Button
             buttonStyle={{ width: 60, height: 40, backgroundColor: "#5BAA62" }}
@@ -327,13 +329,15 @@ function SettingScreen(props) {
           // onPress={() => deconnectAccount()}
           />
         </View>
-
         <View style={styles.texte}>
           <Text >Antécédents familiaux</Text>
         </View>
-        <View style={styles.inputContainer}>
-          <View style={{ flexDirection: "row" }}>
-            {familyHistoryList}
+
+        <View style={{ display: "flex", flexDirection: "row", marginRight: 23 }}>
+          <View style={styles.inputContainer}>
+            <View style={{ flexDirection: "row" }}>
+              {familyHistoryList}
+            </View>
           </View>
           <Button
             buttonStyle={{ width: 60, height: 40, backgroundColor: "#5BAA62" }}

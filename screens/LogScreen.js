@@ -1,20 +1,21 @@
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  Image,
-  Platform,
-} from "react-native";
-
-import DashBoard from "./DashboardScreen";
-import ProfilScreen from "./ProfilScreen";
-
+import { StyleSheet, Text, TextInput, View, Image } from "react-native";
 import { Button, CheckBox } from "react-native-elements";
-// import { TextInput } from "react-native-paper"; // npm install react-native-paper
 import Icon from "react-native-vector-icons/Ionicons";
+import AppLoading from "expo-app-loading";
+
+// IMPORT DES FONTS
+import {
+  useFonts,
+  PTSans_400Regular,
+  PTSans_400Regular_Italic,
+  PTSans_700Bold,
+  PTSans_700Bold_Italic,
+} from "@expo-google-fonts/pt-sans";
+
+// *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES COMPOSANTS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
+import DashBoard from "./DashboardScreen";
 
 //* Connexion avec redux : npm install --save redux react-redux */
 import { connect } from "react-redux";
@@ -34,6 +35,14 @@ function LogScreen(props) {
 
   //Logo
   const Logo = require("../assets/Logo-Life.png");
+
+  //Fonts
+  let [fontsLoaded] = useFonts({
+    PTSans_400Regular,
+    PTSans_400Regular_Italic,
+    PTSans_700Bold,
+    PTSans_700Bold_Italic,
+  });
 
   // *<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SIGN-IN >>>>>>>>>>>>>>>>>>>>>>>>>>*
   // J'initialise l'état pour la redirection
@@ -57,7 +66,7 @@ function LogScreen(props) {
     if (response.result === true) {
       //Si la bdd retrouve le user on se connecte
       setLogin(true);
-      props.tokenStore(response.token)
+      props.tokenStore(response.token);
       props.addMail(mail);
       if (response.token) {
         props.navigation.navigate("BottomNavigator", {
@@ -94,6 +103,8 @@ function LogScreen(props) {
   if (login) {
     // Si le mail et le password sont reconnus
     return <DashBoard />;
+  } else if (!fontsLoaded) {
+    return <AppLoading />;
   } else {
     // Si le mail et le password ne sont pas reconnus
     return (
@@ -132,14 +143,6 @@ function LogScreen(props) {
             value={password}
             onChangeText={(value) => setPassword(value)}
             leftIcon={<Icon name="key" color="#5BAA62" size={30} />}
-            rightIcon={
-              <Icon
-                name={passwordVisible ? "eye" : "eye-off"}
-                color="#5BAA62"
-                size={30}
-                onPress={() => setPasswordVisible(!passwordVisible)}
-              />
-            }
           />
           <View>
             <Icon
@@ -152,7 +155,6 @@ function LogScreen(props) {
         </View>
         <View style={styles.checkboxContainer}>
           <CheckBox
-            center
             status={checked ? "checked" : "unchecked"}
             value={checked}
             checked={checked}
@@ -214,6 +216,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   input: {
+    fontFamily: "PTSans_400Regular",
     margin: 12,
     padding: 10,
     borderRadius: 5,
@@ -238,9 +241,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 12,
     marginBottom: 37,
+    fontFamily: "PTSans_400Regular",
   },
   textCheckbox: {
     color: "#37663B",
+    fontFamily: "PTSans_400Regular",
   },
 });
 
@@ -254,9 +259,6 @@ function mapDispatchToProps(dispatch) {
     tokenStore: function (token) {
       dispatch({ type: "addToken", token: token });
     },
-    // setUserId: function (userId) {
-    //   dispatch({ type: "addUserId", userId: userId });
-    // },
   };
 }
 

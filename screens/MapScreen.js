@@ -1,10 +1,8 @@
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 import React, { useState, useEffect } from "react";
 import MapView, { Marker } from "react-native-maps";
-import Icon from "react-native-vector-icons/Entypo";
 import Tab from "../component/Tab";
 import { Button } from "react-native-elements";
-import { SlideModal } from "react-native-slide-modal";
 import {
   StyleSheet,
   Text,
@@ -231,61 +229,81 @@ function MapScreen(props) {
             backdropTransitionInTiming={600}
             backdropTransitionOutTiming={600}
           >
-            
             <View style={styles.modalView}>
+              <Button
+                icon={{
+                  name: "cross",
+                  type: "entypo",
+                  size: 35,
+                  color: "#e74c3c",
+                }}
+                buttonStyle={{
+                  backgroundColor: "transparent",
+                  marginLeft: 265,
+                  paddingBottom: -5,
+                }}
+                onPress={() => setModalVisible(!modalVisible)}
+              />
               <Text
                 style={{
                   fontWeight: "bold",
-                  fontSize: 13,
+                  fontSize: 16,
                   color: "#5BAA62",
                   marginBottom: 8,
                 }}
               >
+                <Entypo color="#5BAA62" name="leaf" size={18} />{" "}
                 {props.dataMedecin.Profession}
               </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: 8,
-                }}
-              >
-                <Pressable
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-                    setModalVisible2(!modalVisible2);
-                    addHCPro(
-                      profession,
-                      adresse,
-                      ville,
-                      tel,
-                      category,
-                      secteur
-                    );
+              <Text style={styles.modalText}>
+                <FontAwesome5 name="map-marker-alt" size={14} color="#37663B" />{" "}
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: "#37663B",
+                    fontWeight: "bold",
                   }}
                 >
-                  <Ionicons name="add-circle" size={20} color="green" />
-                </Pressable>
-                <Text style={{ fontStyle: "italic", fontSize: 12 }}>
-                  Ajouter en favori
-                </Text>
-              </View>
-              <Text style={styles.modalText}>
-                Adresse : {props.dataMedecin.Adresse}
+                  ADRESSE :
+                </Text>{" "}
+                {props.dataMedecin.Adresse}
                 {"\n"}
-                Ville : {props.dataMedecin.Ville}
+                <FontAwesome5 name="phone-alt" size={12} color="#37663B" />{" "}{" "}
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: "#37663B",
+                    fontWeight: "bold",
+                  }}
+                >
+                  TEL :
+                </Text>{" "}
+                {props.dataMedecin.Tel}
                 {"\n"}
-                Tel : {props.dataMedecin.Tel}
-                {"\n"}
-                Secteur : {props.dataMedecin.Secteur}
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: "#37663B",
+                    fontWeight: "bold",
+                  }}
+                >
+                  SECTEUR :
+                </Text>{" "}
+                {props.dataMedecin.Secteur}
               </Text>
-              <View style={styles.align}>
-                <Pressable onPress={() => setModalVisible(!modalVisible)}>
-                  <View>
-                    <Ionicons name="close" size={20} color="red" />
-                  </View>
-                </Pressable>
-              </View>
+              <Button
+                title="Ajouter en favori"
+                buttonStyle={{
+                  backgroundColor: "#5BAA62",
+                  fontStyle: "italic",
+                  fontSize: 10,
+                }}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                  setModalVisible2(!modalVisible2);
+                  addHCPro(profession, adresse, ville, tel, category, secteur);
+                }}
+              />
             </View>
           </Modal>
         </View>
@@ -387,13 +405,14 @@ const styles = StyleSheet.create({
     height: 20,
   },
   modalView: {
-    margin: 10,
+    paddingTop: 5,
+    paddingRight: -10,
     backgroundColor: "white",
     borderWidth: 1,
+    borderTopColor: "transparent",
     borderBottomColor: "#5BAA62",
     borderBottomWidth: 3,
-    borderRadius: 25,
-    padding: 30,
+    padding: 22,
     alignItems: "flex-start",
     shadowColor: "#5BAA62",
     shadowOffset: {
@@ -411,6 +430,7 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 15,
+    paddingRight: 14,
     textAlign: "justify",
     fontSize: 13,
   },

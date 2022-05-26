@@ -17,7 +17,7 @@ function AddressBookScreen(props) {
       let responseBDD = await fetch(
         `https://life-yourapp.herokuapp.com/readhcpro/${props.token}`,
         {
-          method: "GET",
+          method: "GET", //Pas obligé de mettre un GET car automatique pour lire en Fetch
         }
       );
       //Variable qui permet d'exploiter les données BDD

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, View, Image } from "react-native";
 import { Button, CheckBox } from "react-native-elements";
 import Icon from "react-native-vector-icons/Ionicons";
-import AppLoading from "expo-app-loading";
+import AppLoading from "expo-app-loading"; //npm i expo-app-loading
 
 // IMPORT DES FONTS
 import {
@@ -12,7 +12,7 @@ import {
   PTSans_400Regular_Italic,
   PTSans_700Bold,
   PTSans_700Bold_Italic,
-} from "@expo-google-fonts/pt-sans";
+} from "@expo-google-fonts/pt-sans"; //@expo-google-fonts/pt-sans
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES COMPOSANTS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 import DashBoard from "./DashboardScreen";

@@ -62,7 +62,7 @@ function DashBoardScreen(props) {
     async function takeExams() {
       // console.log('test', props.token)
       let brutResponse = await fetch(
-        `http://192.168.10.117:3000/user/${props.token}`
+        `https://life-yourapp.herokuapp.com/user/${props.token}`
       );
       let jsonResponse = await brutResponse.json();
       let vaccinesList = jsonResponse.vaccines;
@@ -126,7 +126,7 @@ function DashBoardScreen(props) {
   //Fonction qui exploite les données API
   async function loadData() {
     var rawResponse = await fetch(
-      "https://data.opendatasoft.com/api/records/1.0/search/?dataset=medecins%40public&q=&rows=150"
+      "https://data.opendatasoft.com/api/records/1.0/search/?dataset=medecins%40public&q=&rows=200"
     );
     var response = await rawResponse.json();
     //Boucle pour poush les données API dans le tableau "temp"
@@ -175,7 +175,8 @@ function DashBoardScreen(props) {
       </Overlay>
       <Text
         style={{
-          marginBottom: 30,
+          marginTop: 20,
+          marginBottom: 20,
           fontSize: 30,
           color: "green",
           fontStyle: "italic",
@@ -199,8 +200,8 @@ function DashBoardScreen(props) {
         buttonStyle={styles.bigButton}
         title="Mes lieux de santé"
         onPress={() =>
-          props.navigation.navigate("FavoriteScreen", {
-            screen: "FavoriteScreen",
+          props.navigation.navigate("AddressBookScreen", {
+            screen: "AdressBookScreen",
           })
         }
       />

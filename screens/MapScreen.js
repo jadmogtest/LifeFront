@@ -2,15 +2,14 @@
 import React, { useState, useEffect } from "react";
 import MapView, { Marker } from "react-native-maps";
 import Tab from "../component/Tab";
+import { Button } from "react-native-elements";
 import {
   StyleSheet,
   Text,
   View,
   Dimensions,
-  TextInput,
   Modal,
   Pressable,
-  Icon,
 } from "react-native";
 import { AntDesign, Ionicons, FontAwesome5, Entypo } from "@expo/vector-icons";
 import * as Location from "expo-location";
@@ -98,7 +97,7 @@ function MapScreen(props) {
     .map((marker, i) => {
       let infos = {
         Profession: marker.profession.toUpperCase(),
-        Adresse: marker.adresse.toLowerCase(),
+        Adresse: capsF(marker.adresse),
         Ville: marker.ville,
         Tel: marker.tel,
         Secteur: marker.secteur,
@@ -123,16 +122,17 @@ function MapScreen(props) {
             setCategory(marker.categorie);
             // console.log("TEST :::", category);
           }}
-        />
+        >
+          {/* <Icon type="Entypo" name="leaf" color="#5BAA62" size={25} /> */}
+        </Marker>
       );
     });
 
   let addHCPro = (profession, adresse, ville, tel, category, secteur) => {
     async function HCPro() {
       //Remplacer privateIp par la vôtre
-      let privateIp = "192.168.10.128"; //Remplacer privateIp par la vôtre
       let fetchRouteAddhcpro = await fetch(
-        `http://${privateIp}:3000/addhcpro`,
+        `https://life-yourapp.herokuapp.com/addhcpro/${props.token}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -144,54 +144,72 @@ function MapScreen(props) {
     HCPro();
   };
 
+  //Fonction qui met en majusucle la 1ère lettre de chaque mot
+  function capsF(words) {
+    var separateWord = words.toLowerCase().split(" ");
+    for (var i = 0; i < separateWord.length; i++) {
+      separateWord[i] =
+        separateWord[i].charAt(0).toUpperCase() + separateWord[i].substring(1);
+    }
+    return separateWord.join(" ");
+  }
+
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   return (
     <View style={styles.container}>
-      <View>
-        <Dropdown
-          style={styles.dropdown}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          inputSearchStyle={styles.inputSearchStyle}
-          iconStyle={styles.iconStyle}
-          data={jobs}
-          maxHeight={300}
-          labelField="label"
-          valueField="value"
-          placeholder="Rechercher un professionnel de santé"
-          value={value}
-          onChange={(item) => setcatMap(item)}
-          onPress={() => {
-            mapCategory();
-          }}
-          renderLeftIcon={() => (
-            <Entypo style={styles.icon} color="#5BAA62" name="leaf" size={20} />
-          )}
-        />
-      </View>
       <View style={{ position: "relative" }}>
+        <View>
+          <Dropdown
+            style={styles.dropdown}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={jobs}
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            activeColor="#EBFAD5"
+            placeholder="Rechercher.."
+            value={value}
+            dropdownPosition="auto"
+            onChange={(item) => setcatMap(item)}
+            onPress={() => {
+              mapCategory();
+            }}
+            renderLeftIcon={() => (
+              <Entypo
+                style={styles.icon}
+                color="#5BAA62"
+                name="leaf"
+                size={20}
+              />
+            )}
+          />
+        </View>
         <MapView
           style={styles.map}
+          // mapPadding={60}
           initialRegion={{
             latitude: 43.604652, // pour centrer la carte
             longitude: 1.444209,
-            latitudeDelta: 0.0922, // le rayon à afficher à partir du centre
-            longitudeDelta: 0.0421,
+            latitudeDelta: 0.048, // le rayon à afficher à partir du centre
+            longitudeDelta: 0.028,
           }}
         >
           <Marker
             key={"currentPos"}
-            pinColor="green"
-            title="Hello"
-            description="I'am here"
+            pinColor="red"
+            title="Vous êtes ici"
+            // description="I'am here"
             // icon = {require('../assets/leaf.png') }
-            // size={20}
+            // size={3}
             coordinate={{
               latitude: 43.604652,
               longitude: 1.444209,
             }}
             draggable
-          />
+          ></Marker>
           {markerlist}
         </MapView>
         <View style={styles.centeredView}>
@@ -202,61 +220,90 @@ function MapScreen(props) {
             onRequestClose={() => {
               setModalVisible(!modalVisible);
             }}
+            backdropColor="#B4B3DB"
+            backdropOpacity={0.8}
+            animationIn="zoomInDown"
+            animationOut="zoomOutUp"
+            animationInTiming={600}
+            animationOutTiming={600}
+            backdropTransitionInTiming={600}
+            backdropTransitionOutTiming={600}
           >
             <View style={styles.modalView}>
+              <Button
+                icon={{
+                  name: "cross",
+                  type: "entypo",
+                  size: 35,
+                  color: "#e74c3c",
+                }}
+                buttonStyle={{
+                  backgroundColor: "transparent",
+                  marginLeft: 265,
+                  paddingBottom: -5,
+                }}
+                onPress={() => setModalVisible(!modalVisible)}
+              />
               <Text
                 style={{
                   fontWeight: "bold",
-                  fontSize: 13,
+                  fontSize: 16,
                   color: "#5BAA62",
                   marginBottom: 8,
                 }}
               >
+                <Entypo color="#5BAA62" name="leaf" size={18} />{" "}
                 {props.dataMedecin.Profession}
               </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: 8,
-                }}
-              >
-                <Pressable
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-                    setModalVisible2(!modalVisible2);
-                    addHCPro(
-                      profession,
-                      adresse,
-                      ville,
-                      tel,
-                      category,
-                      secteur
-                    );
+              <Text style={styles.modalText}>
+                <FontAwesome5 name="map-marker-alt" size={14} color="#37663B" />{" "}
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: "#37663B",
+                    fontWeight: "bold",
                   }}
                 >
-                  <Ionicons name="add-circle" size={20} color="green" />
-                </Pressable>
-                <Text style={{ fontStyle: "italic", fontSize: 12 }}>
-                  Ajouter en favori
-                </Text>
-              </View>
-              <Text style={styles.modalText}>
-                Adresse : {props.dataMedecin.Adresse}
+                  ADRESSE :
+                </Text>{" "}
+                {props.dataMedecin.Adresse}
                 {"\n"}
-                Ville : {props.dataMedecin.Ville}
+                <FontAwesome5 name="phone-alt" size={12} color="#37663B" />{" "}{" "}
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: "#37663B",
+                    fontWeight: "bold",
+                  }}
+                >
+                  TEL :
+                </Text>{" "}
+                {props.dataMedecin.Tel}
                 {"\n"}
-                Tel : {props.dataMedecin.Tel}
-                {"\n"}
-                Secteur : {props.dataMedecin.Secteur}
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: "#37663B",
+                    fontWeight: "bold",
+                  }}
+                >
+                  SECTEUR :
+                </Text>{" "}
+                {props.dataMedecin.Secteur}
               </Text>
-              <View style={styles.align}>
-                <Pressable onPress={() => setModalVisible(!modalVisible)}>
-                  <View>
-                    <Ionicons name="close" size={20} color="red" />
-                  </View>
-                </Pressable>
-              </View>
+              <Button
+                title="Ajouter en favori"
+                buttonStyle={{
+                  backgroundColor: "#5BAA62",
+                  fontStyle: "italic",
+                  fontSize: 10,
+                }}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                  setModalVisible2(!modalVisible2);
+                  addHCPro(profession, adresse, ville, tel, category, secteur);
+                }}
+              />
             </View>
           </Modal>
         </View>
@@ -312,24 +359,24 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").height,
   },
   dropdown: {
-    margin: 16,
-    height: 50,
-    marginTop: 170,
-    width: 300,
+    margin: 8,
+    height: 60,
+    marginTop: 50,
+    width: "auto",
     borderRadius: 8,
     borderLeftWidth: 4,
     borderColor: "#5BAA62",
     borderWidth: 0,
     backgroundColor: "white",
     padding: 12,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 1,
+    // },
+    // shadowOpacity: 0.2,
+    // shadowRadius: 1.41,
+    elevation: 1,
   },
   icon: {
     marginRight: 10,
@@ -345,30 +392,36 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   placeholderStyle: {
-    fontSize: 12,
+    fontSize: 15,
+    fontStyle: "italic",
+    color: "#7f8c8d",
   },
   selectedTextStyle: {
     fontSize: 14,
+    fontStyle: "italic",
   },
   iconStyle: {
     width: 20,
     height: 20,
   },
   modalView: {
-    margin: 5,
+    paddingTop: 5,
+    paddingRight: -10,
     backgroundColor: "white",
-    borderBottomtWidth: 4,
-    borderColor: "#5BAA62",
-    padding: 35,
+    borderWidth: 1,
+    borderTopColor: "transparent",
+    borderBottomColor: "#5BAA62",
+    borderBottomWidth: 3,
+    padding: 22,
     alignItems: "flex-start",
-    shadowColor: "#000",
+    shadowColor: "#5BAA62",
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
+    elevation: 3,
   },
   button: {
     borderRadius: 20,
@@ -377,8 +430,9 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 15,
+    paddingRight: 14,
     textAlign: "justify",
-    fontSize: 12,
+    fontSize: 13,
   },
   modalView2: {
     backgroundColor: "#5BAA62",
@@ -416,6 +470,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state) {
-  return { dataMedecin: state.etab };
+  return { dataMedecin: state.etab, token: state.token };
 }
 export default connect(mapStateToProps, mapDispatchToProps)(MapScreen);

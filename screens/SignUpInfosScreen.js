@@ -74,8 +74,9 @@ function SignUpInfosScreen(props) {
     familyHistory
   ) => {
     async function addUser() {
-      let privateIp = "192.168.10.137"; //Remplacer privateIp par la vôtre
-      let rawRecUser = await fetch(`http://${privateIp}:3000/sign-up`, {
+
+      //Remplacer privateIp par la vôtre
+      let rawRecUser = await fetch(`http://192.168.1.16:3000/sign-up`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `emailFromFront=${email}&passwordFromFront=${password}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}`,
@@ -84,7 +85,9 @@ function SignUpInfosScreen(props) {
 
       if (recUser.result === true) {
         props.tokenStore(recUser.saveUser.token);
-        props.navigation.navigate("Dashboard");
+        props.navigation.navigate("BottomNavigator", {
+          screen: "DashboardScreen",
+        });
       }
     }
     if (pwdConfirmed && check === true && check2 === true) {

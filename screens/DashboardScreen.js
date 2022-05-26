@@ -60,10 +60,9 @@ function DashBoardScreen(props) {
   //Récupération des vaccins et tests médicaux en BDD
   useEffect(() => {
     async function takeExams() {
-      let privateIp = "192.168.10.137"; //Remplacer privateIp par la vôtre
-      // console.log("test", props.token);
+      // console.log('test', props.token)
       let brutResponse = await fetch(
-        `http://${privateIp}:3000/user/${props.token}`
+        `https://life-yourapp.herokuapp.com/user/${props.token}`
       );
       let jsonResponse = await brutResponse.json();
       let vaccinesList = jsonResponse.vaccines;
@@ -176,7 +175,8 @@ function DashBoardScreen(props) {
       </Overlay>
       <Text
         style={{
-          marginBottom: 30,
+          marginTop: 20,
+          marginBottom: 20,
           fontSize: 30,
           color: "green",
           fontStyle: "italic",

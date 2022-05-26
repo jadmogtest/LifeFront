@@ -1,10 +1,6 @@
 // CODES DÉSACTIVATION WARNING SUR MOBILE
 import { LogBox } from "react-native";
-LogBox.ignoreLogs(["Warning: ..."]);
-LogBox.ignoreLogs([
-  "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
-]);
-LogBox.ignoreLogs(["Disconnected from Metro."]);
+LogBox.ignoreAllLogs();
 import { ViewPropTypes } from "deprecated-react-native-prop-types";
 
 // IMPORT DES DIFFERENTES LIBRAIRIES
@@ -26,6 +22,7 @@ import MapScreen from "./screens/MapScreen";
 import AddressBookScreen from "./screens/AddressBookScreen";
 import SignUpInfosScreen from "./screens/SignUpInfosScreen";
 import AddProfileScreen from "./screens/AddProfileScreen";
+import DeleteAccountScreen from "./screens/DeleteAccountScreen";
 
 // NAVIGATION
 const Stack = createStackNavigator();
@@ -44,7 +41,9 @@ import { Provider } from "react-redux";
 /* J'importe le Store */
 import { createStore, combineReducers } from "redux";
 /* Je crée le store */
-const store = createStore(combineReducers({ etab, list, mail, userId, token })); //J'appelle les reducers
+const store = createStore(
+  combineReducers({ etab, list, mail, userId, token })
+); //J'appelle les reducers
 
 // FONCTION TABBAR
 function BottomNavigator() {
@@ -55,7 +54,7 @@ function BottomNavigator() {
           let iconName;
           if (route.name === "Dashboard") {
             iconName = "home";
-          } else if (route.name === "Profil") {
+          } else if (route.name === "ProfilScreen") {
             iconName = "user";
           } else if (route.name === "Settings") {
             iconName = "gear";
@@ -79,29 +78,34 @@ function BottomNavigator() {
 
 // FONCTION NAVIGATION
 export default function App() {
-  return (
-    <Provider store={store}>
-      <NavigationContainer style={styles.container}>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="LogScreen" component={LogScreen} />
-          <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
-          <Stack.Screen name="MapScreen" component={MapScreen} />
-          <Stack.Screen
-            name="SignUpInfosScreen"
-            component={SignUpInfosScreen}
-          />
-          <Stack.Screen name="Dashboard" component={DashboardScreen} />
-          <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
-          <Stack.Screen
-            name="AddressBookScreen"
-            component={AddressBookScreen}
-          />
-          <Stack.Screen name="AddProfileScreen" component={AddProfileScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </Provider>
-  );
-}
+    return (
+      <Provider store={store}>
+        <NavigationContainer style={styles.container}>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="LogScreen" component={LogScreen} />
+            <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
+            <Stack.Screen name="MapScreen" component={MapScreen} />
+            <Stack.Screen
+              name="SignUpInfosScreen"
+              component={SignUpInfosScreen}
+            />
+            {/* <Stack.Screen name="Dashboard" component={DashboardScreen} /> */}
+            <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
+            <Stack.Screen name="AddressBookScreen" component={AddressBookScreen} />
+            <Stack.Screen
+              name="AddProfileScreen"
+              component={AddProfileScreen}
+            />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
+            <Stack.Screen
+              name="DeleteAccountScreen"
+              component={DeleteAccountScreen}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Provider>
+    );
+  }
 
 const styles = StyleSheet.create({
   container: {

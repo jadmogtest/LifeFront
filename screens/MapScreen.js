@@ -133,9 +133,8 @@ function MapScreen(props) {
   let addHCPro = (profession, adresse, ville, tel, category, secteur) => {
     async function HCPro() {
       //Remplacer privateIp par la vôtre
-      let privateIp = "192.168.10.137"; //Remplacer privateIp par la vôtre
       let fetchRouteAddhcpro = await fetch(
-        `http://${privateIp}:3000/addhcpro/${props.token}`,
+        `https://life-yourapp.herokuapp.com/addhcpro/${props.token}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },

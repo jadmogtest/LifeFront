@@ -1,11 +1,66 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
-import { CheckBox, Button } from "react-native-elements";
-import DropDownPicker from "react-native-dropdown-picker";
-import { connect } from "react-redux";
-import { TextInput } from "react-native-paper";
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< //
+import React, { useState, useEffect } from "react";
+import {
+  Animated,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Button, CheckBox } from "react-native-elements";
+import { Dropdown } from "react-native-element-dropdown"; //npm install react-native-element-dropdown --save
+import Icon from "react-native-vector-icons/Ionicons";
+import { Ionicons } from "@expo/vector-icons";
 
-function SignUpInfosScreen(props) {
+import { connect } from "react-redux";
+
+var moment = require("moment");
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> COMPOSENT MODAL INFOS ICÔNES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< //
+const ModalDelete = ({ visible, children }) => {
+  const [showModal, setShowModal] = React.useState(visible);
+  const scaleValue = React.useRef(new Animated.Value(0)).current;
+  React.useEffect(() => {
+    toggleModal();
+  }, [visible]);
+  const toggleModal = () => {
+    if (visible) {
+      setShowModal(true);
+      Animated.spring(scaleValue, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      setTimeout(() => setShowModal(false), 200);
+      Animated.timing(scaleValue, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
+  return (
+    <Modal transparent visible={showModal}>
+      <View style={styles.modalBackGround}>
+        <Animated.View
+          style={[
+            styles.modalContainer,
+            { transform: [{ scale: scaleValue }] },
+          ]}
+        >
+          {children}
+        </Animated.View>
+      </View>
+    </Modal>
+  );
+};
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FONCTION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< //
+function SettingScreen(props) {
   //DropDownPicker Sexe
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -28,7 +83,7 @@ function SignUpInfosScreen(props) {
   const [value3, setValue3] = useState([]);
   const [pathos, setPathos] = useState([
     { label: "Diabète", value: "Diabète" },
-    { label: "endométriose", value: "endométriose" },
+    { label: "Endométriose", value: "Endométriose" },
     { label: "Cholestérol", value: "Cholestérol" },
   ]);
 
@@ -37,20 +92,13 @@ function SignUpInfosScreen(props) {
   const [value4, setValue4] = useState([]);
   const [ante, setAnte] = useState([
     { label: "Diabète", value: "Diabète" },
-    { label: "endométriose", value: "endométriose" },
+    { label: "Endométriose", value: "Endométriose" },
     { label: "Cholestérol", value: "Cholestérol" },
   ]);
-
-  //CheckBox1
-  const [check, setCheck] = useState(false);
-
-  //CheckBox1
-  const [check2, setCheck2] = useState(false);
 
   //Fonction Click Valider => infos vers Backend
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [birthdate, setBirthdate] = useState("");
@@ -60,274 +108,444 @@ function SignUpInfosScreen(props) {
   const [familyHistory, setFamilyHistory] = useState([]);
   const [pwdConfirmed, setPwdConfirmed] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(true);
-  const [passwordVisible2, setPasswordVisible2] = useState(true);
 
-  var handleSubmitSignUp = (
-    email,
-    password,
-    firstName,
-    lastName,
-    birthdate,
-    sexe,
-    profession,
-    illnesses,
-    familyHistory
-  ) => {
-    async function addUser() {
-      //Remplacer privateIp par la vôtre
-      // let privateIp = "192.168.10.131"
-      // let privateIp = "192.168.1.43"
-      let privateIp = "192.168.10.137"; //Remplacer privateIp par la vôtre
-      let rawRecUser = await fetch(`http://${privateIp}:3000/sign-up`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        // body: `emailFromFront=${email}&passwordFromFront=${password}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}`,
-        body: `emailFromFront=${email}&passwordFromFront=${password}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}`,
-      });
-      var recUser = await rawRecUser.json();
-      // console.log("c'est moi!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", recUser.saveUser.firstname)
-      props.setUserId(recUser.saveUser._id);
-      props.setfirstName(recUser.saveUser.firstname);
-      if (recUser.result === true) {
-        props.tokenStore(recUser.saveUser.token);
-      }
-    }
-    if (pwdConfirmed && check === true && check2 === true) {
-      addUser();
-      props.navigation.navigate("Dashboard");
-    }
+  /* Fonctions pour boutons à la fin du formulaire */
+  const [logout, setLogout] = useState(false);
+  const [sup, setSup] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
+
+  //Bouton déconnection
+  const deconnectAccount = () => {
+    props.navigation.navigate("LogScreen", {
+      screen: "LogScreen",
+    });
+    setLogout(true);
+    //Le user est redirigé ver le LogScreen s'il choisi de se déconnecter
   };
 
-  // console.log(birthdate)
-  // console.log(email)
-  // console.log(illnesses)
+  //Bouton suppression
+  const deleteButton = () => {
+    setSup(true);
+    setModalDeleteVisible(true);
+  };
 
+  //Bouton valider dans modal de suppression de compte
+  const deleteAccount = () => {
+    props.navigation.navigate("DeleteAccountScreen", {
+      screen: "DeleteAccountScreen",
+    });
+    setModalDeleteVisible(false);
+  };
+
+  //CheckBox
+  const [checked, setChecked] = useState(false);
+
+  //UseEffect de récupération des données User
+
+  useEffect(() => {
+    async function userData() {
+
+  let brutResponse = await fetch(
+    `https://life-yourapp.herokuapp.com/user/${props.token}`
+  );
+  let jsonResponse = await brutResponse.json();
+  let firstname = jsonResponse.firstname;
+  let lastname = jsonResponse.lastname;
+  let birthdate = new Date(jsonResponse.birthdate);
+  let dateFormated = moment(birthdate).format("DD-MM-YYYY");
+  let sex = jsonResponse.sex;
+  let profession = jsonResponse.profession;
+  let illnesses = jsonResponse.illnesses;
+  let familyHistory = jsonResponse.familyHistory;
+  let mail = jsonResponse.mail;
+
+  setFirstName(firstname);
+  setLastName(lastname);
+  setBirthdate(dateFormated);
+  setSexe(sex);
+  setProfession(profession);
+  setIllnesses(illnesses)
+  setFamilyHistory(familyHistory)
+  setEmail(mail)
+
+}
+userData()
+  }, []);
+
+  let illnessesList = illnesses.map((e, i) => (
+    <Text style={{ margin: 6 }} key={i}>{e.name}</Text>
+  ))
+
+  let familyHistoryList = familyHistory.map((e, i) => (
+    <Text style={{ margin: 6 }} key={i}>{e.name}</Text>
+  ))
+
+  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< //
   return (
     <ScrollView>
       <View style={styles.container}>
         <Text
           style={{
             marginTop: 60,
+            marginBottom: 20,
             fontSize: 30,
-            color: "green",
-            fontStyle: "italic",
+            color: "#37663B",
           }}
         >
           Vos informations
         </Text>
-        <TextInput
-          icon="key"
-          style={styles.input}
-          placeholder="Nom"
-          autoCorrect={false}
-          underlineColorAndroid="transparent"
-          value={lastName}
-          onChangeText={(value) => setLastName(value)}
-        />
-        <TextInput
-          icon="key"
-          style={styles.input}
-          placeholder="Prénom"
-          autoCorrect={false}
-          underlineColorAndroid="transparent"
-          value={firstName}
-          onChangeText={(value) => setFirstName(value)}
-        />
-        <TextInput
-          type="date"
-          icon="key"
-          style={styles.input}
-          placeholder="Date de naissance MM/JJ/AAAA"
-          autoCorrect={false}
-          underlineColorAndroid="transparent"
-          value={birthdate}
-          onChangeText={(value) => setBirthdate(new Date(value))}
-        />
 
-        <View>
-          <DropDownPicker
-            listMode="SCROLLVIEW"
-            style={styles.dropDownPicker}
-            dropDownContainerStyle={{ width: 300 }}
-            // dropDownDirection="TOP"
-            open={open}
-            value={value}
-            items={sex}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setSex}
-            placeholder="Sexe"
-            onChangeValue={(value) => {
-              setSexe(value);
-            }}
-          />
-          <DropDownPicker
-            listMode="SCROLLVIEW"
-            style={styles.dropDownPicker}
-            dropDownContainerStyle={{ width: 300 }}
-            open={open2}
-            value={value2}
-            items={job}
-            setOpen={setOpen2}
-            setValue={setValue2}
-            setItems={setJob}
-            onChangeValue={(value) => {
-              setProfession(value);
-            }}
-            placeholder="Catégorie professionnelle"
-          />
-          <Text
-            style={{
-              marginTop: 30,
-              fontSize: 15,
-              color: "green",
-              fontStyle: "italic",
-              textAlign: "center",
-            }}
-          >
-            Informations complémentaires de santé
-          </Text>
-          <DropDownPicker
-            listMode="SCROLLVIEW"
-            style={styles.dropDownPicker}
-            dropDownDirection="BOTTOM"
-            dropDownContainerStyle={{ width: 300 }}
-            open={open3}
-            value={value3}
-            items={pathos}
-            setOpen={setOpen3}
-            setValue={setValue3}
-            setItems={setPathos}
-            onChangeValue={(value) => {
-              setIllnesses(value);
-            }}
-            placeholder="Pathologies"
-            theme="LIGHT"
-            multiple={true} //Permet de sélectionner plusieurs options
-            min={0}
-            mode="BADGE"
-            valueStyle={{
-              fontWeight: "bold",
-            }}
-          />
-          <DropDownPicker
-            listMode="SCROLLVIEW"
-            style={styles.dropDownPicker}
-            dropDownDirection="BOTTOM"
-            dropDownContainerStyle={{ width: 300 }}
-            open={open4}
-            value={value4}
-            items={ante}
-            setOpen={setOpen4}
-            setValue={setValue4}
-            setItems={setAnte}
-            onChangeValue={(value) => {
-              setFamilyHistory(value);
-            }}
-            placeholder="Antécédents familiaux"
-            theme="LIGHT"
-            multiple={true} //Permet de sélectionner plusieurs options
-            min={0}
-            mode="BADGE"
-            valueStyle={{
-              fontWeight: "bold",
-            }}
+    <View style={styles.texte}>
+      <Text >Nom</Text>
+    </View>
+
+    <View style={styles.inputContainer}>
+      <TextInput
+        style={styles.input}
+        placeholder="Dupont"
+        editable={false}
+        autoCorrect={false}
+        underlineColorAndroid="transparent"
+        value={lastName}
+      // onChangeText={(value) => setLastName(value)}
+      />
+      <Button
+        buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
+        title="Modifier"
+        titleStyle={{ fontSize: 11 }}
+      // onPress={() => deconnectAccount()}
+      />
+    </View>
+
+    <View style={styles.texte}>
+      <Text >Prénom</Text>
+    </View>
+
+    <View style={styles.inputContainer}>
+      <TextInput
+        style={styles.input}
+        placeholder="Marie"
+        editable={false}
+        autoCorrect={false}
+        underlineColorAndroid="transparent"
+        value={firstName}
+        onChangeText={(value) => setFirstName(value)}
+      />
+      <Button
+        buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
+        title="Modifier"
+        titleStyle={{ fontSize: 11 }}
+      // onPress={() => deconnectAccount()}
+      />
+    </View>
+
+    <View style={styles.texte}>
+      <Text >Date de naissance</Text>
+    </View>
+    <View style={styles.inputContainer}>
+      <TextInput
+        type="date"
+        style={styles.input}
+        placeholder="12/05/1982"
+        editable={false}
+        autoCorrect={false}
+        underlineColorAndroid="transparent"
+        value={birthdate}
+        onChangeText={(value) => setBirthdate(new Date(value))}
+      />
+      <Button
+        buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
+        title="Modifier"
+        titleStyle={{ fontSize: 11 }}
+      // onPress={() => deconnectAccount()}
+      />
+    </View>
+
+    <View style={styles.texte}>
+      <Text >Sexe</Text>
+    </View>
+    <View style={styles.inputContainer}>
+      <TextInput
+        style={styles.input}
+        editable={false}
+        autoCorrect={false}
+        underlineColorAndroid="transparent"
+        value={sexe}
+        onChangeText={(value) => setBirthdate(new Date(value))}
+      />
+      <Button
+        buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
+        title="Modifier"
+        titleStyle={{ fontSize: 11 }}
+      // onPress={() => deconnectAccount()}
+      />
+    </View>
+
+    <View style={styles.texte}>
+      <Text >Profession</Text>
+    </View>
+    <View style={styles.inputContainer}>
+      <TextInput
+        style={styles.input}
+        editable={false}
+        autoCorrect={false}
+        underlineColorAndroid="transparent"
+        value={profession}
+        onChangeText={(value) => setBirthdate(new Date(value))}
+      />
+      <Button
+        buttonStyle={{ width: 60, height: 40, marginLeft: 70, backgroundColor: "#5BAA62" }}
+        title="Modifier"
+        titleStyle={{ fontSize: 11 }}
+          // onPress={() => deconnectAccount()}
           />
         </View>
         <Text
           style={{
             marginTop: 30,
+            marginBottom: 20,
             fontSize: 15,
-            color: "green",
-            fontStyle: "italic",
+            color: "#37663B",
             textAlign: "center",
           }}
         >
-          Informations de connexion
+          Informations complémentaires de santé
         </Text>
-        <TextInput
-          icon="key"
-          style={styles.input}
-          placeholder="email"
-          autoCorrect={false}
-          underlineColorAndroid="transparent"
-          value={email}
-          onChangeText={(value) => setEmail(value)}
-        />
-        <TextInput
-          type="password"
-          icon="key"
-          style={styles.input}
-          placeholder="Mot de passe"
-          autoCorrect={false}
-          secureTextEntry={passwordVisible}
-          underlineColorAndroid="transparent"
-          value={password}
-          onChangeText={(value) => setPassword(value)}
-          right={
-            <TextInput.Icon
-              name={passwordVisible ? "eye" : "eye-off"}
-              color="#5BAA62"
-              size={30}
-              onPress={() => setPasswordVisible(!passwordVisible)}
-            />
-          }
-        />
-        <View>
-          
+        <View style={styles.texte}>
+          <Text >Pathologies</Text>
         </View>
-        <Button
-          buttonStyle={styles.smallButton}
-          title="Valider"
-          onPress={() =>
-            handleSubmitSignUp(
-              email,
-              password,
-              firstName,
-              lastName,
-              birthdate,
-              sexe,
-              profession,
-              illnesses,
-              familyHistory
-            )
-          }
-        />
+        <View style={{ display: "flex", flexDirection: "row", marginRight: 23 }}>
+          <View style={styles.inputContainer}>
+            <View style={{ flexDirection: "row" }}>
+              {illnessesList}
+            </View>
+          </View>
+          <Button
+            buttonStyle={{ width: 60, height: 40, backgroundColor: "#5BAA62" }}
+            title="Modifier"
+            titleStyle={{ fontSize: 11 }}
+          // onPress={() => deconnectAccount()}
+          />
+        </View>
+        <View style={styles.texte}>
+          <Text >Antécédents familiaux</Text>
+        </View>
+
+    <View style={{ display: "flex", flexDirection: "row", marginRight: 23 }}>
+      <View style={styles.inputContainer}>
+        <View style={{ flexDirection: "row" }}>
+          {familyHistoryList}
+        </View>
       </View>
-    </ScrollView>
+      <Button
+        buttonStyle={{ width: 60, height: 40, backgroundColor: "#5BAA62" }}
+        title="Modifier"
+        titleStyle={{ fontSize: 11 }}
+      // onPress={() => deconnectAccount()} 
+      />
+    </View>
+
+    <Text
+      style={{
+        marginTop: 20,
+        marginBottom: 20,
+        fontSize: 15,
+        color: "#37663B",
+        textAlign: "center",
+      }}
+    >
+      Informations de connexion
+    </Text>
+
+    <View style={styles.inputContainer}>
+      <View>
+        <Icon name="mail" color="#5BAA62" size={30} />
+      </View>
+      <TextInput
+        placeholder="Email"
+        editable={false}
+        style={styles.input}
+        underlineColor="transparent"
+        theme={{ colors: { primary: "#5BAA62" } }}
+        value={email}
+        onChangeText={(value) => setEmail(value)}
+        leftIcon={<Icon name="mail" color="#5BAA62" size={30} />}
+      />
+      <Button
+        buttonStyle={{ width: 60, height: 40, marginLeft: 40, backgroundColor: "#5BAA62" }}
+        title="Modifier"
+        titleStyle={{ fontSize: 11 }}
+      // onPress={() => deconnectAccount()}
+      />
+    </View>
+    <Button
+      buttonStyle={styles.deconnectButton}
+      title="Reset password"
+    // onPress={() => deconnectAccount()}
+    />
+
+    <Button
+      buttonStyle={styles.deconnectButton}
+      title="Se Déconnecter"
+      onPress={() => deconnectAccount()}
+    />
+    <Button
+      buttonStyle={styles.deleteButton}
+      title="Supprimer mon compte"
+      onPress={() => deleteButton()}
+    />
+  </View>
+
+  {/*>>>>>>>>>>>>>>>>>>>>> Modal Suppression de compte <<<<<<<<<<<<<<<<<<<<<< */}
+  <ModalDelete visible={modalDeleteVisible}>
+    <View style={{ alignItems: "center" }}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => setModalDeleteVisible(false)}
+        ></TouchableOpacity>
+      </View>
+    </View>
+    <View style={styles.title}>
+      <Ionicons
+        name="warning"
+        size={100}
+        color="#FFFFFF"
+        onPress={() => setModalDeleteVisible(true)}
+      />
+    </View>
+    <View style={{ justifyContent: "center", alignItems: "center" }}>
+      <Text
+        style={{
+          marginVertical: 30,
+          fontSize: 17,
+          textAlign: "center",
+          color: "#FFFFFF",
+        }}
+      >
+        Vous êtes sur le point de supprimer votre compte utilisateur. Sa
+        suppression est irréversible et entrainera la suppression de
+        l'intégralité des informations que vous avez saisie.{" "}
+      </Text>
+      <View style={styles.checkboxContainer}>
+        <CheckBox
+          center
+          status={checked ? "checked" : "unchecked"}
+          value={checked}
+          checked={checked}
+          checkedColor="#FFFFFF"
+          onPress={() => {
+            setChecked(!checked);
+          }}
+        />
+        <Text style={styles.textCheckbox}>
+          Je confirme la suppression définitive de mon compte
+        </Text>
+      </View>
+      <Button
+        title="Valider"
+        buttonStyle={styles.buttonModal}
+        onPress={() => deleteAccount()}
+      />
+    </View>
+  </ModalDelete>
+</ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#EBFAD5",
+  buttonModal: {
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: 40,
+    size: "md",
+    backgroundColor: "#37663B",
+    width: 100,
+    height: 40,
+    margin: 15,
+  },
+  checkboxContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#EBFAD5",
+  },
+  deconnectButton: {
+    backgroundColor: "#5BAA62",
+    borderRadius: 40,
+    width: 180,
+    height: 50,
+    marginTop: 20,
+  },
+  deleteButton: {
+    borderRadius: 40,
+    backgroundColor: "#5BAA62",
+    width: 250,
+    height: 50,
+    margin: 10,
+  },
+  dropDownPicker: {
+    height: 30,
+    width: 300,
+    borderRadius: 0,
+    borderColor: "#EBFAD5",
+    borderWidth: 0.5,
+    paddingHorizontal: 10,
+    marginTop: 10,
+    backgroundColor: "#FFF",
   },
   input: {
-    height: 40,
-    width: 300,
-    margin: 12,
-    padding: 10,
-    backgroundColor: "white",
+    padding: 7,
     borderRadius: 5,
-    fontStyle: "italic",
+    width: 170,
+    height: 40,
   },
-
-  dropDownPicker: {
-    width: 300,
-    marginVertical: 5,
-    zIndex: -1,
+  inputContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    backgroundColor: "white",
+    marginBottom: 15,
+    marginLeft: 30,
+    paddingLeft: 5,
+    borderRadius: 8,
+    height: 40,
+    width: 250,
   },
-  smallButton: {
+  modalBackGround: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    width: "90%",
     backgroundColor: "#5BAA62",
-    marginTop: 10,
-    borderRadius: 50,
-    height: 50,
-    width: 150,
-    marginBottom: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    borderRadius: 20,
+    elevation: 20,
   },
+  row: {
+    alignItems: "center",
+  },
+  textCheckbox: {
+    color: "#FFF",
+    justifyContent: "center",
+  },
+  title: {
+    justifyContent: "center",
+  },
+  texte: {
+
+width: "80 %"
+  }
 });
 function mapDispatchToProps(dispatch) {
   return {
@@ -339,4 +557,9 @@ function mapDispatchToProps(dispatch) {
     },
   };
 }
-export default connect(null, mapDispatchToProps)(SignUpInfosScreen);
+
+function mapStateToProps(state) {
+  return { token: state.token };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SettingScreen);

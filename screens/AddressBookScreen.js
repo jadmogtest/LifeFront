@@ -14,9 +14,8 @@ function AddressBookScreen(props) {
   useEffect(() => {
     //Fonction qui permet de faire la liaison entre le Backend (et la BDD) pour récupérer le carnet d'adresse des users
     async function readBDD() {
-      let privateIp = "192.168.10.137"; //Remplacer privateIp par la vôtre
       let responseBDD = await fetch(
-        `http://${privateIp}:3000/readhcpro/${props.token}`,
+        `https://life-yourapp.herokuapp.com/readhcpro/${props.token}`,
         {
           method: "GET",
         }

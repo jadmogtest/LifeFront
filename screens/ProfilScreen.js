@@ -714,82 +714,82 @@ function ProfilScreen(props) {
         {value.find(
           (element) => element === "Vaccin" || element === "Examen de santé"
         ) && (
-          <View
-            style={{
-              flexDirection: "row",
-              minWidth: 360,
-              backgroundColor: "white",
-            }}
-            key={e}
-          >
-            <Dropdown
-              key={e}
-              style={styles.dropDownPickerVaccines}
-              placeholderStyle={styles.placeholderStyle}
-              selectedTextStyle={styles.selectedTextStyle}
-              value={e.name}
-              closeAfterSelecting={true}
-              search //Input recherche
-              searchPlaceholder="Recherche..."
-              searchable={true} //Permet au user de chercher le nom du vaccin sans avoir besoin de scroller sur la liste de nom proposée
-              addCustomItem={true}
-              placeholder="Je choisis"
-              labelField="label"
-              valueField="value"
-              data={vaccinesName}
-              multiple={false} //Permet de sélectionner une seule option
-              dropDownDirection="TOP"
-              onChange={(item) => {
-                healthCareName(item, index); //Pour mettre à jour le nom du soin
-              }}
-            />
-            <Dropdown
-              key={e}
-              style={styles.dropDownPickerState}
-              placeholderStyle={styles.placeholderStyle}
-              selectedTextStyle={styles.selectedTextStyle}
-              value={e.status}
-              placeholder="À renseigner"
-              labelField="label"
-              valueField="value"
-              maxHeight={165}
-              data={state5}
-              multiple={false} //Permet de sélectionner une seule option
-              onChange={(item) => {
-                healthCareStatus(item, index); //Pour mettre à jour le status du soin
-              }}
-            />
             <View
-              key={index}
               style={{
                 flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                minWidth: 100,
-                paddingHorizontal: 5,
+                minWidth: 360,
+                backgroundColor: "white",
               }}
+              key={e}
             >
-              {/* Le bouton pour afficher le dateTimePicker */}
-              <TouchableOpacity
-                key={index}
-                onPress={() => dateModal(e.id, e.status)}
-              >
-                {/* Affiche la date sélectionnée par le user dans le bouton */}
-                <Text style={{ fontFamily: "PTSans_400Regular" }}>
-                  {new Date(e.date).toLocaleDateString("fr-FR")}
-                </Text>
-              </TouchableOpacity>
-              <Icon
-                key={index}
-                style={{ paddingLeft: 10 }}
-                name="close-circle"
-                color="#5BAA62"
-                size={20}
-                onPress={() => deleteHealthCare(index)}
+              <Dropdown
+                key={e}
+                style={styles.dropDownPickerVaccines}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                value={e.name}
+                closeAfterSelecting={true}
+                search //Input recherche
+                searchPlaceholder="Recherche..."
+                searchable={true} //Permet au user de chercher le nom du vaccin sans avoir besoin de scroller sur la liste de nom proposée
+                addCustomItem={true}
+                placeholder="Je choisis"
+                labelField="label"
+                valueField="value"
+                data={vaccinesName}
+                multiple={false} //Permet de sélectionner une seule option
+                dropDownDirection="TOP"
+                onChange={(item) => {
+                  healthCareName(item, index); //Pour mettre à jour le nom du soin
+                }}
               />
+              <Dropdown
+                key={e}
+                style={styles.dropDownPickerState}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                value={e.status}
+                placeholder="À renseigner"
+                labelField="label"
+                valueField="value"
+                maxHeight={165}
+                data={state5}
+                multiple={false} //Permet de sélectionner une seule option
+                onChange={(item) => {
+                  healthCareStatus(item, index); //Pour mettre à jour le status du soin
+                }}
+              />
+              <View
+                key={index}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  minWidth: 100,
+                  paddingHorizontal: 5,
+                }}
+              >
+                {/* Le bouton pour afficher le dateTimePicker */}
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => dateModal(e.id, e.status)}
+                >
+                  {/* Affiche la date sélectionnée par le user dans le bouton */}
+                  <Text style={{ fontFamily: "PTSans_400Regular" }}>
+                    {new Date(e.date).toLocaleDateString("fr-FR")}
+                  </Text>
+                </TouchableOpacity>
+                <Icon
+                  key={index}
+                  style={{ paddingLeft: 10 }}
+                  name="close-circle"
+                  color="#5BAA62"
+                  size={20}
+                  onPress={() => deleteHealthCare(index)}
+                />
+              </View>
             </View>
-          </View>
-        )}
+          )}
       </View>
     );
   });
@@ -1161,16 +1161,16 @@ function ProfilScreen(props) {
             {value.find(
               (element) => element === "Vaccin" || element === "Examen de santé"
             ) && (
-              <View style={styles.title}>
-                <Ionicons
-                  name="ios-information-circle"
-                  size={30}
-                  color="#5BAA62"
-                  onPress={() => infosModal("Besoins personnels :")}
-                />
-                <Text style={styles.textTitle}>Besoins personnels :</Text>
-              </View>
-            )}
+                <View style={styles.title}>
+                  <Ionicons
+                    name="ios-information-circle"
+                    size={30}
+                    color="#5BAA62"
+                    onPress={() => infosModal("Besoins personnels :")}
+                  />
+                  <Text style={styles.textTitle}>Besoins personnels :</Text>
+                </View>
+              )}
 
             {/*>>>>>>>>>>>>>>>>>>>>> Ajouter un vaccin/un examen <<<<<<<<<<<<<<<<<<<<<< */}
 
@@ -1181,18 +1181,18 @@ function ProfilScreen(props) {
                 element === "Vaccin" ||
                 (element === "Examen de santé" && element === "Personnel")
             ) && (
-              <View style={styles.subTitle}>
-                <AntDesign
-                  name="pluscircle"
-                  size={24}
-                  color="#5BAA62"
-                  onPress={() => {
-                    addHealthCare();
-                  }}
-                />
-                <Text style={styles.text}>Ajouter un vaccin ou un examen </Text>
-              </View>
-            )}
+                <View style={styles.subTitle}>
+                  <AntDesign
+                    name="pluscircle"
+                    size={24}
+                    color="#5BAA62"
+                    onPress={() => {
+                      addHealthCare();
+                    }}
+                  />
+                  <Text style={styles.text}>Ajouter un vaccin ou un examen </Text>
+                </View>
+              )}
 
             {/*>>>>>>>>>>>>>>>>>>>>> Préparer un voyage <<<<<<<<<<<<<<<<<<<<<< */}
             {/* Redirecttion vers site Pasteur au clic sur globe et sur le texte (au choix) */}

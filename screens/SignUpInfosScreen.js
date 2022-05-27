@@ -74,13 +74,15 @@ function SignUpInfosScreen(props) {
     familyHistory
   ) => {
     async function addUser() {
-
       //Remplacer privateIp par la vôtre
-      let rawRecUser = await fetch(`http://192.168.1.16:3000/sign-up`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `emailFromFront=${email}&passwordFromFront=${password}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}`,
-      });
+      let rawRecUser = await fetch(
+        `https://life-yourapp.herokuapp.com/sign-up`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: `emailFromFront=${email}&passwordFromFront=${password}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}`,
+        }
+      );
       var recUser = await rawRecUser.json();
 
       if (recUser.result === true) {
@@ -100,9 +102,11 @@ function SignUpInfosScreen(props) {
       <View style={styles.container}>
         <Text
           style={{
-            marginTop: 60,
-            fontSize: 30,
-            color: "green",
+            marginTop: 55,
+            marginLeft: 22,
+            marginBottom: 10,
+            fontSize: 22,
+            color: "#5BAA62",
             fontStyle: "italic",
           }}
         >
@@ -149,6 +153,7 @@ function SignUpInfosScreen(props) {
             setValue={setValue}
             setItems={setSex}
             placeholder="Sexe"
+            placeholderStyle={{ color: "#576574", fontStyle: "italic" }}
             onChangeValue={(value) => {
               setSexe(value);
             }}
@@ -162,16 +167,18 @@ function SignUpInfosScreen(props) {
             items={job}
             setOpen={setOpen2}
             setValue={setValue2}
+            placeholderStyle={{ color: "#576574", fontStyle: "italic" }}
             setItems={setJob}
             onChangeValue={(value) => {
               setProfession(value);
             }}
             placeholder="Catégorie professionnelle"
           />
+
           <Text
             style={{
-              marginTop: 30,
-              fontSize: 15,
+              marginTop: 15,
+              fontSize: 13,
               color: "green",
               fontStyle: "italic",
               textAlign: "center",
@@ -189,6 +196,7 @@ function SignUpInfosScreen(props) {
             items={pathos}
             setOpen={setOpen3}
             setValue={setValue3}
+            placeholderStyle={{ color: "#576574", fontStyle: "italic" }}
             setItems={setPathos}
             onChangeValue={(value) => {
               setIllnesses(value);
@@ -211,6 +219,7 @@ function SignUpInfosScreen(props) {
             value={value4}
             items={ante}
             setOpen={setOpen4}
+            placeholderStyle={{ color: "#576574", fontStyle: "italic" }}
             setValue={setValue4}
             setItems={setAnte}
             onChangeValue={(value) => {
@@ -228,8 +237,8 @@ function SignUpInfosScreen(props) {
         </View>
         <Text
           style={{
-            marginTop: 30,
-            fontSize: 15,
+            marginTop: 15,
+            fontSize: 13,
             color: "green",
             fontStyle: "italic",
             textAlign: "center",
@@ -262,6 +271,9 @@ function SignUpInfosScreen(props) {
               color="#5BAA62"
               size={30}
               onPress={() => setPasswordVisible(!passwordVisible)}
+              style={{
+                marginTop: "90%",
+              }}
             />
           }
         />
@@ -286,19 +298,31 @@ function SignUpInfosScreen(props) {
               name={passwordVisible2 ? "eye" : "eye-off"}
               color="#5BAA62"
               size={30}
+              style={{
+                marginTop: "90%",
+              }}
               onPress={() => setPasswordVisible(!passwordVisible2)}
             />
           }
         />
         {!pwdConfirmed && (
-          <Text style={{ textAlign: "center", color: "red" }}>
-            Veuillez entrer le même mot de passe !
+          <Text
+            style={{
+              marginTop: 1,
+              marginBottom: 8,
+              fontSize: 13,
+              color: "red",
+              fontStyle: "italic",
+              textAlign: "center",
+            }}
+          >
+            Veuillez entrer le même mot de passe
           </Text>
         )}
-        <View>
+        <View style={styles.checkboxContainer}>
           <CheckBox
-            title="Je certifie sur l'honneur l'exactitude des renseignements fournis."
             checked={check}
+            checkedColor="#5BAA62"
             onPress={() => {
               if (check === false) {
                 setCheck(true);
@@ -307,8 +331,20 @@ function SignUpInfosScreen(props) {
               }
             }}
           />
+          <Text
+            style={{
+              color: "#37663B",
+              marginLeft: -6,
+              paddingLeft: 2.5,
+              paddingRight: 8,
+            }}
+          >
+            Je certifie sur l'honneur l'exactitude des renseignements fournis.
+          </Text>
+        </View>
+        <View style={styles.checkboxContainer}>
           <CheckBox
-            title="Accepter les termes d’utilisation"
+            checkedColor="#5BAA62"
             checked={check2}
             onPress={() => {
               if (check2 === false) {
@@ -318,9 +354,30 @@ function SignUpInfosScreen(props) {
               }
             }}
           />
+          <Text
+            style={{
+              color: "#37663B",
+              marginLeft: -6,
+              paddingLeft: 5,
+              paddingRight: 8,
+            }}
+          >
+            Veuillez accepter les conditions d'utilisation
+          </Text>
+        </View>
+        <View>
           {(!check || !check2) && (
-            <Text style={{ textAlign: "center", color: "red" }}>
-              Veuillez cocher les cases !
+            <Text
+              style={{
+                marginTop: 1,
+                marginBottom: 8,
+                fontSize: 13,
+                color: "red",
+                fontStyle: "italic",
+                textAlign: "center",
+              }}
+            >
+              Veuillez cocher les cases
             </Text>
           )}
         </View>
@@ -354,19 +411,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   input: {
-    height: 40,
+    height: 18,
     width: 300,
     margin: 12,
     padding: 10,
     backgroundColor: "white",
     borderRadius: 5,
     fontStyle: "italic",
+    color: "#576574",
   },
-
   dropDownPicker: {
     width: 300,
     marginVertical: 5,
     zIndex: -1,
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderColor: "#5BAA62",
+    borderWidth: 0,
   },
   smallButton: {
     backgroundColor: "#5BAA62",
@@ -374,7 +435,12 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     height: 50,
     width: 150,
-    marginBottom: 10,
+    marginBottom: 15,
+  },
+  checkboxContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
 function mapDispatchToProps(dispatch) {

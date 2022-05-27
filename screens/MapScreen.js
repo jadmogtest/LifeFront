@@ -1,7 +1,6 @@
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORT DES DIFFERENTES LIBRAIRIES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 import React, { useState, useEffect } from "react";
 import MapView, { Marker } from "react-native-maps";
-import Tab from "../component/Tab";
 import { Button } from "react-native-elements";
 import {
   StyleSheet,
@@ -11,7 +10,7 @@ import {
   Modal,
   Pressable,
 } from "react-native";
-import { AntDesign, Ionicons, FontAwesome5, Entypo } from "@expo/vector-icons";
+import { FontAwesome5, Entypo } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import { Dropdown } from "react-native-element-dropdown";
@@ -201,9 +200,6 @@ function MapScreen(props) {
             key={"currentPos"}
             pinColor="red"
             title="Vous êtes ici"
-            // description="I'am here"
-            // icon = {require('../assets/leaf.png') }
-            // size={3}
             coordinate={{
               latitude: 43.604652,
               longitude: 1.444209,
@@ -339,7 +335,6 @@ function MapScreen(props) {
             </View>
           </Modal>
         </View>
-        {/* <Tab /> */}
       </View>
     </View>
   );
@@ -452,13 +447,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  // input: {
-  //   height: 40,
-  //   margin: 12,
-  //   borderWidth: 1,
-  //   padding: 10,
-  //   position: "absolute",
-  // },
 });
 
 function mapDispatchToProps(dispatch) {

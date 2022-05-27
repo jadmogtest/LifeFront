@@ -41,9 +41,7 @@ import { Provider } from "react-redux";
 /* J'importe le Store */
 import { createStore, combineReducers } from "redux";
 /* Je crée le store */
-const store = createStore(
-  combineReducers({ etab, list, mail, userId, token })
-); //J'appelle les reducers
+const store = createStore(combineReducers({ etab, list, mail, userId, token })); //J'appelle les reducers
 
 // FONCTION TABBAR
 function BottomNavigator() {
@@ -52,60 +50,108 @@ function BottomNavigator() {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }) => {
           let iconName;
-          if (route.name === "Dashboard") {
+          if (route.name === "HOME") {
             iconName = "home";
-          } else if (route.name === "ProfilScreen") {
+          } else if (route.name === "PROFIL") {
             iconName = "user";
-          } else if (route.name === "Settings") {
-            iconName = "gear";
+          } else if (route.name === "SETTINGS") {
+            iconName = "edit";
           }
-          return <FontAwesome name={iconName} size={25} color={color} />;
+          return <FontAwesome name={iconName} size={27} color={color} />;
         },
       })}
       tabBarOptions={{
-        activeTintColor: "#B6E5BB",
-        inactiveTintColor: "#FFFFFF",
+        activeTintColor: "#FFFFFF",
+        inactiveTintColor: "#B6E5BB",
         activeBackgroundColor: "#5BAA62",
-        inactiveBackgroundColor: "#B6E5BB",
+        inactiveBackgroundColor: "#5BAA62",
+        style: {
+          borderBottomColor: "#37663B",
+          borderBottomWidth: 6,
+          backgroundColor: "#5BAA62",
+          paddingBottom: 8,
+          paddingTop: 8,
+          height: 65,
+        },
+        labelStyle: {
+          fontSize: 10,
+          paddingTop: 2,
+        },
       }}
     >
-      <Tab.Screen name="Dashboard" component={DashboardScreen} />
-      <Tab.Screen name="ProfilScreen" component={ProfilScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
+      <Tab.Screen name="HOME" component={DashboardScreen} />
+      <Tab.Screen name="PROFIL" component={ProfilScreen} />
+      <Tab.Screen name="SETTINGS" component={SettingsScreen} />
+
+      <Tab.Screen
+        options={{ tabBarButton: () => null }}
+        name="LogScreen"
+        component={LogScreen}
+      />
+      <Tab.Screen
+        options={{ tabBarButton: () => null }}
+        name="BottomNavigator"
+        component={BottomNavigator}
+      />
+      <Tab.Screen
+        options={{ tabBarButton: () => null }}
+        name="MapScreen"
+        component={MapScreen}
+      />
+      <Tab.Screen
+        options={{ tabBarButton: () => null }}
+        name="SignUpInfosScreen"
+        component={SignUpInfosScreen}
+      />
+      <Tab.Screen
+        options={{ tabBarButton: () => null }}
+        name="AddressBookScreen"
+        component={AddressBookScreen}
+      />
+      <Tab.Screen
+        options={{ tabBarButton: () => null }}
+        name="AddProfileScreen"
+        component={AddProfileScreen}
+      />
+      <Tab.Screen
+        options={{ tabBarButton: () => null }}
+        name="DeleteAccountScreen"
+        component={DeleteAccountScreen}
+      />
     </Tab.Navigator>
   );
 }
 
 // FONCTION NAVIGATION
 export default function App() {
-    return (
-      <Provider store={store}>
-        <NavigationContainer style={styles.container}>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="LogScreen" component={LogScreen} />
-            <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
-            <Stack.Screen name="MapScreen" component={MapScreen} />
-            <Stack.Screen
-              name="SignUpInfosScreen"
-              component={SignUpInfosScreen}
-            />
-            {/* <Stack.Screen name="Dashboard" component={DashboardScreen} /> */}
-            <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
-            <Stack.Screen name="AddressBookScreen" component={AddressBookScreen} />
-            <Stack.Screen
-              name="AddProfileScreen"
-              component={AddProfileScreen}
-            />
-            <Stack.Screen name="Settings" component={SettingsScreen} />
-            <Stack.Screen
-              name="DeleteAccountScreen"
-              component={DeleteAccountScreen}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </Provider>
-    );
-  }
+  return (
+    <Provider store={store}>
+      <NavigationContainer style={styles.container}>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="LogScreen" component={LogScreen} />
+          <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
+          <Stack.Screen name="MapScreen" component={MapScreen} />
+          <Stack.Screen
+            name="SignUpInfosScreen"
+            component={SignUpInfosScreen}
+          />
+          <Stack.Screen name="Dashboard" component={DashboardScreen} />
+          <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
+          <Stack.Screen
+            name="AddressBookScreen"
+            component={AddressBookScreen}
+          />
+          <Stack.Screen name="AddProfileScreen" component={AddProfileScreen} />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
+          <Stack.Screen
+            name="DeleteAccountScreen"
+            component={DeleteAccountScreen}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {

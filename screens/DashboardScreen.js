@@ -193,7 +193,7 @@ function DashBoardScreen(props) {
       />
       <Button
         buttonStyle={styles.bigButton}
-        title="Rechercher un professionnel de santé"
+        title="Trouver un spécialiste"
         onPress={() => loadData()}
       />
       <Button
@@ -201,7 +201,7 @@ function DashBoardScreen(props) {
         title="Mes lieux de santé"
         onPress={() =>
           props.navigation.navigate("AddressBookScreen", {
-            screen: "AdressBookScreen",
+            screen: "AddressBookScreen",
           })
         }
       />

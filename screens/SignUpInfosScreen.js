@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { CheckBox, Button } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker";
 import { connect } from "react-redux";
 import { TextInput } from "react-native-paper";
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 function SignUpInfosScreen(props) {
   //DropDownPicker Sexe
@@ -62,6 +72,36 @@ function SignUpInfosScreen(props) {
   const [passwordVisible, setPasswordVisible] = useState(true);
   const [passwordVisible2, setPasswordVisible2] = useState(true);
 
+  //Etats pour notifications
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+  const [healthTestsState, setHealthTestsState] = useState([])
+
+  var healthTests = [];
+  async function schedulePushNotification() {
+    // console.log('notif', healthTests)
+    for (let i = 0; i < healthTests.length; i++) {
+      // console.log('date', new Date(Date.now() + 7200000 + 60000))
+      const trigger = Date.now() + 10000
+      // trigger.setSeconds(0);
+
+      // console.log('trigger', trigger)
+      // console.log('tableau', healthTestsState);
+      // console.log('function')
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: `Rappel santé`,
+          body: `Consultez Life`,
+          data: { data: 'goes here' },
+        },
+        trigger,
+      });
+      // console.log('after function');
+    }
+  }
+
   var handleSubmitSignUp = (
     email,
     password,
@@ -73,10 +113,11 @@ function SignUpInfosScreen(props) {
     illnesses,
     familyHistory
   ) => {
+
     async function addUser() {
 
       //Remplacer privateIp par la vôtre
-      let rawRecUser = await fetch(`http://192.168.1.16:3000/sign-up`, {
+      let rawRecUser = await fetch(`https://life-yourapp.herokuapp.com/sign-up`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `emailFromFront=${email}&passwordFromFront=${password}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}`,
@@ -84,7 +125,14 @@ function SignUpInfosScreen(props) {
       var recUser = await rawRecUser.json();
 
       if (recUser.result === true) {
-        props.tokenStore(recUser.saveUser.token);
+        // console.log('recUser', recUser)
+        // console.log('recUser.saveUser.vaccines', recUser.currentUser.vaccines);
+        // console.log('recUser.saveUser.exams', recUser.currentUser.medicalTests);
+        healthTests = recUser.currentUser.vaccines.concat(recUser.currentUser.medicalTests);
+        // console.log('healthtests', healthTests)
+        setHealthTestsState([...healthTests]);
+        // console.log('healthteststate after setter', healthTestsState)
+        props.tokenStore(recUser.currentUser.token);
         props.navigation.navigate("BottomNavigator", {
           screen: "DashboardScreen",
         });
@@ -94,6 +142,25 @@ function SignUpInfosScreen(props) {
       addUser();
     }
   };
+
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(element => setExpoPushToken(element));
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+
+    console.log('useeffect')
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
 
   return (
     <ScrollView>
@@ -327,7 +394,7 @@ function SignUpInfosScreen(props) {
         <Button
           buttonStyle={styles.smallButton}
           title="Valider"
-          onPress={() =>
+          onPress={() => {
             handleSubmitSignUp(
               email,
               password,
@@ -339,6 +406,9 @@ function SignUpInfosScreen(props) {
               illnesses,
               familyHistory
             )
+
+            setTimeout(async () => { await schedulePushNotification() }, 2000);
+          }
           }
         />
       </View>
@@ -384,4 +454,38 @@ function mapDispatchToProps(dispatch) {
     },
   };
 }
+
+
+
+async function registerForPushNotificationsAsync() {
+  let token;
+  if (Device.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log('test', token);
+  } else {
+    alert('Must use physical device for Push Notifications');
+  }
+
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+  return token;
+}
+
 export default connect(null, mapDispatchToProps)(SignUpInfosScreen);

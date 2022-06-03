@@ -3,6 +3,16 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button, Overlay } from "react-native-elements";
 import { connect } from "react-redux";
+import AppLoading from "expo-app-loading"; //npm i expo-app-loading
+
+// IMPORT DES FONTS
+import {
+  useFonts,
+  PTSans_400Regular,
+  PTSans_400Regular_Italic,
+  PTSans_700Bold,
+  PTSans_700Bold_Italic,
+} from "@expo-google-fonts/pt-sans"; //@expo-google-fonts/pt-sans
 
 var moment = require("moment");
 
@@ -57,12 +67,20 @@ function DashBoardScreen(props) {
   const [exams, setExams] = useState([]);
   const [firstName, setFirstName] = useState("");
 
+  //Fonts
+  let [fontsLoaded] = useFonts({
+    PTSans_400Regular,
+    PTSans_400Regular_Italic,
+    PTSans_700Bold,
+    PTSans_700Bold_Italic,
+  });
+
   //Récupération des vaccins et tests médicaux en BDD
   useEffect(() => {
     async function takeExams() {
       // console.log('test', props.token)
       let brutResponse = await fetch(
-        `https://life-yourapp.herokuapp.com/user/${props.token}`
+        `http://192.168.1.16:3000/user/${props.token}`
       );
       let jsonResponse = await brutResponse.json();
       let vaccinesList = jsonResponse.vaccines;
@@ -156,95 +174,106 @@ function DashBoardScreen(props) {
     });
   }
 
-  return (
-    <View style={styles.container}>
-      <Overlay
-        overlayStyle={{ flex: 0.5, width: 300, borderRadius: 50 }}
-        width="5000"
-        isVisible={visible}
-        onBackdropPress={() => {
-          setVisible(false);
-        }}
-      >
-        <View
-          style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
-        >
-          <Text style={{ fontSize: 30 }}>{overlayContent[0].date}</Text>
-          <Text style={{ fontSize: 30 }}>{overlayContent[0].name}</Text>
-        </View>
-      </Overlay>
-      <Text
-        style={{
-          marginTop: 20,
-          marginBottom: 20,
-          fontSize: 30,
-          color: "green",
-          fontStyle: "italic",
-        }}
-      >
-        Bonjour {firstName} !
-      </Text>
-      <Button
-        buttonStyle={styles.bigButton}
-        title="Profil santé"
-        onPress={() =>
-          props.navigation.navigate("ProfilScreen", { screen: "ProfilScreen" })
-        }
-      />
-      <Button
-        buttonStyle={styles.bigButton}
-        title="Rechercher un professionnel de santé"
-        onPress={() => loadData()}
-      />
-      <Button
-        buttonStyle={styles.bigButton}
-        title="Mes lieux de santé"
-        onPress={() =>
-          props.navigation.navigate("AddressBookScreen", {
-            screen: "AdressBookScreen",
-          })
-        }
-      />
-      <Button
-        buttonStyle={styles.bigButton}
-        title="Ajouter un profil"
-        onPress={() =>
-          props.navigation.navigate("AddProfileScreen", {
-            screen: "AddProfileScreen",
-          })
-        }
-      />
-      <Calendar
-        locale="fr"
-        onDayPress={(day) => {
-          if (visible === false) {
-            let filter = exams.filter((e) => e.date === day.dateString);
-
-            if (filter[0] !== undefined) {
-              let temp = new Date(filter[0].date);
-              let dateFormated = moment(temp).format("DD-MM-YYYY");
-              filter[0].date = dateFormated;
-
-              setVisible(true);
-              setOverlayContent(filter);
-            } else if (filter[0] === undefined) {
-              filter.push({ date: day.dateString, name: "Pas d'examen prévu" });
-              let temp = new Date(filter[0].date);
-              let dateFormated = moment(temp).format("DD-MM-YYYY");
-              filter[0].date = dateFormated;
-              setVisible(true);
-              setOverlayContent(filter);
-            }
-          } else if (visible === true) {
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
+    return (
+      <View style={styles.container}>
+        <Overlay
+          overlayStyle={{ flex: 0.5, width: 300, borderRadius: 50 }}
+          width="5000"
+          isVisible={visible}
+          onBackdropPress={() => {
             setVisible(false);
+          }}
+        >
+          <View
+            style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
+          >
+            <Text style={{ fontSize: 30 }}>{overlayContent[0].date}</Text>
+            <Text style={{ fontSize: 30 }}>{overlayContent[0].name}</Text>
+          </View>
+        </Overlay>
+        <Text
+          style={{
+            marginTop: 20,
+            marginBottom: 20,
+            fontSize: 30,
+            color: "green",
+            fontStyle: "italic",
+            fontFamily: "PTSans_400Regular",
+          }}
+        >
+          Bonjour {firstName} !
+        </Text>
+        <Button
+          buttonStyle={styles.bigButton}
+          title="Profil santé"
+          onPress={() =>
+            props.navigation.navigate("ProfilScreen", {
+              screen: "ProfilScreen",
+            })
           }
-        }}
-        style={styles.calendar}
-        markedDates={markedDates}
-      />
-    </View>
-  );
+        />
+        <Button
+          buttonStyle={styles.bigButton}
+          title="Rechercher un professionnel de santé"
+          onPress={() => loadData()}
+        />
+        <Button
+          buttonStyle={styles.bigButton}
+          title="Mes lieux de santé"
+          onPress={() =>
+            props.navigation.navigate("AddressBookScreen", {
+              screen: "AdressBookScreen",
+            })
+          }
+        />
+        <Button
+          buttonStyle={styles.bigButton}
+          title="Ajouter un profil"
+          onPress={() =>
+            props.navigation.navigate("AddProfileScreen", {
+              screen: "AddProfileScreen",
+            })
+          }
+        />
+        <Calendar
+          locale="fr"
+          onDayPress={(day) => {
+            if (visible === false) {
+              let filter = exams.filter((e) => e.date === day.dateString);
+
+              if (filter[0] !== undefined) {
+                let temp = new Date(filter[0].date);
+                let dateFormated = moment(temp).format("DD-MM-YYYY");
+                filter[0].date = dateFormated;
+
+                setVisible(true);
+                setOverlayContent(filter);
+              } else if (filter[0] === undefined) {
+                filter.push({
+                  date: day.dateString,
+                  name: "Pas d'examen prévu",
+                });
+                let temp = new Date(filter[0].date);
+                let dateFormated = moment(temp).format("DD-MM-YYYY");
+                filter[0].date = dateFormated;
+                setVisible(true);
+                setOverlayContent(filter);
+              }
+            } else if (visible === true) {
+              setVisible(false);
+            }
+          }}
+          style={styles.calendar}
+          markedDates={markedDates}
+        />
+      </View>
+    );
+  }
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

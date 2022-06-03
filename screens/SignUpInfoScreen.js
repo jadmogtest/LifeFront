@@ -76,7 +76,7 @@ function SignUpInfosScreen(props) {
     async function addUser() {
 
       //Remplacer privateIp par la vôtre
-      let rawRecUser = await fetch(`http://192.168.10.117:3000/sign-up`, {
+      let rawRecUser = await fetch(`http://192.168.1.16:3000/sign-up`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `emailFromFront=${email}&passwordFromFront=${password}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}`,

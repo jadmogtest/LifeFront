@@ -53,14 +53,11 @@ function LogScreen(props) {
   const signIn = async (mail, password) => {
     /* Je vérifie dans la bdd les informations saisies par l'utilisateur */
 
-    const rawResponse = await fetch(
-      `https://life-yourapp.herokuapp.com/sign-in`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `passwordFromFront=${password}&emailFromFront=${mail}`,
-      }
-    );
+    const rawResponse = await fetch(`http://192.168.1.16:3000/sign-in`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `passwordFromFront=${password}&emailFromFront=${mail}`,
+    });
 
     let response = await rawResponse.json();
 
@@ -247,6 +244,7 @@ const styles = StyleSheet.create({
   textCheckbox: {
     color: "#37663B",
     fontFamily: "PTSans_400Regular",
+    marginLeft: -5,
   },
 });
 

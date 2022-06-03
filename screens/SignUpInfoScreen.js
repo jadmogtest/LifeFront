@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { CheckBox, Button } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker";
 import { connect } from "react-redux";
 import { TextInput } from "react-native-paper";
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 function SignUpInfosScreen(props) {
   //DropDownPicker Sexe
@@ -62,6 +72,36 @@ function SignUpInfosScreen(props) {
   const [passwordVisible, setPasswordVisible] = useState(true);
   const [passwordVisible2, setPasswordVisible2] = useState(true);
 
+  //Etats pour notifications
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+  const [healthTestsState, setHealthTestsState] = useState([])
+
+  var healthTests = [];
+  async function schedulePushNotification() {
+    // console.log('notif', healthTests)
+    for (let i = 0; i < healthTests.length; i++) {
+      // console.log('date', new Date(Date.now() + 7200000 + 60000))
+      const trigger = Date.now() + 10000
+      // trigger.setSeconds(0);
+
+      // console.log('trigger', trigger)
+      // console.log('tableau', healthTestsState);
+      // console.log('function')
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: `Rappel santé`,
+          body: `Consultez Life`,
+          data: { data: 'goes here' },
+        },
+        trigger,
+      });
+      // console.log('after function');
+    }
+  }
+
   var handleSubmitSignUp = (
     email,
     password,
@@ -73,18 +113,28 @@ function SignUpInfosScreen(props) {
     illnesses,
     familyHistory
   ) => {
-    async function addUser() {
 
+    async function addUser() {
       //Remplacer privateIp par la vôtre
-      let rawRecUser = await fetch(`http://192.168.1.16:3000/sign-up`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `emailFromFront=${email}&passwordFromFront=${password}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}`,
-      });
+      let rawRecUser = await fetch(
+        `https://life-yourapp.herokuapp.com/sign-up`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: `emailFromFront=${email}&passwordFromFront=${password}&firstnameFromFront=${firstName}&lastnameFromFront=${lastName}&birthdateFromFront=${birthdate}&sexFromFront=${sexe}&professionFromFront=${profession}&illnessesFromFront=${illnesses}&familyHistoryFromFront=${familyHistory}`,
+        }
+      );
       var recUser = await rawRecUser.json();
 
       if (recUser.result === true) {
-        props.tokenStore(recUser.saveUser.token);
+        // console.log('recUser', recUser)
+        // console.log('recUser.saveUser.vaccines', recUser.currentUser.vaccines);
+        // console.log('recUser.saveUser.exams', recUser.currentUser.medicalTests);
+        healthTests = recUser.currentUser.vaccines.concat(recUser.currentUser.medicalTests);
+        // console.log('healthtests', healthTests)
+        setHealthTestsState([...healthTests]);
+        // console.log('healthteststate after setter', healthTestsState)
+        props.tokenStore(recUser.currentUser.token);
         props.navigation.navigate("BottomNavigator", {
           screen: "DashboardScreen",
         });
@@ -95,14 +145,35 @@ function SignUpInfosScreen(props) {
     }
   };
 
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(element => setExpoPushToken(element));
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+
+    console.log('useeffect')
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
   return (
     <ScrollView>
       <View style={styles.container}>
         <Text
           style={{
-            marginTop: 60,
-            fontSize: 30,
-            color: "green",
+            marginTop: 55,
+            marginLeft: 22,
+            marginBottom: 10,
+            fontSize: 22,
+            color: "#5BAA62",
             fontStyle: "italic",
           }}
         >
@@ -149,6 +220,7 @@ function SignUpInfosScreen(props) {
             setValue={setValue}
             setItems={setSex}
             placeholder="Sexe"
+            placeholderStyle={{ color: "#576574", fontStyle: "italic" }}
             onChangeValue={(value) => {
               setSexe(value);
             }}
@@ -162,16 +234,18 @@ function SignUpInfosScreen(props) {
             items={job}
             setOpen={setOpen2}
             setValue={setValue2}
+            placeholderStyle={{ color: "#576574", fontStyle: "italic" }}
             setItems={setJob}
             onChangeValue={(value) => {
               setProfession(value);
             }}
             placeholder="Catégorie professionnelle"
           />
+
           <Text
             style={{
-              marginTop: 30,
-              fontSize: 15,
+              marginTop: 15,
+              fontSize: 13,
               color: "green",
               fontStyle: "italic",
               textAlign: "center",
@@ -189,6 +263,7 @@ function SignUpInfosScreen(props) {
             items={pathos}
             setOpen={setOpen3}
             setValue={setValue3}
+            placeholderStyle={{ color: "#576574", fontStyle: "italic" }}
             setItems={setPathos}
             onChangeValue={(value) => {
               setIllnesses(value);
@@ -211,6 +286,7 @@ function SignUpInfosScreen(props) {
             value={value4}
             items={ante}
             setOpen={setOpen4}
+            placeholderStyle={{ color: "#576574", fontStyle: "italic" }}
             setValue={setValue4}
             setItems={setAnte}
             onChangeValue={(value) => {
@@ -228,8 +304,8 @@ function SignUpInfosScreen(props) {
         </View>
         <Text
           style={{
-            marginTop: 30,
-            fontSize: 15,
+            marginTop: 15,
+            fontSize: 13,
             color: "green",
             fontStyle: "italic",
             textAlign: "center",
@@ -262,6 +338,9 @@ function SignUpInfosScreen(props) {
               color="#5BAA62"
               size={30}
               onPress={() => setPasswordVisible(!passwordVisible)}
+              style={{
+                marginTop: "90%",
+              }}
             />
           }
         />
@@ -286,19 +365,31 @@ function SignUpInfosScreen(props) {
               name={passwordVisible2 ? "eye" : "eye-off"}
               color="#5BAA62"
               size={30}
+              style={{
+                marginTop: "90%",
+              }}
               onPress={() => setPasswordVisible(!passwordVisible2)}
             />
           }
         />
         {!pwdConfirmed && (
-          <Text style={{ textAlign: "center", color: "red" }}>
-            Veuillez entrer le même mot de passe !
+          <Text
+            style={{
+              marginTop: 1,
+              marginBottom: 8,
+              fontSize: 13,
+              color: "red",
+              fontStyle: "italic",
+              textAlign: "center",
+            }}
+          >
+            Veuillez entrer le même mot de passe
           </Text>
         )}
-        <View>
+        <View style={styles.checkboxContainer}>
           <CheckBox
-            title="Je certifie sur l'honneur l'exactitude des renseignements fournis."
             checked={check}
+            checkedColor="#5BAA62"
             onPress={() => {
               if (check === false) {
                 setCheck(true);
@@ -307,8 +398,20 @@ function SignUpInfosScreen(props) {
               }
             }}
           />
+          <Text
+            style={{
+              color: "#37663B",
+              marginLeft: -6,
+              paddingLeft: 2.5,
+              paddingRight: 8,
+            }}
+          >
+            Je certifie sur l'honneur l'exactitude des renseignements fournis.
+          </Text>
+        </View>
+        <View style={styles.checkboxContainer}>
           <CheckBox
-            title="Accepter les termes d’utilisation"
+            checkedColor="#5BAA62"
             checked={check2}
             onPress={() => {
               if (check2 === false) {
@@ -318,16 +421,37 @@ function SignUpInfosScreen(props) {
               }
             }}
           />
+          <Text
+            style={{
+              color: "#37663B",
+              marginLeft: -6,
+              paddingLeft: 5,
+              paddingRight: 8,
+            }}
+          >
+            Veuillez accepter les conditions d'utilisation
+          </Text>
+        </View>
+        <View>
           {(!check || !check2) && (
-            <Text style={{ textAlign: "center", color: "red" }}>
-              Veuillez cocher les cases !
+            <Text
+              style={{
+                marginTop: 1,
+                marginBottom: 8,
+                fontSize: 13,
+                color: "red",
+                fontStyle: "italic",
+                textAlign: "center",
+              }}
+            >
+              Veuillez cocher les cases
             </Text>
           )}
         </View>
         <Button
           buttonStyle={styles.smallButton}
           title="Valider"
-          onPress={() =>
+          onPress={() => {
             handleSubmitSignUp(
               email,
               password,
@@ -339,6 +463,9 @@ function SignUpInfosScreen(props) {
               illnesses,
               familyHistory
             )
+
+            setTimeout(async () => { await schedulePushNotification() }, 2000);
+          }
           }
         />
       </View>
@@ -354,19 +481,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   input: {
-    height: 40,
+    height: 18,
     width: 300,
     margin: 12,
     padding: 10,
     backgroundColor: "white",
     borderRadius: 5,
     fontStyle: "italic",
+    color: "#576574",
   },
-
   dropDownPicker: {
     width: 300,
     marginVertical: 5,
     zIndex: -1,
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderColor: "#5BAA62",
+    borderWidth: 0,
   },
   smallButton: {
     backgroundColor: "#5BAA62",
@@ -374,7 +505,12 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     height: 50,
     width: 150,
-    marginBottom: 10,
+    marginBottom: 15,
+  },
+  checkboxContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
 function mapDispatchToProps(dispatch) {
@@ -384,4 +520,38 @@ function mapDispatchToProps(dispatch) {
     },
   };
 }
+
+
+
+async function registerForPushNotificationsAsync() {
+  let token;
+  if (Device.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log('test', token);
+  } else {
+    alert('Must use physical device for Push Notifications');
+  }
+
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+  return token;
+}
+
 export default connect(null, mapDispatchToProps)(SignUpInfosScreen);

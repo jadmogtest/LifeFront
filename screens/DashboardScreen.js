@@ -80,7 +80,7 @@ function DashBoardScreen(props) {
     async function takeExams() {
       // console.log('test', props.token)
       let brutResponse = await fetch(
-        `http://192.168.1.16:3000/user/${props.token}`
+        `https://life-yourapp.herokuapp.com/user/${props.token}`
       );
       let jsonResponse = await brutResponse.json();
       let vaccinesList = jsonResponse.vaccines;
@@ -201,7 +201,6 @@ function DashBoardScreen(props) {
             fontSize: 30,
             color: "green",
             fontStyle: "italic",
-            fontFamily: "PTSans_400Regular",
           }}
         >
           Bonjour {firstName} !
@@ -217,7 +216,7 @@ function DashBoardScreen(props) {
         />
         <Button
           buttonStyle={styles.bigButton}
-          title="Rechercher un professionnel de santé"
+          title="Trouver un spécialiste"
           onPress={() => loadData()}
         />
         <Button
@@ -225,7 +224,7 @@ function DashBoardScreen(props) {
           title="Mes lieux de santé"
           onPress={() =>
             props.navigation.navigate("AddressBookScreen", {
-              screen: "AdressBookScreen",
+              screen: "AddressBookScreen",
             })
           }
         />
@@ -273,7 +272,6 @@ function DashBoardScreen(props) {
     );
   }
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

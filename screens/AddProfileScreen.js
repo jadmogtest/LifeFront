@@ -46,9 +46,12 @@ function AddProfileScreen(props) {
   const [open5, setOpen5] = useState(false);
   const [value5, setValue5] = useState(null);
   const [relationList, setRelationList] = useState([
+    { label: "😤 Belle-mère", value: "Belle-mère" },
     { label: "Enfant", value: "Enfant" },
     { label: "Parent", value: "Parent" },
-    { label: "Conjoint", value: "Conjoint" },
+    { label: "🚀 Assistant Teacher", value: "Assistant Teacher" },
+    { label: "Conjoint.e", value: "Conjoint.e" },
+    { label: "❤️ Crush Demo Day", value: "Crush Demo Day" },
     { label: "Autre", value: "Autre" },
   ]);
 
@@ -376,11 +379,16 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 5,
     fontStyle: "italic",
+    color: "#576574",
   },
   dropDownPicker: {
     width: 300,
     marginVertical: 5,
     zIndex: -1,
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderColor: "#5BAA62",
+    borderWidth: 0,
   },
   smallButton: {
     backgroundColor: "#5BAA62",

@@ -55,7 +55,7 @@ function BottomNavigator() {
           } else if (route.name === "PROFIL") {
             iconName = "user";
           } else if (route.name === "SETTINGS") {
-            iconName = "edit";
+            iconName = "gear";
           }
           return <FontAwesome name={iconName} size={27} color={color} />;
         },

@@ -122,7 +122,7 @@ function ProfilScreen(props) {
     async function fetchUserInfo() {
       // console.log('test', props.token)
       let brutResponse = await fetch(
-        `http://192.168.10.117:3000/profil/${props.token}` //Récupération du token depuis le reducer pour l'envoyer au back, on respecter structure url
+        `https://life-yourapp.herokuapp.com/profil/${props.token}` //Récupération du token depuis le reducer pour l'envoyer au back, on respecter structure url
       );
       let jsonResponse = await brutResponse.json(); //Transforme réponse en format json
       // console.log("coucou", jsonResponse);

@@ -511,6 +511,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    marginLeft: 9,
   },
 });
 function mapDispatchToProps(dispatch) {

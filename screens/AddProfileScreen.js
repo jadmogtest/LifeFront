@@ -63,7 +63,7 @@ function AddProfileScreen(props) {
         { label: "Connecter un compte", value: "Connecter un compte" },
     ]);
 
-    //Fonction Click Valider => infos vers Backend
+
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -77,23 +77,21 @@ function AddProfileScreen(props) {
     const [profilsList, setProfilsList] = useState([])
     const [msg, setMsg] = useState([]);
 
+
     useEffect(() => {
-        //Fonction qui permet de faire la liaison entre le Backend (et la BDD) pour récupérer le carnet d'adresse des users
         async function readBDD() {
             let responseBDD = await fetch(
-                `https://life-yourapp.herokuapp.com/readFamily/${props.token}`,
+                `https://life-yourapp.herokuapp.com/profil/${props.token}`,
                 {
                     method: "GET",
                 }
             );
-            //Variable qui permet d'exploiter les données BDD
+
             let response = await responseBDD.json();
 
-            // console.log(`${response.fams[0].firstname} ${response.fams[0].lastname} connecté`)
-            // console.log(response.fams)
             let temp = []
-            for (let i = 0; i < response.fams.length; i++) {
-                temp.push(`${response.fams[i].firstname} ${response.fams[i].lastname} connecté ${"\n"}`)
+            for (let i = 0; i < response.userFamily.family.length; i++) {
+                temp.push(`${response.userFamily.family[i].firstname} ${response.userFamily.family[i].lastname} connecté ${"\n"}`)
             }
             console.log(temp)
             setProfilsList([temp]);
@@ -113,7 +111,7 @@ function AddProfileScreen(props) {
         relationship
     ) => {
         async function addProfile() {
-            // let privateIp = "192.168.10.115"; //Remplacer privateIp par la vôtre
+
             let rawRecUser = await fetch(
                 `https://life-yourapp.herokuapp.com/add-profile/${props.token}`,
                 {
@@ -199,15 +197,6 @@ function AddProfileScreen(props) {
                                 value={firstName}
                                 onChangeText={(value) => setFirstName(value)}
                             />
-                            {/* <TextInput
-                        icon="key"
-                        style={styles.input}
-                        placeholder="Email"
-                        autoCorrect={false}
-                        underlineColorAndroid="transparent"
-                        value={email}
-                        onChangeText={(value) => setEmail(value)}
-                    /> */}
                             <TextInput
                                 type="date"
                                 icon="key"
@@ -222,7 +211,6 @@ function AddProfileScreen(props) {
                                 listMode="SCROLLVIEW"
                                 style={styles.dropDownPicker}
                                 dropDownContainerStyle={{ width: 300 }}
-                                // dropDownDirection="TOP"
                                 open={open}
                                 value={value}
                                 items={sex}
@@ -341,7 +329,6 @@ function AddProfileScreen(props) {
                                     familyHistory,
                                     relationship
                                 )
-                            // props.navigation.navigate("ProfilScreen")
                         }
                     />
                     {listProfilsConnected}
@@ -393,9 +380,6 @@ function mapDispatchToProps(dispatch) {
         tokenStore: function (token) {
             dispatch({ type: "addToken", token: token });
         },
-        // setUserId: function (userId) {
-        //   dispatch({ type: "addUserId", userId: userId });
-        // },
     };
 }
 function mapStateToProps(state) {

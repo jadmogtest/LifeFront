@@ -20,9 +20,6 @@ import DashBoard from "./DashboardScreen";
 //* Connexion avec redux : npm install --save redux react-redux */
 import { connect } from "react-redux";
 
-//* Import du module AsyncStorage : npm install @react-native-async-storage/async-storage --save */
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FONCTION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 function LogScreen(props) {
   //Input
@@ -91,13 +88,6 @@ function LogScreen(props) {
       screen: "SignUpInfosScreen",
     });
   };
-  // useEffect(() => {
-  //   AsyncStorage.getItem("mail", function (error, data) {
-  //     if (data) {
-  //       setMail(data);
-  //     }
-  //   });
-  // });
 
   // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETURN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
   if (login) {

@@ -1,6 +1,6 @@
 import { Calendar, LocaleConfig } from "react-native-calendars";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { Button, Overlay } from "react-native-elements";
 import { connect } from "react-redux";
 
@@ -62,12 +62,12 @@ function DashBoardScreen(props) {
     async function takeExams() {
       // console.log('test', props.token)
       let brutResponse = await fetch(
-        `https://life-yourapp.herokuapp.com/user/${props.token}`
+        `https://life-yourapp.herokuapp.com/profil/${props.token}`
       );
       let jsonResponse = await brutResponse.json();
-      let vaccinesList = jsonResponse.vaccines;
-      let medicalTestsList = jsonResponse.medicalTests;
-      let firstname = jsonResponse.firstname;
+      let vaccinesList = jsonResponse.user.vaccines;
+      let medicalTestsList = jsonResponse.user.medicalTests;
+      let firstname = jsonResponse.user.firstname;
       setFirstName(firstname);
 
       //Création d'un tableau avec TOUS les examens (vaccins et test médicaux) sous forme d'objets {date: , name: }
@@ -121,6 +121,10 @@ function DashBoardScreen(props) {
     }
   }
 
+
+
+  //**************FETCH API*****************
+
   //Variable qui va stocker les données API
   const temp = [];
   //Fonction qui exploite les données API
@@ -149,7 +153,6 @@ function DashBoardScreen(props) {
         });
       }
     }
-    // console.log("|| Prof. de santé ||", temp.length);
     props.navigation.navigate("MapScreen", {
       screen: "MapScreen",
       listAPI: temp,
@@ -175,8 +178,8 @@ function DashBoardScreen(props) {
       </Overlay>
       <Text
         style={{
-          marginTop: 20,
-          marginBottom: 20,
+          marginTop: 40,
+          marginBottom: 15,
           fontSize: 30,
           color: "green",
           fontStyle: "italic",
@@ -184,64 +187,66 @@ function DashBoardScreen(props) {
       >
         Bonjour {firstName} !
       </Text>
-      <Button
-        buttonStyle={styles.bigButton}
-        title="Profil santé"
-        onPress={() =>
-          props.navigation.navigate("ProfilScreen", { screen: "ProfilScreen" })
-        }
-      />
-      <Button
-        buttonStyle={styles.bigButton}
-        title="Trouver un spécialiste"
-        onPress={() => loadData()}
-      />
-      <Button
-        buttonStyle={styles.bigButton}
-        title="Mes lieux de santé"
-        onPress={() =>
-          props.navigation.navigate("AddressBookScreen", {
-            screen: "AddressBookScreen",
-          })
-        }
-      />
-      <Button
-        buttonStyle={styles.bigButton}
-        title="Ajouter un profil"
-        onPress={() =>
-          props.navigation.navigate("AddProfileScreen", {
-            screen: "AddProfileScreen",
-          })
-        }
-      />
-      <Calendar
-        locale="fr"
-        onDayPress={(day) => {
-          if (visible === false) {
-            let filter = exams.filter((e) => e.date === day.dateString);
-
-            if (filter[0] !== undefined) {
-              let temp = new Date(filter[0].date);
-              let dateFormated = moment(temp).format("DD-MM-YYYY");
-              filter[0].date = dateFormated;
-
-              setVisible(true);
-              setOverlayContent(filter);
-            } else if (filter[0] === undefined) {
-              filter.push({ date: day.dateString, name: "Pas d'examen prévu" });
-              let temp = new Date(filter[0].date);
-              let dateFormated = moment(temp).format("DD-MM-YYYY");
-              filter[0].date = dateFormated;
-              setVisible(true);
-              setOverlayContent(filter);
-            }
-          } else if (visible === true) {
-            setVisible(false);
+      <ScrollView>
+        <Button
+          buttonStyle={styles.bigButton}
+          title="Profil santé"
+          onPress={() =>
+            props.navigation.navigate("ProfilScreen", { screen: "ProfilScreen" })
           }
-        }}
-        style={styles.calendar}
-        markedDates={markedDates}
-      />
+        />
+        <Button
+          buttonStyle={styles.bigButton}
+          title="Trouver un spécialiste"
+          onPress={() => loadData()}
+        />
+        <Button
+          buttonStyle={styles.bigButton}
+          title="Mes lieux de santé"
+          onPress={() =>
+            props.navigation.navigate("AddressBookScreen", {
+              screen: "AddressBookScreen",
+            })
+          }
+        />
+        <Button
+          buttonStyle={styles.bigButton}
+          title="Ajouter un profil"
+          onPress={() =>
+            props.navigation.navigate("AddProfileScreen", {
+              screen: "AddProfileScreen",
+            })
+          }
+        />
+        <Calendar
+          locale="fr"
+          onDayPress={(day) => {
+            if (visible === false) {
+              let filter = exams.filter((e) => e.date === day.dateString);
+
+              if (filter[0] !== undefined) {
+                let temp = new Date(filter[0].date);
+                let dateFormated = moment(temp).format("DD-MM-YYYY");
+                filter[0].date = dateFormated;
+
+                setVisible(true);
+                setOverlayContent(filter);
+              } else if (filter[0] === undefined) {
+                filter.push({ date: day.dateString, name: "Pas d'examen prévu" });
+                let temp = new Date(filter[0].date);
+                let dateFormated = moment(temp).format("DD-MM-YYYY");
+                filter[0].date = dateFormated;
+                setVisible(true);
+                setOverlayContent(filter);
+              }
+            } else if (visible === true) {
+              setVisible(false);
+            }
+          }}
+          style={styles.calendar}
+          markedDates={markedDates}
+        />
+      </ScrollView>
     </View>
   );
 }
@@ -261,7 +266,7 @@ const styles = StyleSheet.create({
   },
   calendar: {
     width: 300,
-    marginTop: 30,
+    marginTop: 10,
   },
 });
 

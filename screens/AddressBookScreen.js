@@ -17,7 +17,7 @@ function AddressBookScreen(props) {
       let responseBDD = await fetch(
         `https://life-yourapp.herokuapp.com/readhcpro/${props.token}`,
         {
-          method: "GET", //Pas obligé de mettre un GET car automatique pour lire en Fetch
+          method: "GET",
         }
       );
       //Variable qui permet d'exploiter les données BDD
@@ -27,7 +27,6 @@ function AddressBookScreen(props) {
     }
     readBDD();
   }, []);
-  // console.log("TEST FRONT ::::::", addresses.length);
 
   //Fonction qui met en majusucle la 1ère lettre de chaque mot
   function capsF(words) {

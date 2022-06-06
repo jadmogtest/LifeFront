@@ -65,7 +65,7 @@ function MapScreen(props) {
     }
 
     askPermissions();
-    // loadData();
+
     listCategory();
   }, []);
 

@@ -5,7 +5,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { connect } from "react-redux";
 import { TextInput } from "react-native-paper";
 
-function AddProfileScreen(props) {
+function AddProfilScreen(props) {
   //DropDownPicker Sexe
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -136,7 +136,6 @@ function AddProfileScreen(props) {
 
     addProfile();
   };
-  console.log(firstName);
 
   let listMsg = msg.map((e, i) => (
     <Text style={{ textAlign: "center", marginBottom: 30 }} key={i}>
@@ -412,4 +411,4 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
   return { token: state.token };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(AddProfileScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(AddProfilScreen);

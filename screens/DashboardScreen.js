@@ -232,8 +232,8 @@ function DashBoardScreen(props) {
           buttonStyle={styles.bigButton}
           title="Ajouter un profil"
           onPress={() =>
-            props.navigation.navigate("AddProfileScreen", {
-              screen: "AddProfileScreen",
+            props.navigation.navigate("AddProfilScreen", {
+              screen: "AddProfilScreen",
             })
           }
         />

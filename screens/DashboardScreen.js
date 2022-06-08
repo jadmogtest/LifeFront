@@ -180,33 +180,33 @@ function DashBoardScreen(props) {
   } else {
     return (
       <View style={styles.container}>
+        <Overlay
+          overlayStyle={{ flex: 0.5, width: 300, borderRadius: 50 }}
+          width="5000"
+          isVisible={visible}
+          onBackdropPress={() => {
+            setVisible(false);
+          }}
+        >
+          <View
+            style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
+          >
+            <Text style={{ fontSize: 30 }}>{overlayContent[0].date}</Text>
+            <Text style={{ fontSize: 30 }}>{overlayContent[0].name}</Text>
+          </View>
+        </Overlay>
+        <Text
+          style={{
+            marginTop: 40,
+            marginBottom: 15,
+            fontSize: 30,
+            color: "green",
+            fontStyle: "italic",
+          }}
+        >
+          Bonjour {firstName} !
+        </Text>
         <ScrollView>
-          <Overlay
-            overlayStyle={{ flex: 0.5, width: 300, borderRadius: 50 }}
-            width="5000"
-            isVisible={visible}
-            onBackdropPress={() => {
-              setVisible(false);
-            }}
-          >
-            <View
-              style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
-            >
-              <Text style={{ fontSize: 30 }}>{overlayContent[0].date}</Text>
-              <Text style={{ fontSize: 30 }}>{overlayContent[0].name}</Text>
-            </View>
-          </Overlay>
-          <Text
-            style={{
-              marginTop: 20,
-              marginBottom: 20,
-              fontSize: 30,
-              color: "green",
-              fontStyle: "italic",
-            }}
-          >
-            Bonjour {firstName} !
-          </Text>
           <Button
             buttonStyle={styles.bigButton}
             title="Profil santé"
@@ -266,7 +266,7 @@ function DashBoardScreen(props) {
             markedDates={markedDates}
           />
         </ScrollView>
-      </View>
+      </View >
     );
   }
 }

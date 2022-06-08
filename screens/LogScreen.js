@@ -236,6 +236,7 @@ const styles = StyleSheet.create({
   textCheckbox: {
     color: "#37663B",
     fontFamily: "PTSans_400Regular",
+    marginLeft: -5,
   },
 });
 

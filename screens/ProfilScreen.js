@@ -31,7 +31,7 @@ import {
 //* Connexion avec redux : npm install --save redux react-redux */
 import { connect } from "react-redux";
 
-// *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> COMPOSENT MODAL INFOS ICÔNES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
+// *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> COMPOSENT MODAL INFOS ICÔNES & DÉFINITIONS VACCINS/EXAMENS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 const ModalInfos = ({ visible, children }) => {
   const [showModal, setShowModal] = React.useState(visible);
   const scaleValue = React.useRef(new Animated.Value(0)).current;
@@ -71,7 +71,6 @@ const ModalInfos = ({ visible, children }) => {
     </Modal>
   );
 };
-
 
 // *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FONCTION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<* //
 function ProfilScreen(props) {
@@ -140,23 +139,12 @@ function ProfilScreen(props) {
   const [tempState, setTempState] = useState({});
   const [exams, setExams] = useState({});
 
-
   /* DropDownPicker État */
   // 5 ouvertures individuelles pour les 6 dropdown
   const [open1, setOpen1] = useState(false);
 
-  // 5  valeurs individuelles pour les 6 dropdown
-  /* 
-  ! À AMÉLIORER 
-  */
-
-  const [value1, setValue1] = useState(null);
-  const [value2, setValue2] = useState(null);
-  const [value3, setValue3] = useState(null);
-  const [value4, setValue4] = useState(null);
-  const [value5, setValue5] = useState(null);
+  // Valeurs individuelles pour les 6 dropdown
   const [value6, setValue6] = useState(null);
-  const [value7, setValue7] = useState(null);
   const [value8, setValue8] = useState(null);
 
   const [name, setName] = useState("");
@@ -225,36 +213,30 @@ function ProfilScreen(props) {
   /* ________________ LES DIFFÉRENTS MODALS ________________ */
   /* Les différents modals  apparaissent au clic sur les icones info */
   //Tableau des données infos
-  const infos = [
+  const info = [
     {
       title: "Vaccins obligatoires :",
-      infos:
-        "11 vaccins sont obligatoires chez les nourrissons nés après le 1er janvier 2018. Trois vaccins restent obligatoires chez les enfants nés avant cette date. Le vaccin contre la fièvre jaune l'est aussi pour les résidents de Guyane française. En milieu professionnel, selon l’activité exercée, certaines vaccinations sont exigées.",
+      info: "11 vaccins sont obligatoires chez les nourrissons nés après le 1er janvier 2018. Trois vaccins restent obligatoires chez les enfants nés avant cette date. Le vaccin contre la fièvre jaune l'est aussi pour les résidents de Guyane française. En milieu professionnel, selon l’activité exercée, certaines vaccinations sont exigées.",
     },
     {
       title: "Vaccins recommandés :",
-      infos:
-        "Des vaccins existent contre diverses maladies graves telles que la tuberculose, l'hépatite A... S’ils ne sont pas obligatoires, ils restent la meilleure façon d’éviter ces maladies et de protéger les personnes fragiles (nourrissons, femmes enceintes, personnes âgées…). ",
+      info: "Des vaccins existent contre diverses maladies graves telles que la tuberculose, l'hépatite A... S’ils ne sont pas obligatoires, ils restent la meilleure façon d’éviter ces maladies et de protéger les personnes fragiles (nourrissons, femmes enceintes, personnes âgées…). ",
     },
     {
       title: "Vaccins projets personnels :",
-      infos:
-        "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la liste des vaccins obligatoires et des vaccins recommandés vous pouvez en ajouter dans la section 'Vaccins projets personnels' en cliquant sur",
+      info: "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la liste des vaccins obligatoires et des vaccins recommandés vous pouvez en ajouter dans la section 'Vaccins projets personnels' en cliquant sur",
     },
     {
       title: "Examens de santé obligatoires :",
-      infos:
-        "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la liste des vaccins obligatoires et des vaccins recommandés vous pouvez en ajouter dans la section 'Vaccins projets personnels' en cliquant sur",
+      info: "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la liste des vaccins obligatoires et des vaccins recommandés vous pouvez en ajouter dans la section 'Vaccins projets personnels' en cliquant sur",
     },
     {
       title: "Examens de santé recommandés :",
-      infos:
-        "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la liste des vaccins obligatoires et des vaccins recommandés vous pouvez en ajouter dans la section 'Vaccins projets personnels' en cliquant sur",
+      info: "Si vous souhaitez réaliser un vaccin qui n'apparait pas dans la liste des vaccins obligatoires et des vaccins recommandés vous pouvez en ajouter dans la section 'Vaccins projets personnels' en cliquant sur",
     },
     {
       title: "Besoins personnels :",
-      infos:
-        "Si vous souhaitez réaliser un vaccin ou un examen qui n'apparait pas dans la liste des vaccins/examens obligatoires et des vaccins/examens recommandés vous pouvez en ajouter dans la section 'Vaccins/examens projets personnels' en cliquant sur",
+      info: "Si vous souhaitez réaliser un vaccin ou un examen qui n'apparait pas dans la liste des vaccins/examens obligatoires et des vaccins/examens recommandés vous pouvez en ajouter dans la section 'Vaccins/examens projets personnels' en cliquant sur",
     },
   ];
 
@@ -303,6 +285,7 @@ function ProfilScreen(props) {
   const dateModal = (id, status) => {
     setModalDate(true);
     setTempState({ id, status });
+    healthCareDate();
   };
 
   //Pour le datePicker des vaccins obligatoires et recommandés
@@ -361,11 +344,11 @@ function ProfilScreen(props) {
 
   //Modal des infos des vaccins obligatoires
   const infosModal = (text) => {
-    for (let item of infos) {
-
+    for (let item of info) {
+      console.log(item);
       if (item.title === text) {
         setName(item.title);
-        setDescription(item.infos);
+        setDescription(item.info);
       }
     }
     setModalInfosVisible(true);
@@ -562,6 +545,8 @@ function ProfilScreen(props) {
                 selectedTextStyle={styles.selectedTextStyle}
                 value={e.name}
                 closeAfterSelecting={true}
+                itemSeparator={true}
+                listMode="MODAL"
                 search //Input recherche
                 searchPlaceholder="Recherche..."
                 searchable={true} //Permet au user de chercher le nom du vaccin sans avoir besoin de scroller sur la liste de nom proposée
@@ -629,7 +614,7 @@ function ProfilScreen(props) {
 
   //DateTimePicker
   const changeTempDate = (date) => {
-
+    // console.log(date);
     setTempState({ ...tempState, date });
   };
 
@@ -647,7 +632,6 @@ function ProfilScreen(props) {
   } else {
     return (
       <ScrollView>
-        <View></View>
         <View style={styles.container}>
           <DropDownPicker
             style={styles.DropDownPicker}
@@ -684,6 +668,20 @@ function ProfilScreen(props) {
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
+            <Text
+              style={{
+                marginTop: 10,
+                fontFamily: "PTSans_700Bold",
+                color: "#37663B",
+                fontSize: 25,
+                borderColor: "#37663B",
+                borderWidth: 1,
+                borderRadius: 5,
+                padding: 5,
+              }}
+            >
+              Profil de {firstnameUser}
+            </Text>
             {/* Affiche ce qui est après le '&&' que si au moins un élément des filtres est égal à Vaccin*/}
             {value.find((element) => element === "Vaccin") && (
               <View style={styles.filterView}>
@@ -735,8 +733,8 @@ function ProfilScreen(props) {
                               maxHeight={165}
                               data={state1}
                               multiple={false} //Permet de sélectionner une seule option
-                              onFocus={() => setIsFocus1(true)}
-                              onBlur={() => setIsFocus1(false)}
+                              // onFocus={() => setIsFocus1(true)}
+                              // onBlur={() => setIsFocus1(false)}
                               onChange={(item) => {
                                 mandatoryVaccinesStatus(item, index); //Pour mettre à jour le status du soin
                               }}
@@ -811,8 +809,8 @@ function ProfilScreen(props) {
                               maxHeight={165}
                               data={state4}
                               multiple={false} //Permet de sélectionner une seule option
-                              onFocus={() => setIsFocus4(true)}
-                              onBlur={() => setIsFocus4(false)}
+                              // onFocus={() => setIsFocus4(true)}
+                              // onBlur={() => setIsFocus4(false)}
                               onChange={(item) => {
                                 recommendedVaccinesStatus(item, index); //Pour mettre à jour le status du soin
                               }}
@@ -821,7 +819,7 @@ function ProfilScreen(props) {
                               {/* Le bouton pour afficher le dateTimePicker */}
                               <TouchableOpacity
                                 style={styles.button}
-                                onPress={() => dateModal(e.id, e.status)}
+                                onPress={() => dateModal(e._id, e.status)}
                               >
                                 {/* Affiche la date sélectionnée par le user dans le bouton */}
                                 <Text style={styles.textDatePicker}>
@@ -892,8 +890,8 @@ function ProfilScreen(props) {
                               maxHeight={165}
                               data={state7}
                               multiple={false} //Permet de sélectionner une seule option
-                              onFocus={() => setIsFocus7(true)}
-                              onBlur={() => setIsFocus7(false)}
+                              // onFocus={() => setIsFocus7(true)}
+                              // onBlur={() => setIsFocus7(false)}
                               onChange={(item) => {
                                 mandatoryExamsStatus(item, index); //Pour mettre à jour le status du soin
                               }}
@@ -906,7 +904,9 @@ function ProfilScreen(props) {
                               >
                                 {/* Affiche la date sélectionnée par le user dans le bouton */}
                                 <Text style={styles.textDatePicker}>
-                                  {new Date(e.date).toLocaleDateString("fr-FR")}
+                                  {new Date(e.endDate).toLocaleDateString(
+                                    "fr-FR"
+                                  )}
                                 </Text>
                               </TouchableOpacity>
                             </View>
@@ -964,8 +964,8 @@ function ProfilScreen(props) {
                               maxHeight={165}
                               data={state6}
                               multiple={false} //Permet de sélectionner une seule option
-                              onFocus={() => setIsFocus6(true)}
-                              onBlur={() => setIsFocus6(false)}
+                              // onFocus={() => setIsFocus6(true)}
+                              // onBlur={() => setIsFocus6(false)}
                               onChange={(item) => {
                                 recommendedExamsStatus(item, index); //Pour mettre à jour le status du soin
                               }}
@@ -974,11 +974,13 @@ function ProfilScreen(props) {
                               {/* Le bouton pour afficher le dateTimePicker */}
                               <TouchableOpacity
                                 style={styles.button}
-                                onPress={() => dateModal(e.id, e.status)}
+                                onPress={() => dateModal(e._id, e.status)}
                               >
                                 {/* Affiche la date sélectionnée par le user dans le bouton */}
                                 <Text style={styles.textDatePicker}>
-                                  {new Date(e.date).toLocaleDateString("fr-FR")}
+                                  {new Date(e.endDate).toLocaleDateString(
+                                    "fr-FR"
+                                  )}
                                 </Text>
                               </TouchableOpacity>
                             </View>
@@ -1061,7 +1063,7 @@ function ProfilScreen(props) {
                 alignItems: "center",
               }}
             >
-              {infos.map((info, i) => {
+              {info.map((info, i) => {
                 return (
                   <ModalInfos visible={modalInfosVisible} key={i}>
                     <View style={{ alignItems: "center" }}>
@@ -1287,6 +1289,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 20,
     backgroundColor: "#EBFAD5",
+    minHeight: "100%",
   },
   DropDownPicker: {
     borderColor: "#37663B",

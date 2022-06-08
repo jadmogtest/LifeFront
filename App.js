@@ -20,8 +20,8 @@ import ProfilScreen from "./screens/ProfilScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import MapScreen from "./screens/MapScreen";
 import AddressBookScreen from "./screens/AddressBookScreen";
-import SignUpInfosScreen from "./screens/SignUpInfosScreen";
-import AddProfileScreen from "./screens/AddProfileScreen";
+import SignUpInfoScreen from "./screens/SignUpInfoScreen";
+import AddProfileScreen from "./screens/AddProfilScreen";
 import DeleteAccountScreen from "./screens/DeleteAccountScreen";
 
 // NAVIGATION
@@ -100,8 +100,8 @@ function BottomNavigator() {
       />
       <Tab.Screen
         options={{ tabBarButton: () => null }}
-        name="SignUpInfosScreen"
-        component={SignUpInfosScreen}
+        name="SignUpInfoScreen"
+        component={SignUpInfoScreen}
       />
       <Tab.Screen
         options={{ tabBarButton: () => null }}
@@ -110,8 +110,8 @@ function BottomNavigator() {
       />
       <Tab.Screen
         options={{ tabBarButton: () => null }}
-        name="AddProfileScreen"
-        component={AddProfileScreen}
+        name="AddProfilScreen"
+        component={AddProfilScreen}
       />
       <Tab.Screen
         options={{ tabBarButton: () => null }}
@@ -131,17 +131,14 @@ export default function App() {
           <Stack.Screen name="LogScreen" component={LogScreen} />
           <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
           <Stack.Screen name="MapScreen" component={MapScreen} />
-          <Stack.Screen
-            name="SignUpInfosScreen"
-            component={SignUpInfosScreen}
-          />
+          <Stack.Screen name="SignUpInfoScreen" component={SignUpInfoScreen} />
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
           <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
           <Stack.Screen
             name="AddressBookScreen"
             component={AddressBookScreen}
           />
-          <Stack.Screen name="AddProfileScreen" component={AddProfileScreen} />
+          <Stack.Screen name="AddProfileScreen" component={AddProfilScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
           <Stack.Screen
             name="DeleteAccountScreen"

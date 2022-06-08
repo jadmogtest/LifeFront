@@ -192,11 +192,13 @@ function MapScreen(props) {
           initialRegion={{
             // latitude: 43.604652, // pour centrer la carte
             // longitude: 1.444209,
-            latitude: 48.887552,
-            longitude: 2.303735,
+            latitude: 46.160329,
+            longitude: -1.151139,
 
-            latitudeDelta: 0.048, // le rayon à afficher à partir du centre
-            longitudeDelta: 0.028,
+            // latitudeDelta: 0.048, // le rayon à afficher à partir du centre
+            // longitudeDelta: 0.028,
+            latitudeDelta: 2, // le rayon à afficher à partir du centre
+            longitudeDelta: 1,
           }}
         >
           <Marker
@@ -204,8 +206,8 @@ function MapScreen(props) {
             pinColor="red"
             title="Vous êtes ici"
             coordinate={{
-              latitude: 48.887552,
-              longitude: 2.303735,
+              latitude: 46.160329,
+              longitude: -1.151139,
             }}
             draggable
           ></Marker>

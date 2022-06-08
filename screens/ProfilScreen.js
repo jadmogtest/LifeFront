@@ -307,7 +307,7 @@ function ProfilScreen(props) {
 
   //Pour le datePicker des vaccins obligatoires et recommandés
   const changeStateVaccines = () => {
-    // console.log(tempState.date);
+
     let vaccinesCopy = [...vaccines];
     let index = vaccinesCopy.findIndex((vaccine) => {
       if (vaccine.id === tempState.id) {
@@ -316,7 +316,7 @@ function ProfilScreen(props) {
         return false;
       }
     });
-    // console.log(index);
+
     vaccinesCopy[index].date = tempState.date;
     setTempState({});
     setVaccines(vaccinesCopy);
@@ -325,7 +325,7 @@ function ProfilScreen(props) {
 
   //Pour le datePicker des examens obligatoires et recommandés
   const changeStateExams = () => {
-    // console.log(tempState.date);
+
     let medicalTestsCopy = [...medicalTests];
     let index = medicalTestsCopy.findIndex((exam) => {
       if (exam.id === tempState.id) {
@@ -334,7 +334,7 @@ function ProfilScreen(props) {
         return false;
       }
     });
-    // console.log(index);
+
     medicalTestsCopy[index].date = tempState.date;
     setTempState({});
     setExams(medicalTestsCopy);
@@ -343,7 +343,7 @@ function ProfilScreen(props) {
 
   //Pour le datePicker des besoins personnels
   const changeStateHealthCarePerso = () => {
-    // console.log(tempState.date);
+
     let healthCareCopy = [...healthCare];
     let index = healthCareCopy.findIndex((exam) => {
       if (exam.id === tempState.id) {
@@ -352,7 +352,7 @@ function ProfilScreen(props) {
         return false;
       }
     });
-    // console.log(index);
+
     healthCareCopy[index].date = tempState.date;
     setTempState({});
     setExams(healthCareCopy);
@@ -362,7 +362,7 @@ function ProfilScreen(props) {
   //Modal des infos des vaccins obligatoires
   const infosModal = (text) => {
     for (let item of infos) {
-      console.log(item);
+
       if (item.title === text) {
         setName(item.title);
         setDescription(item.infos);
@@ -373,25 +373,23 @@ function ProfilScreen(props) {
 
   //liste dynamique filtre profils
   const itemSetter = () => {
-    console.log("hello", userFamily);
+
     for (let i = 0; i < userFamily.length; i++) {
       tempArray.unshift({
         label: userFamily[i].firstname,
         value: userFamily[i].firstname,
         parent: "Profil",
       });
-      // console.log("tempArray1", tempArray);
-      // console.log("userFamily[i].firstname", userFamily[i].firstname);
+
     }
     tempArray.unshift({
       label: firstnameUser,
       value: firstnameUser,
       parent: "Profil",
     });
-    console.log("firstnameUser", firstnameUser);
+
     tempArray.unshift({ label: "Profil", value: "Profil", disabled: true });
 
-    // console.log("tempArray2", tempArray);
 
     setItems(tempArray);
   };
@@ -412,7 +410,7 @@ function ProfilScreen(props) {
   };
 
   useEffect(() => {
-    // console.log("value useeffect", value);
+
   }, [value]);
 
   useEffect(() => {
@@ -443,7 +441,7 @@ function ProfilScreen(props) {
   const list = []; //Je crée un tableau vide dans lequel je vais pusher les vaccins que le user va ajouter au clic sur l'icône +
   const addHealthCare = () => {
     let val = healthCare.length;
-    // console.log("added to tab", val);
+
     setHealthCare([...healthCare, { pos: val }]); //Copie de la liste des vaccins ajoutés
   };
 
@@ -454,7 +452,7 @@ function ProfilScreen(props) {
     let position = 0;
     let healthCareCopy = [...healthCare];
     healthCareCopy[index].status = item.value;
-    // console.log(healthCareCopy);
+
   };
 
   /* Fonction status pour le dropDown des vaccins obligatoires */
@@ -464,7 +462,7 @@ function ProfilScreen(props) {
     let position = 0;
     let healthCareCopy = [...healthCare];
     // healthCareCopy[index].status = item.value;
-    // console.log(healthCareCopy);
+
   };
 
   /* Fonction status pour le dropDown des vaccins recommandés */
@@ -474,7 +472,7 @@ function ProfilScreen(props) {
     let position = 0;
     let healthCareCopy = [...healthCare];
     // healthCareCopy[index].status = item.value;
-    // console.log(healthCareCopy);
+
   };
 
   /* Fonction status pour le dropDown des examens obligatoires */
@@ -484,7 +482,7 @@ function ProfilScreen(props) {
     let position = 0;
     let healthCareCopy = [...healthCare];
     // healthCareCopy[index].status = item.value;
-    // console.log(healthCareCopy);
+
   };
 
   /* Fonction status pour le dropDown des examens recommandés */
@@ -494,7 +492,7 @@ function ProfilScreen(props) {
     let position = 0;
     let healthCareCopy = [...healthCare];
     // healthCareCopy[index].status = item.value;
-    // console.log(healthCareCopy);
+
   };
 
   /* Fonction name pour le dropDown d'ajout de soin */
@@ -504,7 +502,7 @@ function ProfilScreen(props) {
     let position = 0;
     let healthCareCopy = [...healthCare];
     healthCareCopy[index].name = item.value;
-    // console.log(healthCareCopy);
+
   };
 
   /* Fonction date pour le dropDown d'ajout de soin */
@@ -514,7 +512,7 @@ function ProfilScreen(props) {
     let position = 0;
     let healthCareCopy = [...healthCare];
     healthCareCopy[index].date = item.value;
-    // console.log(healthCareCopy);
+
   };
 
   //Pour colorer la bordure du dropDown en vert lorsque le user l'ouvre pour sélectionner son choix
@@ -529,14 +527,14 @@ function ProfilScreen(props) {
 
   /* Je supprime un soin de la liste en cliquant sur l'icône poubelle */
   var deleteHealthCare = (element) => {
-    // console.log(state5);
+
     let tempo = [...healthCare];
-    // console.log(tempo);
+
     for (let i = 0; i < tempo.length; i++) {
       tempo[i].pos = i;
     }
     tempo = tempo.filter((e) => e.pos != element); // Je fais une copie de mon tableau
-    // console.log(tempo);
+
     setHealthCare(tempo);
     props.deleteToProfil(element);
   };
@@ -631,7 +629,7 @@ function ProfilScreen(props) {
 
   //DateTimePicker
   const changeTempDate = (date) => {
-    console.log(date);
+
     setTempState({ ...tempState, date });
   };
 

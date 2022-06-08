@@ -51,7 +51,7 @@ function MapScreen(props) {
 
   //Fonction qui demande l'autorisation de géolocation à l'initialisation du composant
   useEffect(() => {
-    // console.log("CHRISTIAN:::", props.route.params);
+
     async function askPermissions() {
       var { status } = await Location.requestForegroundPermissionsAsync();
       if (status === "granted") {
@@ -59,7 +59,7 @@ function MapScreen(props) {
           //Fonction qui récupère la géolocalisation en temps réel tous les 2 mètres
           setCurrentLatitude(location.coords.latitude);
           setCurrentLongitude(location.coords.longitude);
-          // console.log("|| Coords ||", location);
+
         });
       }
     }
@@ -84,7 +84,7 @@ function MapScreen(props) {
       let newArr = Array.from(uniqSet).map(JSON.parse);
       setJobs(newArr.sort());
     }
-    // console.log("|| Catégories ||", jobs);
+
   }
 
   //Variable qui capture la valeur sélectionnée du dropdown
@@ -119,7 +119,7 @@ function MapScreen(props) {
             setTel(marker.tel);
             setSecteur(marker.secteur);
             setCategory(marker.categorie);
-            // console.log("TEST :::", category);
+
           }}
         >
           {/* <Icon type="Entypo" name="leaf" color="#5BAA62" size={25} /> */}
@@ -190,8 +190,11 @@ function MapScreen(props) {
           style={styles.map}
           // mapPadding={60}
           initialRegion={{
-            latitude: 43.604652, // pour centrer la carte
-            longitude: 1.444209,
+            // latitude: 43.604652, // pour centrer la carte
+            // longitude: 1.444209,
+            latitude: 48.887552,
+            longitude: 2.303735,
+
             latitudeDelta: 0.048, // le rayon à afficher à partir du centre
             longitudeDelta: 0.028,
           }}
@@ -201,8 +204,8 @@ function MapScreen(props) {
             pinColor="red"
             title="Vous êtes ici"
             coordinate={{
-              latitude: 43.604652,
-              longitude: 1.444209,
+              latitude: 48.887552,
+              longitude: 2.303735,
             }}
             draggable
           ></Marker>

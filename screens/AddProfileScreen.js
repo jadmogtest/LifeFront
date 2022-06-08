@@ -93,7 +93,7 @@ function AddProfileScreen(props) {
             for (let i = 0; i < response.userFamily.family.length; i++) {
                 temp.push(`${response.userFamily.family[i].firstname} ${response.userFamily.family[i].lastname} connecté ${"\n"}`)
             }
-            console.log(temp)
+
             setProfilsList([temp]);
         }
         readBDD();
@@ -121,7 +121,7 @@ function AddProfileScreen(props) {
                 }
             );
             var recUser = await rawRecUser.json();
-            console.log(recUser);
+
             if (recUser.user) {
                 setMsg([...msg, `${email} En attente de validation`]);
                 setEmail("");
@@ -130,7 +130,7 @@ function AddProfileScreen(props) {
 
         addProfile();
     };
-    console.log(firstName);
+
 
     let listMsg = msg.map((e, i) => (<Text style={{ textAlign: "center", marginBottom: 30 }} key={i}>{e}</Text>))
     let listProfilsConnected = profilsList.map((e, i) => (<Text style={{ textAlign: "center" }} key={i}>{e}</Text>))

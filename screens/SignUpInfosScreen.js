@@ -81,15 +81,11 @@ function SignUpInfosScreen(props) {
 
   var healthTests = [];
   async function schedulePushNotification() {
-    // console.log('notif', healthTests)
-    for (let i = 0; i < healthTests.length; i++) {
-      // console.log('date', new Date(Date.now() + 7200000 + 60000))
-      const trigger = Date.now() + 10000
-      // trigger.setSeconds(0);
 
-      // console.log('trigger', trigger)
-      // console.log('tableau', healthTestsState);
-      // console.log('function')
+    for (let i = 0; i < healthTests.length; i++) {
+
+      const trigger = Date.now() + 10000
+
       await Notifications.scheduleNotificationAsync({
         content: {
           title: `Rappel santé`,
@@ -98,7 +94,7 @@ function SignUpInfosScreen(props) {
         },
         trigger,
       });
-      // console.log('after function');
+
     }
   }
 
@@ -127,13 +123,10 @@ function SignUpInfosScreen(props) {
       var recUser = await rawRecUser.json();
 
       if (recUser.result === true) {
-        // console.log('recUser', recUser)
-        // console.log('recUser.saveUser.vaccines', recUser.currentUser.vaccines);
-        // console.log('recUser.saveUser.exams', recUser.currentUser.medicalTests);
         healthTests = recUser.currentUser.vaccines.concat(recUser.currentUser.medicalTests);
-        // console.log('healthtests', healthTests)
+
         setHealthTestsState([...healthTests]);
-        // console.log('healthteststate after setter', healthTestsState)
+
         props.tokenStore(recUser.currentUser.token);
         props.navigation.navigate("BottomNavigator", {
           screen: "DashboardScreen",
@@ -154,10 +147,8 @@ function SignUpInfosScreen(props) {
     });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
     });
 
-    console.log('useeffect')
     return () => {
       Notifications.removeNotificationSubscription(notificationListener.current);
       Notifications.removeNotificationSubscription(responseListener.current);
@@ -538,7 +529,6 @@ async function registerForPushNotificationsAsync() {
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log('test', token);
   } else {
     alert('Must use physical device for Push Notifications');
   }

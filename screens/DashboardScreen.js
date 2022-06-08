@@ -60,7 +60,7 @@ function DashBoardScreen(props) {
   //Récupération des vaccins et tests médicaux en BDD
   useEffect(() => {
     async function takeExams() {
-      // console.log('test', props.token)
+
       let brutResponse = await fetch(
         `https://life-yourapp.herokuapp.com/profil/${props.token}`
       );
@@ -74,9 +74,7 @@ function DashBoardScreen(props) {
       let temp = [];
       for (let i = 0; i < vaccinesList.length; i++) {
         let date = new Date(vaccinesList[i].endDate);
-
         let dateFormated = moment(date).format("YYYY-MM-DD");
-
         temp.push({
           name: vaccinesList[i].name,
           date: dateFormated,
@@ -110,7 +108,7 @@ function DashBoardScreen(props) {
     let examDate = new Date(exams[i].date);
     let todayDate = new Date();
 
-    let delta = (examDate - todayDate) / (1000 * 3600 * 24);
+    let delta = (examDate - todayDate) / (1000 * 3600 * 24); // *1000 => pour convertir en secondes, *3600 => pour convertir en heures, *24 => pour convertir en jours
 
     if (delta < 0) {
       markedDates[exams[i].date] = { selected: true, selectedColor: "red" };
@@ -133,7 +131,7 @@ function DashBoardScreen(props) {
       "https://data.opendatasoft.com/api/records/1.0/search/?dataset=medecins%40public&q=&rows=200"
     );
     var response = await rawResponse.json();
-    //Boucle pour poush les données API dans le tableau "temp"
+    //Boucle pour push les données API dans le tableau "temp"
     for (let item of response.records) {
       if (
         item.fields.coordonnees &&

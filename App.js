@@ -21,7 +21,7 @@ import SettingsScreen from "./screens/SettingsScreen";
 import MapScreen from "./screens/MapScreen";
 import AddressBookScreen from "./screens/AddressBookScreen";
 import SignUpInfoScreen from "./screens/SignUpInfoScreen";
-import AddProfileScreen from "./screens/AddProfilScreen";
+import AddProfileScreen from "./screens/AddProfileScreen";
 import DeleteAccountScreen from "./screens/DeleteAccountScreen";
 
 // NAVIGATION
@@ -110,8 +110,8 @@ function BottomNavigator() {
       />
       <Tab.Screen
         options={{ tabBarButton: () => null }}
-        name="AddProfilScreen"
-        component={AddProfilScreen}
+        name="AddProfileScreen"
+        component={AddProfileScreen}
       />
       <Tab.Screen
         options={{ tabBarButton: () => null }}
@@ -138,7 +138,7 @@ export default function App() {
             name="AddressBookScreen"
             component={AddressBookScreen}
           />
-          <Stack.Screen name="AddProfileScreen" component={AddProfilScreen} />
+          <Stack.Screen name="AddProfileScreen" component={AddProfileScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
           <Stack.Screen
             name="DeleteAccountScreen"

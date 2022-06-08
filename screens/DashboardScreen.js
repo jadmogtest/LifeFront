@@ -269,26 +269,27 @@ function DashBoardScreen(props) {
       </View>
     );
   }
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: "#EBFAD5",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    bigButton: {
-      backgroundColor: "#5BAA62",
-      marginBottom: 10,
-      borderRadius: 50,
-      height: 50,
-      width: 300,
-    },
-    calendar: {
-      width: 300,
-      marginTop: 10,
-    },
-  });
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#EBFAD5",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  bigButton: {
+    backgroundColor: "#5BAA62",
+    marginBottom: 10,
+    borderRadius: 50,
+    height: 50,
+    width: 300,
+  },
+  calendar: {
+    width: 300,
+    marginTop: 10,
+  },
+});
+
 function mapStateToProps(state) {
   return { token: state.token };
 }
